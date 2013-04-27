@@ -1,0 +1,8 @@
+require 'support'
+require 'mustermann/regexp_based'
+
+describe Mustermann::RegexpBased do
+  it 'raises a NotImplementedError when used directly' do
+    expect { described_class.new("") === "" }.to raise_error(NotImplementedError)
+  end
+end
