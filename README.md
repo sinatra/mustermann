@@ -36,7 +36,7 @@ It's generally a good idea to reuse pattern objects, since as much computation a
 You can pass in additional options to take fine grained control over the pattern:
 
 ``` ruby
-Mustermann.new('/:foo.:bar', capture: :alpha) # :foo and :bar will only match alphabetic character
+Mustermann.new('/:foo.:bar', capture: :alpha) # :foo and :bar will only match alphabetic characters
 ```
 
 In fact, you can even completely change the pattern type:
