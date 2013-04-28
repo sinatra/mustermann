@@ -3,6 +3,7 @@
 .bundle
 .config
 .yardoc
+.test_queue_stats
 Gemfile.lock
 InstalledFiles
 _yardoc
