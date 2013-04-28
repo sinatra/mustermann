@@ -12,12 +12,12 @@ module Mustermann
       @string.dup
     end
 
-    # @return [Array<String>] empty array for immitating MatchData interface
+    # @return [Array<String>] empty array for imitating MatchData interface
     def names
       []
     end
 
-    # @return [Array<String>] empty array for immitating MatchData interface
+    # @return [Array<String>] empty array for imitating MatchData interface
     def captures
       []
     end
