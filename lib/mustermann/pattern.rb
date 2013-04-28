@@ -47,7 +47,7 @@ module Mustermann
     supported_options :uri_decode, :ignore_unknown_options
 
     # @overload initialize(string, **options)
-    # @param [String] string the string repesentation of the pattern
+    # @param [String] string the string representation of the pattern
     # @param [Hash] options options for fine-tuning the pattern behavior
     # @raise [Mustermann::Error] if the pattern can't be generated from the string
     # @see file:README.md#Types_and_Options "Types and Options" in the README

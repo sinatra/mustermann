@@ -1,8 +1,8 @@
 # Namespace and main entry point for the Mustermann library.
 #
-# Under normal circumstences the only external API entry point you should be using is {Mustermann.new}.
+# Under normal circumstances the only external API entry point you should be using is {Mustermann.new}.
 module Mustermann
-  # @param [String] string The string represenation of the new pattern
+  # @param [String] string The string representation of the new pattern
   # @param [Hash] options The options hash
   # @return [Mustermann::Pattern] pattern corresponding to string.
   # @see file:README.md#Types_and_Options "Types and Options" in the README
