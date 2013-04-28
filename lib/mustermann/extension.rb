@@ -38,10 +38,7 @@ module Mustermann
         end
 
         path = Mustermann.new(path, **pattern)
-
-        if defined? Template and path.is_a? Template
-          condition { params.merge! path.params(request.path_info) }
-        end
+        condition { params.merge! path.params(captures: Array(params[:captures]), offset: -1) }
       end
 
       super(verb, path, block, options)

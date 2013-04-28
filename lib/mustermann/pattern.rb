@@ -100,10 +100,10 @@ module Mustermann
 
     # @param [String] string the string to match against
     # @return [Hash{String: String, Array<String>}, nil] Sinatra style params if pattern matches.
-    def params(string = nil, captures: nil)
+    def params(string = nil, captures: nil, offset: 0)
       return unless captures ||= match(string)
       params   = named_captures.map do |name, positions|
-        values = positions.map { |pos| map_param(name, captures[pos]) }.flatten
+        values = positions.map { |pos| map_param(name, captures[pos + offset]) }.flatten
         values = values.first if values.size < 2 and not always_array? name
         [name, values]
       end
