@@ -2,23 +2,56 @@ $:.unshift File.expand_path('../lib', __dir__)
 
 require 'benchmark'
 require 'mustermann'
+require 'mustermann/regexp_based'
 require 'addressable/template'
 
+
+Mustermann.register(:regexp, Class.new(Mustermann::RegexpBased) {
+  def compile(string, **options)
+    Regexp.new(string)
+  end
+}, load: false)
+
+Mustermann.register(:addressable, Class.new(Mustermann::RegexpBased) {
+  def compile(string, **options)
+    Addressable::Template.new(string)
+  end
+}, load: false)
+
 list = [
-  /\A\/(?<splat>.*?)\/(?<name>[^\/\?#]+)\Z/,
-  Mustermann.new('/*/:name',          type: :sinatra),
-  Mustermann.new('/*/:name',          type: :simple),
-  Mustermann.new('/*prefix/:name',    type: :rails),
-  Mustermann.new('{/prefix*}/{name}', type: :template),
-  #Addressable::Template.new('{/prefix*}/{name}')
+  [:sinatra,     '/*/:name'                                ],
+  [:rails,       '/*prefix/:name'                          ],
+  [:simple,      '/*/:name'                                ],
+  [:template,    '{/prefix*}/{name}'                       ],
+  [:regexp,      '\A\/(?<splat>.*?)\/(?<name>[^\/\?#]+)\Z' ],
+  [:addressable, '{/prefix*}/{name}'                       ]
 ]
 
-string = '/a/b/c/d'
+def self.assert(value)
+  fail unless value
+end
 
+string = '/a/b/c/d'
+name   = 'd'
+
+GC.disable
+
+puts "Compilation:"
 Benchmark.bmbm do |x|
-  list.each do |pattern|
-    x.report pattern.class.to_s do
-      100_000.times { pattern.match(string).captures }
+  list.each do |type, pattern|
+    x.report(type) { 1_000.times { Mustermann.new(pattern, type: type) } }
+  end
+end
+
+puts "", "Matching with two captures (one splat, one normal):"
+Benchmark.bmbm do |x|
+  list.each do |type, pattern|
+    pattern = Mustermann.new(pattern, type: type)
+    x.report type do
+      10_000.times do
+        match = pattern.match(string)
+        assert match[:name] == name
+      end
     end
   end
 end
