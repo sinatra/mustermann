@@ -29,8 +29,8 @@ module Mustermann
         pattern[:except]  = except  if except
         pattern[:capture] = capture if capture
 
-        if settings.respond_to? :pattern
-          pattern.merge!(settings.pattern || {}) do |key, local, global|
+        if settings.respond_to? :pattern and settings.pattern?
+          pattern.merge! settings.pattern do |key, local, global|
             next local unless local.is_a? Hash
             next global.merge(local) if global.is_a? Hash
             Hash.new(global).merge! local

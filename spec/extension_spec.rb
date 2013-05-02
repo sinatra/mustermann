@@ -44,6 +44,7 @@ describe Mustermann::Extension do
 
     context 'route local' do
       before do
+        app.set(:pattern, nil)
         app.get('/:id', capture: /\d+/) { 'ok' }
       end
 
