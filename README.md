@@ -635,6 +635,39 @@ you should set `uri_decode` to `false` in order to conform with the specificatio
 
 If you are looking for an alternative implementation that also supports expanding, check out [addressable](http://addressable.rubyforge.org/).
 
-## Versioning
+## Requirements
 
-Mustermann follows [Semantic Versioning](http://semver.org/).
+Mustermann has no dependencies besides a Ruby 2.0 compatible Ruby implementation.
+
+It is known to work on **MRI 2.0** and **MRI trunk**.
+**JRuby** is not yet supported, but is likely to follow soon (see [issue #2](https://github.com/rkh/mustermann/issues/2) for up to date information on JRuby).
+**Rubinius** is not yet able to parse the Mustermann source code.
+
+## Release History
+
+Mustermann follows [Semantic Versioning 2.0](http://semver.org/). Anything documented in the README or via YARD and not declared private is part of the public API.
+
+### Stable Releases
+
+There have been no stable releases yet. The code base is considered solid but I don't know of anyone using it in production yet.
+As there has been no stable release yet, the API might still change, though I consider this unlikely.
+
+### Development Releases
+
+* **Mustermann 0.0.1** (2013-04-27)
+    * More Infos:
+      [RubyGems.org](http://rubygems.org/gems/mustermann/versions/0.0.1),
+      [RubyDoc.info](rubydoc.info/gems/mustermann/0.0.1/frames),
+      [GitHub.com](https://github.com/rkh/mustermann/tree/v0.0.1)
+    * Initial Release.
+
+### Upcoming Releases
+
+* **Mustermann 0.1.0** (next release)
+    * Improved documentation.
+    * Avoids parsing the path twice when used as Sinatra extension.
+    * Better exceptions for unknown pattern types.
+    * Better handling of edge cases around extend.
+    * More specs to ensure API stability.
+* **Mustermann 1.0.0** (before Sinatra 2.0)
+    * First stable release.
