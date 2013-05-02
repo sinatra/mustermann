@@ -10,9 +10,15 @@ module Mustermann
     options.any? ? self[type].new(string, **options) : self[type].new(string)
   end
 
-  # @!visibility private
+  # Maps a type to its factory.
+  #
+  # @example
+  #   Mustermann[:sinatra] # => Mustermann::Sinatra
+  #
+  # @param [Symbol] key a pattern type identifier
+  # @return [Class, #new] pattern factory
   def self.[](key)
-    constant, library = register.fetch(key)
+    constant, library = register.fetch(key) { raise ArgumentError, "unsupported type %p" % key }
     require library if library
     constant.respond_to?(:new) ? constant : register[key] = const_get(constant)
   end
@@ -26,7 +32,7 @@ module Mustermann
 
   # @!visibility private
   def self.extend_object(object)
-    return super unless defined? ::Sinatra::Base and object < ::Sinatra::Base
+    return super unless defined? ::Sinatra::Base and object.is_a? Class and object < ::Sinatra::Base
     require 'mustermann/extension'
     object.register Extension
   end
