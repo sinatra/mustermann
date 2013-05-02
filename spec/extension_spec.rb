@@ -85,6 +85,148 @@ describe Mustermann::Extension do
     end
   end
 
+  describe :pattern do
+    describe :except do
+      before { app.get('/auth/*', pattern: { except: '/auth/login' }) { 'ok' } }
+      example { get('/auth/dunno').should     be_ok }
+      example { get('/auth/login').should_not be_ok }
+    end
+
+    describe :capture do
+      context 'route local' do
+        before do
+          app.set(:pattern, nil)
+          app.get('/:id', pattern: { capture: /\d+/ }) { 'ok' }
+        end
+
+        example { get('/42').should be_ok }
+        example { get('/foo').should_not be_ok }
+      end
+
+      context 'global and route local' do
+        context 'global is a hash' do
+          before do
+            app.set(:pattern, capture: { id: /\d+/ })
+            app.get('/:id(.:ext)?', pattern: { capture: { ext: 'png' }}) { ?a }
+            app.get('/:id',         pattern: { capture: { id: 'foo'  }}) { ?b }
+            app.get('/:id',         pattern: { capture: :alpha })        { ?c }
+          end
+
+          example { get('/20')     .body.should be == ?a }
+          example { get('/20.png') .body.should be == ?a }
+          example { get('/foo')    .body.should be == ?b }
+          example { get('/bar')    .body.should be == ?c }
+        end
+
+        context 'global is not a hash' do
+          before do
+            app.set(:pattern, capture: /\d+/)
+            app.get('/:slug(.:ext)?', pattern: { capture: { ext: 'png' }}) { params[:slug] }
+            app.get('/:slug', pattern: { capture: :alpha }) { 'ok' }
+          end
+
+          example { get('/20.png').should be_ok }
+          example { get('/foo.png').should_not be_ok }
+          example { get('/foo').should be_ok }
+
+          example { get('/20.png') .body.should be == '20' }
+          example { get('/42')     .body.should be == '42' }
+          example { get('/foo')    .body.should be == 'ok' }
+        end
+      end
+    end
+
+    describe :greedy do
+      context 'default' do
+        before { app.get('/:name.:ext') { params[:name] }}
+        example { get('/foo.bar')     .body.should be == 'foo'     }
+        example { get('/foo.bar.baz') .body.should be == 'foo.bar' }
+      end
+
+      context 'enabled' do
+        before { app.get('/:name.:ext', pattern: { greedy: true }) { params[:name] }}
+        example { get('/foo.bar')     .body.should be == 'foo'     }
+        example { get('/foo.bar.baz') .body.should be == 'foo.bar' }
+      end
+
+      context 'disabled' do
+        before { app.get('/:name.:ext', pattern: { greedy: false }) { params[:name] }}
+        example { get('/foo.bar')     .body.should be == 'foo' }
+        example { get('/foo.bar.baz') .body.should be == 'foo' }
+      end
+
+      context 'global' do
+        before do
+          app.set(:pattern, greedy: false)
+          app.get('/:name.:ext') { params[:name] }
+        end
+
+        example { get('/foo.bar')     .body.should be == 'foo' }
+        example { get('/foo.bar.baz') .body.should be == 'foo' }
+      end
+    end
+
+    describe :space_matches_plus do
+      context 'default' do
+        before { app.get('/foo bar') { 'ok' }}
+        example { get('/foo%20bar') .should be_ok }
+        example { get('/foo+bar')   .should be_ok }
+      end
+
+      context 'enabled' do
+        before { app.get('/foo bar', pattern: { space_matches_plus: true }) { 'ok' }}
+        example { get('/foo%20bar') .should be_ok }
+        example { get('/foo+bar')   .should be_ok }
+      end
+
+      context 'disabled' do
+        before { app.get('/foo bar', pattern: { space_matches_plus: false }) { 'ok' }}
+        example { get('/foo%20bar') .should     be_ok }
+        example { get('/foo+bar')   .should_not be_ok }
+      end
+
+      context 'global' do
+        before do
+          app.set(:pattern, space_matches_plus: false)
+          app.get('/foo bar') { 'ok' }
+        end
+
+        example { get('/foo%20bar') .should     be_ok }
+        example { get('/foo+bar')   .should_not be_ok }
+      end
+    end
+
+    describe :uri_decode do
+      context 'default' do
+        before { app.get('/&') { 'ok' }}
+        example { get('/&')   .should be_ok }
+        example { get('/%26') .should be_ok }
+      end
+
+      context 'enabled' do
+        before { app.get('/&', pattern: { uri_decode: true }) { 'ok' }}
+        example { get('/&')   .should be_ok }
+        example { get('/%26') .should be_ok }
+      end
+
+      context 'disabled' do
+        before { app.get('/&', pattern: { uri_decode: false }) { 'ok' }}
+        example { get('/&')   .should     be_ok }
+        example { get('/%26') .should_not be_ok }
+      end
+
+      context 'global' do
+        before do
+          app.set(:pattern, uri_decode: false)
+          app.get('/&') { 'ok' }
+        end
+
+        example { get('/&')   .should     be_ok }
+        example { get('/%26') .should_not be_ok }
+      end
+    end
+  end
+
   describe :type do
     describe :identity do
       before do
