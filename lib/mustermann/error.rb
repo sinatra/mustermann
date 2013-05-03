@@ -7,8 +7,4 @@ module Mustermann
 
   # Raised if anything goes wrong while parsing a {Pattern}.
   class ParseError < Error; end
-
-  #@!visibility private
-  class UnexpectedClosingGroup < ParseError; end
-  private_constant :UnexpectedClosingGroup
 end

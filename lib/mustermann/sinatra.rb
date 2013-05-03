@@ -11,13 +11,12 @@ module Mustermann
   class Sinatra < AST
     def parse_element(buffer)
       case char = buffer.getch
-      when nil, ?? then unexpected(char)
-      when ?)      then unexpected(char, exception: UnexpectedClosingGroup)
-      when ?*      then Splat.new
-      when ?/      then Separator.new(char)
-      when ?(      then Group.parse { parse_buffer(buffer) }
-      when ?:      then Capture.parse { buffer.scan(/\w+/) }
-      when ?\\     then Char.new expect(buffer, /./)
+      when nil, ??, ?) then unexpected(char)
+      when ?*          then Splat.new
+      when ?/          then Separator.new(char)
+      when ?(          then Group.parse { parse_buffer(buffer) unless buffer.scan(/\)/) }
+      when ?:          then Capture.parse { buffer.scan(/\w+/) }
+      when ?\\         then Char.new expect(buffer, /./)
       else Char.new(char)
       end
     end

@@ -11,12 +11,11 @@ module Mustermann
   class Rails < AST
     def parse_element(buffer)
       case char = buffer.getch
-      when nil then unexpected("end of string")
-      when ?)  then unexpected(char, exception: UnexpectedClosingGroup)
-      when ?*  then NamedSplat.parse { buffer.scan(/\w+/) }
-      when ?/  then Separator.new(char)
-      when ?(  then Optional.new(Group.parse { parse_buffer(buffer) })
-      when ?:  then Capture.parse { buffer.scan(/\w+/) }
+      when nil, ?) then unexpected(char)
+      when ?*      then NamedSplat.parse { buffer.scan(/\w+/) }
+      when ?/      then Separator.new(char)
+      when ?(      then Optional.new(Group.parse { parse_buffer(buffer) unless buffer.scan(/\)/) })
+      when ?:      then Capture.parse { buffer.scan(/\w+/) }
       else Char.new(char)
       end
     end

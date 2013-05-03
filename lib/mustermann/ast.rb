@@ -189,13 +189,6 @@ module Mustermann
         payload.size == 1 ? payload.first.transform : super
       end
 
-      # @see Node#parse
-      # @!visibility private
-      def parse
-        super
-      rescue UnexpectedClosingGroup
-      end
-
       # @return [String] regexp to be used in lookahead for semi-greedy capturing
       # @!visibility private
       def lookahead(ahead, options)
