@@ -4,10 +4,10 @@
 .config
 .yardoc
 .test_queue_stats
+.coverage
 Gemfile.lock
 InstalledFiles
 _yardoc
-coverage
 doc/
 lib/bundler/man
 pkg

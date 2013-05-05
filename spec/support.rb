@@ -16,6 +16,7 @@ SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
 SimpleCov.start do
   project_name 'mustermann'
   minimum_coverage 100
+  coverage_dir '.coverage'
 
   add_filter "/spec/"
   add_group 'Library', 'lib'
