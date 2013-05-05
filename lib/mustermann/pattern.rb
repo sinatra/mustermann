@@ -33,7 +33,7 @@ module Mustermann
     # @param (see #initialize)
     # @raise (see #initialize)
     # @raise [ArgumentError] if some option is not supported
-    # @return [Pattern] a new instance of Pattern
+    # @return [Mustermann::Pattern] a new instance of Mustermann::Pattern
     # @see #initialize
     def self.new(string, ignore_unknown_options: false, **options)
       unless ignore_unknown_options
@@ -66,7 +66,7 @@ module Mustermann
     # @return [MatchData, Mustermann::SimpleMatch, nil] MatchData or similar object if the pattern matches.
     # @see http://ruby-doc.org/core-2.0/Regexp.html#method-i-match Regexp#match
     # @see http://ruby-doc.org/core-2.0/MatchData.html MatchData
-    # @see SimpleMatch
+    # @see Mustermann::SimpleMatch
     def match(string)
       SimpleMatch.new(string) if self === string
     end

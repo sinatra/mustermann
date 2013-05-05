@@ -6,7 +6,7 @@ module Mustermann
   # @example
   #   Mustermann.new('/:foo', type: :rails) === '/bar' # => true
   #
-  # @see Pattern
+  # @see Mustermann::Pattern
   # @see file:README.md#rails Syntax description in the README
   class Rails < AST
     def parse_element(buffer)

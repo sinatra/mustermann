@@ -6,12 +6,12 @@ module Mustermann
   # @example
   #   Mustermann.new('/:foo', type: :identity) === '/bar' # => false
   #
-  # @see Pattern
+  # @see Mustermann::Pattern
   # @see file:README.md#identity Syntax description in the README
   class Identity < Pattern
-    # @param (see Pattern#===)
-    # @return (see Pattern#===)
-    # @see (see Pattern#===)
+    # @param (see Mustermann::Pattern#===)
+    # @return (see Mustermann::Pattern#===)
+    # @see (see Mustermann::Pattern#===)
     def ===(string)
       unescape(string) == @string
     end

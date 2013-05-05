@@ -6,7 +6,7 @@ module Mustermann
   # @example
   #   Mustermann.new('/{foo}') === '/bar' # => true
   #
-  # @see Pattern
+  # @see Mustermann::Pattern
   # @see file:README.md#template Syntax description in the README
   # @see http://tools.ietf.org/html/rfc6570 RFC 6570
   class Template < AST
