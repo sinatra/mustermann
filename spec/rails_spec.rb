@@ -7,23 +7,35 @@ describe Mustermann::Rails do
   pattern '' do
     it { should     match('')  }
     it { should_not match('/') }
+
+    it { should expand.to('') }
+    it { should_not expand(a: 1) }
   end
 
   pattern '/' do
     it { should     match('/')    }
     it { should_not match('/foo') }
+
+    it { should expand.to('/') }
+    it { should_not expand(a: 1) }
   end
 
   pattern '/foo' do
     it { should     match('/foo')     }
     it { should_not match('/bar')     }
     it { should_not match('/foo.bar') }
+
+    it { should expand.to('/foo') }
+    it { should_not expand(a: 1) }
   end
 
   pattern '/foo/bar' do
     it { should     match('/foo/bar')   }
     it { should_not match('/foo%2Fbar') }
     it { should_not match('/foo%2fbar') }
+
+    it { should expand.to('/foo/bar') }
+    it { should_not expand(a: 1) }
   end
 
   pattern '/:foo' do
@@ -38,13 +50,23 @@ describe Mustermann::Rails do
     it { should_not match('/')        }
     it { should_not match('/foo/')    }
 
-    example { pattern.params('/foo').should be == {"foo" => "foo"} }
-    example { pattern.params('/f%20o').should be == {"foo" => "f o"} }
+    example { pattern.params('/foo')   .should be == {"foo" => "foo"} }
+    example { pattern.params('/f%20o') .should be == {"foo" => "f o"} }
     example { pattern.params('').should be_nil }
+
+    it { should expand(foo: 'bar')     .to('/bar')       }
+    it { should expand(foo: 'b r')     .to('/b%20r')     }
+    it { should expand(foo: 'foo/bar') .to('/foo%2Fbar') }
+
+    it { should_not expand(foo: 'foo', bar: 'bar') }
+    it { should_not expand(bar: 'bar') }
+    it { should_not expand }
   end
 
   pattern '/föö' do
     it { should match("/f%C3%B6%C3%B6") }
+    it { should expand.to("/f%C3%B6%C3%B6") }
+    it { should_not expand(a: 1) }
   end
 
   pattern "/:foo/:bar" do
@@ -59,48 +81,71 @@ describe Mustermann::Rails do
 
     example { pattern.params('/bar/foo').should be == {"foo" => "bar", "bar" => "foo"} }
     example { pattern.params('').should be_nil }
+
+    it { should expand(foo: 'foo', bar: 'bar').to('/foo/bar') }
+    it { should_not expand(foo: 'foo') }
+    it { should_not expand(bar: 'bar') }
   end
 
   pattern '/hello/:person' do
     it { should match('/hello/Frank').capturing person: 'Frank' }
+    it { should expand(person: 'Frank')   .to '/hello/Frank'    }
+    it { should expand(person: 'Frank?')  .to '/hello/Frank%3F' }
   end
 
   pattern '/?:foo?/?:bar?' do
     it { should match('/?hello?/?world?').capturing foo: 'hello', bar: 'world' }
     it { should_not match('/hello/world/') }
+    it { should expand(foo: 'hello', bar: 'worlds').to('/%3Ffoo/%3Fbar%3F') }
   end
 
   pattern '/:foo_bar' do
     it { should match('/hello').capturing foo_bar: 'hello' }
+    it { should expand(foo_bar: 'hello').to('/hello') }
   end
 
   pattern '/*foo' do
     it { should match('/')        .capturing foo: '' }
     it { should match('/foo')     .capturing foo: 'foo' }
     it { should match('/foo/bar') .capturing foo: 'foo/bar' }
+
+    it { should expand                  .to('/foo') }
+    it { should expand(foo:  nil)       .to('/foo') }
+    it { should expand(foo:  '')        .to('/foo') }
+    it { should expand(foo: 'foo')      .to('/foo') }
+    it { should expand(foo: 'foo/bar')  .to('/foo') }
   end
 
   pattern '/:foo/*bar' do
-    it { should match("/foo/bar/baz")     .capturing foo: 'foo',   bar: 'bar/baz'   }
-    it { should match("/foo/")            .capturing foo: 'foo',   bar: ''          }
-    it { should match('/h%20w/h%20a%20y') .capturing foo: 'h%20w', bar: 'h%20a%20y' }
+    it { should match("/foo/bar/baz")     .capturing foo: 'foo',       bar: 'bar/baz'   }
+    it { should match("/foo%2Fbar/baz")   .capturing foo: 'foo%2Fbar', bar: 'baz'       }
+    it { should match("/foo/")            .capturing foo: 'foo',       bar: ''          }
+    it { should match('/h%20w/h%20a%20y') .capturing foo: 'h%20w',     bar: 'h%20a%20y' }
     it { should_not match('/foo') }
+
+    it { should expand(foo: 'foo')                     .to('/foo')           }
+    it { should expand(foo: 'foo',     bar: 'bar')     .to('/foo/bar')       }
+    it { should expand(foo: 'foo',     bar: 'foo/bar') .to('/foo/foo/bar')   }
+    it { should expand(foo: 'foo/bar', bar: 'bar')     .to('/foo%2Fbar/bar') }
   end
 
   pattern '/test$/' do
     it { should match('/test$/') }
+    it { should expand.to(/test$/) }
   end
 
   pattern '/te+st/' do
     it { should     match('/te+st/') }
     it { should_not match('/test/')  }
     it { should_not match('/teest/') }
+    it { should expand.to('/te+st/') }
   end
 
   pattern "/path with spaces" do
     it { should match('/path%20with%20spaces') }
     it { should match('/path%2Bwith%2Bspaces') }
     it { should match('/path+with+spaces')     }
+    it { should expand.to('/path+with+spaces') }
   end
 
   pattern '/foo&bar' do
@@ -110,6 +155,7 @@ describe Mustermann::Rails do
   pattern '/*a/:foo/*b/*c' do
     it { should match('/bar/foo/bling/baz/boom').capturing a: 'bar', foo: 'foo', b: 'bling', c: 'baz/boom'  }
     example { pattern.params('/bar/foo/bling/baz/boom').should be == { "a" => 'bar', "foo" => 'foo', "b" => 'bling', "c" => 'baz/boom' } }
+    it { should expand(a: 'bar', foo: 'foo', b: 'bling', c: 'baz/boom').to('/bar/foo/bling/baz/boom') }
   end
 
   pattern '/test.bar' do
@@ -118,7 +164,7 @@ describe Mustermann::Rails do
   end
 
   pattern '/:file.:ext' do
-    it { should match('/pony.jpg')    .capturing file: 'pony', ext: 'jpg' }
+    it { should match('/pony.jpg')   .capturing file: 'pony', ext: 'jpg' }
     it { should match('/pony%2Ejpg') .capturing file: 'pony', ext: 'jpg' }
     it { should match('/pony%2ejpg') .capturing file: 'pony', ext: 'jpg' }
 
@@ -129,6 +175,7 @@ describe Mustermann::Rails do
     it { should match('/pony正..jpg')         .capturing file: 'pony正.',        ext: 'jpg' }
 
     it { should_not match('/.jpg') }
+    it { should expand(file: 'pony', ext: 'jpg').to('pony.jpg') }
   end
 
   pattern '/:a(x)' do
@@ -138,12 +185,17 @@ describe Mustermann::Rails do
     it { should match('/ax')    .capturing a: 'a'   }
     it { should match('/axax')  .capturing a: 'axa' }
     it { should match('/axaxx') .capturing a: 'axax' }
+    it { should expand(a: 'x').to('/xx') }
+    it { should expand(a: 'a').to('/ax') }
   end
 
   pattern '/:user(@:host)' do
     it { should match('/foo@bar')     .capturing user: 'foo',     host: 'bar'     }
     it { should match('/foo.foo@bar') .capturing user: 'foo.foo', host: 'bar'     }
     it { should match('/foo@bar.bar') .capturing user: 'foo',     host: 'bar.bar' }
+
+    it { should expand(user: 'foo')              .to('foo')     }
+    it { should expand(user: 'foo', host: 'bar') .to('foo@bar') }
   end
 
   pattern '/:file(.:ext)' do
@@ -154,6 +206,9 @@ describe Mustermann::Rails do
     it { should match('/pony.png.jpg')   .capturing file: 'pony.png', ext: 'jpg' }
     it { should match('/pony.')          .capturing file: 'pony.' }
     it { should_not match('/.jpg')  }
+
+    it { should expand(file: 'pony')              .to('/pony')     }
+    it { should expand(file: 'pony', ext: 'jpg')  .to('/pony.jpg') }
   end
 
   pattern '/:id/test.bar' do
@@ -185,6 +240,9 @@ describe Mustermann::Rails do
     it { should match('/a.b/c')   .capturing a: 'a.b', b: 'c', c: nil }
     it { should match('/a.b/c.d') .capturing a: 'a.b', b: 'c', c: 'd' }
     it { should_not match('/a.b/c.d/e') }
+
+    it { should expand(a: ?a, b: ?b)        .to('/a/b')   }
+    it { should expand(a: ?a, b: ?b, c: ?c) .to('/a/b.c') }
   end
 
   pattern '/:a(foo:b)' do
@@ -192,6 +250,9 @@ describe Mustermann::Rails do
     it { should match('/barfoobarfoobar') .capturing a: 'barfoobar', b: 'bar' }
     it { should match('/bar')             .capturing a: 'bar',       b: nil   }
     it { should_not match('/') }
+
+    it { should expand(a: ?a)        .to('/a')     }
+    it { should expand(a: ?a, b: ?b) .to('/afoob') }
   end
 
   pattern '/fo(o)' do
@@ -201,6 +262,8 @@ describe Mustermann::Rails do
     it { should_not match('/')     }
     it { should_not match('/f')    }
     it { should_not match('/fooo') }
+
+    it { should expand.to('/foo') }
   end
 
   pattern '/foo?' do
@@ -212,6 +275,8 @@ describe Mustermann::Rails do
     it { should_not match('/')      }
     it { should_not match('/f')     }
     it { should_not match('/fooo')  }
+
+    it { should expand.to('/foo%3F') }
   end
 
   pattern '/:fOO' do
@@ -228,6 +293,8 @@ describe Mustermann::Rails do
 
   pattern '/:foo(/:bar)/:baz' do
     it { should match('/foo/bar/baz').capturing foo: 'foo', bar: 'bar', baz: 'baz' }
+    it { should expand(foo: ?a, baz: ?b)          .to('/a/b')   }
+    it { should expand(foo: ?a, baz: ?b, bar: ?x) .to('/a/x/b') }
   end
 
   pattern '/:foo', capture: /\d+/ do
