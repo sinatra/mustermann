@@ -13,7 +13,7 @@ module Mustermann
       attr_accessor :payload
 
       # Helper for creating a new instance and calling #parse on it.
-      # @return [Node]
+      # @return [Mustermann::AST::Node]
       # @!visibility private
       def self.parse(element = new, &block)
         element.tap { |n| n.parse(&block) }
@@ -40,7 +40,7 @@ module Mustermann
         Array(payload).map { |e| e.compile(options) }.join
       end
 
-      # @return [Node] This node after tree transformation. Might be self.
+      # @return [Mustermann::AST::Node] This node after tree transformation. Might be self.
       # @!visibility private
       def transform
         self.payload = payload.transform if payload.respond_to? :transform
@@ -112,13 +112,13 @@ module Mustermann
 
     # @!visibility private
     class Char < Node
-      # @see Node#compile
+      # @see Mustermann::AST::Node#compile
       # @!visibility private
       def compile(uri_decode: true, space_matches_plus: true, **options)
         encoded(payload, uri_decode, space_matches_plus)
       end
 
-      # @see Node#lookahead?
+      # @see Mustermann::AST::Node#lookahead?
       # @!visibility private
       def lookahead?(in_lookahead = false)
         in_lookahead
@@ -133,13 +133,13 @@ module Mustermann
 
     # @!visibility private
     class Separator < Node
-      # @see Node#compile
+      # @see Mustermann::AST::Node#compile
       # @!visibility private
       def compile(options)
         Regexp.escape(payload)
       end
 
-      # @see Node#separator?
+      # @see Mustermann::AST::Node#separator?
       # @!visibility private
       def separator?
         true
@@ -154,13 +154,13 @@ module Mustermann
         payload.lookahead(ahead, options)
       end
 
-      # @see Node#compile
+      # @see Mustermann::AST::Node#compile
       # @!visibility private
       def compile(options)
         "(?:%s)?" % payload.compile(options)
       end
 
-      # @see Node#lookahead?
+      # @see Mustermann::AST::Node#lookahead?
       # @!visibility private
       def lookahead?(in_lookahead = false)
         payload.lookahead? true or payload.expect_lookahead?
@@ -174,7 +174,7 @@ module Mustermann
         super(Array(payload), **options)
       end
 
-      # @see Node#lookahead?
+      # @see Mustermann::AST::Node#lookahead?
       # @!visibility private
       def lookahead?(in_lookahead = false)
         return false unless payload[0..-2].all? { |e| e.lookahead? in_lookahead }
@@ -183,7 +183,7 @@ module Mustermann
 
       # Eliminates single element groups.
       #
-      # @see Node#transform
+      # @see Mustermann::AST::Node#transform
       # @!visibility private
       def transform
         payload.size == 1 ? payload.first.transform : super
@@ -198,20 +198,20 @@ module Mustermann
 
     # @!visibility private
     class Capture < Node
-      # @see Node#expect_lookahead?
+      # @see Mustermann::AST::Node#expect_lookahead?
       # @!visibility private
       def expect_lookahead?
         true
       end
 
-      # @see Node#parse
+      # @see Mustermann::AST::Node#parse
       # @!visibility private
       def parse
         self.payload ||= ""
         super
       end
 
-      # @see Node#capture_names
+      # @see Mustermann::AST::Node#capture_names
       # @!visibility private
       def capture_names
         [name]
@@ -245,7 +245,7 @@ module Mustermann
         ahead + pattern(lookahead: ahead, greedy: false, **options).to_s
       end
 
-      # @see Node#compile
+      # @see Mustermann::AST::Node#compile
       # @!visibility private
       def compile(options)
         return pattern(options) if options[:no_captures]
@@ -300,19 +300,19 @@ module Mustermann
 
     # @!visibility private
     class Splat < Capture
-      # @see Node#expect_lookahead?
+      # @see Mustermann::AST::Node#expect_lookahead?
       # @!visibility private
       def expect_lookahead?
         false
       end
 
-      # @see Capture#name
+      # @see Mustermann::AST::Capture#name
       # @!visibility private
       def name
         "splat"
       end
 
-      # @see Capture#pattern
+      # @see Mustermann::AST::Capture#pattern
       # @!visibility private
       def pattern(options)
         ".*?"
@@ -321,7 +321,7 @@ module Mustermann
 
     # @!visibility private
     class NamedSplat < Splat
-      # @see Capture#name
+      # @see Mustermann::AST::Capture#name
       # @!visibility private
       alias_method :name, :payload
     end
@@ -337,7 +337,7 @@ module Mustermann
         self.at_end              = at_end
       end
 
-      # @see Node#compile
+      # @see Mustermann::AST::Node#compile
       # @!visibility private
       def compile(options)
         lookahead = payload.inject('') { |l,e| e.lookahead(l, options) }
@@ -353,7 +353,7 @@ module Mustermann
 
       # Will trigger transform.
       #
-      # @see Node.parse
+      # @see Mustermann::AST::Node.parse
       # @!visibility private
       def self.parse(string, &block)
         root         = new
@@ -361,7 +361,7 @@ module Mustermann
         super(root, &block).transform
       end
 
-      # @see Node#capture_names
+      # @see Mustermann::AST::Node#capture_names
       # @!visibility private
       def capture_names
         super.flatten
@@ -376,7 +376,7 @@ module Mustermann
         raise CompileError, "can't use the same capture name twice" if names.uniq != names
       end
 
-      # @see Node#compile
+      # @see Mustermann::AST::Node#compile
       # @!visibility private
       def compile(except: nil, **options)
         check_captures
@@ -443,7 +443,7 @@ module Mustermann
     # Will read character from buffer if buffer is passed in.
     #
     # @param [String, StringScanner, nil] char the unexcpected character
-    # @raise [ParseError, Exception]
+    # @raise [Mustermann::ParseError, Exception]
     # @!visibility private
     def unexpected(char, exception: ParseError)
       char = char.getch if char.respond_to? :getch
@@ -457,7 +457,7 @@ module Mustermann
     # @param [StringScanner] buffer to parse from
     # @param [Regexp] regexp expected to match
     # @return [String, MatchData] the match
-    # @raise [ParseError] if expectation wasn't met
+    # @raise [Mustermann::ParseError] if expectation wasn't met
     # @!visibility private
     def expect(buffer, regexp, **options)
       regexp = Regexp.new Regexp.escape(regexp.to_str) unless regexp.is_a? Regexp

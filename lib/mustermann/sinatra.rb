@@ -6,7 +6,7 @@ module Mustermann
   # @example
   #   Mustermann.new('/:foo') === '/bar' # => true
   #
-  # @see Pattern
+  # @see Mustermann::Pattern
   # @see file:README.md#sinatra Syntax description in the README
   class Sinatra < AST
     def parse_element(buffer)

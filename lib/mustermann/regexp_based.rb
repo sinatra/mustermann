@@ -3,16 +3,16 @@ require 'forwardable'
 
 module Mustermann
   # Superclass for patterns that internally compile to a regular expression.
-  # @see Pattern
+  # @see Mustermann::Pattern
   # @abstract
   class RegexpBased < Pattern
     # @return [Regexp] regular expression equivalent to the pattern.
     attr_reader :regexp
     alias_method :to_regexp, :regexp
 
-    # @param (see Pattern#initialize)
-    # @return (see Pattern#initialize)
-    # @see (see Pattern#initialize)
+    # @param (see Mustermann::Pattern#initialize)
+    # @return (see Mustermann::Pattern#initialize)
+    # @see (see Mustermann::Pattern#initialize)
     def initialize(string, **options)
       @regexp = compile(string, **options)
       super

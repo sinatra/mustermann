@@ -6,7 +6,7 @@ module Mustermann
   # @example
   #   Mustermann.new('/:foo', type: :simple) === '/bar' # => true
   #
-  # @see Pattern
+  # @see Mustermann::Pattern
   # @see file:README.md#simple Syntax description in the README
   class Simple < RegexpBased
     supported_options :greedy, :space_matches_plus
