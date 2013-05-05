@@ -405,7 +405,8 @@ module Mustermann
     # @!visibility private
     def compile(string, except: nil, **options)
       options[:except] = compile(except, no_captures: true, **options) if except
-      parse(string).compile(options)
+      @ast = parse(string)
+      @ast.compile(options)
     end
 
     # Parses one element from buffer, including suffix.
