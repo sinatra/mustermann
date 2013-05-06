@@ -8,18 +8,11 @@ module Mustermann
   #
   # @see Mustermann::Pattern
   # @see file:README.md#rails Syntax description in the README
-  class Rails < AST
-    def parse_element(buffer)
-      case char = buffer.getch
-      when nil, ?) then unexpected(char)
-      when ?*      then NamedSplat.parse { buffer.scan(/\w+/) }
-      when ?/      then Separator.new(char)
-      when ?(      then Optional.new(Group.parse { parse_buffer(buffer) unless buffer.scan(/\)/) })
-      when ?:      then Capture.parse { buffer.scan(/\w+/) }
-      else Char.new(char)
-      end
-    end
-
-    private :parse_element
+  class Rails < AST::Pattern
+    on(nil, ?)) { |c| unexpected(c) }
+    on(?*)      { |c| node(:named_splat) { scan(/\w+/) } }
+    on(?/)      { |c| node(:separator, c) }
+    on(?()      { |c| node(:optional, node(:group) { read unless scan(?)) }) }
+    on(?:)      { |c| node(:capture) { scan(/\w+/) } }
   end
 end
