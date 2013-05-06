@@ -126,9 +126,9 @@ module Mustermann
     #   end
     #
     # @param [Hash{Symbol: #to_s, Array<#to_s>}] **values values to use for expansion
-    # @return []
+    # @return [String] expanded string
     # @raise [NotImplementedError] raised if expand is not supported.
-    # @raise [ArgumentError] raised if a value is missing
+    # @raise [ArgumentError] raised if a value is missing or unknown
     def expand(**values)
       raise NotImplementedError, "expanding not supported by #{self.class}"
     end

@@ -409,6 +409,17 @@ module Mustermann
       @ast.compile(options)
     end
 
+    # All AST-based pattern implementations support expanding.
+    #
+    # @example (see Mustermann::Pattern#expand)
+    # @param (see Mustermann::Pattern#expand)
+    # @return (see Mustermann::Pattern#expand)
+    # @raise (see Mustermann::Pattern#expand)
+    # @see Mustermann::Pattern#expand
+    def expand(**values)
+      @ast.expand(**values)
+    end
+
     # Parses one element from buffer, including suffix.
     #
     # @param [StringScanner] buffer to read from
