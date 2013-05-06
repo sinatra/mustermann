@@ -19,8 +19,13 @@ module Mustermann
 
         # @see Mustermann::AST::Node::Capture#pattern
         # @!visibility private
-        def pattern(options)
+        def pattern(**options)
           ".*?"
+        end
+
+        def expand(values)
+          values[name.to_sym] ||= ""
+          super
         end
       end
     end

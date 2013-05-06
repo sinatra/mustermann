@@ -59,6 +59,12 @@ module Mustermann
           "(?<#{name}>#{compile(no_captures: true, **options)})"
         end
 
+        def expand(values)
+          value = values.delete(name.to_sym)
+          raise ExpandError, "missing key :#{name}" unless value
+          escape(value, also_escape: /(?!#{pattern})./)
+        end
+
         private
 
           # adds qualifier to a regepx, ie * or *?

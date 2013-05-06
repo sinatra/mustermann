@@ -22,6 +22,14 @@ module Mustermann
         def lookahead?(in_lookahead = false)
           payload.lookahead? true or payload.expect_lookahead?
         end
+
+        def expand(values)
+          before = values.dup
+          super
+        rescue ExpandError
+          values.replace(before)
+          ""
+        end
       end
     end
   end

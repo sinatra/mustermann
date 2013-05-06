@@ -95,11 +95,17 @@ module Mustermann
       # @!visibility private
       def encoded(char, uri_decode, space_matches_plus)
         return Regexp.escape(char) unless uri_decode
-        uri_parser = URI::Parser.new
-        encoded    = uri_parser.escape(char, /./)
-        list       = [uri_parser.escape(char), encoded.downcase, encoded.upcase].uniq.map { |c| Regexp.escape(c) }
+        encoded = escape(char, escape: /./)
+        list    = [escape(char), encoded.downcase, encoded.upcase].uniq.map { |c| Regexp.escape(c) }
         list << encoded('+', uri_decode, space_matches_plus) if space_matches_plus and char == " "
         "(?:%s)" % list.join("|")
+      end
+
+      # @return [String] escaped character
+      # @!visibility private
+      def escape(char, parser: URI::Parser.new, escape: parser.regexp[:UNSAFE], also_escape: nil)
+        escape = Regexp.union(also_escape, escape) if also_escape
+        parser.escape(char, Regexp.union(*escape))
       end
 
       # @return [Array<String>] list of names for named captures
@@ -108,6 +114,11 @@ module Mustermann
         return payload.capture_names if payload.respond_to? :capture_names
         return [] unless payload.respond_to? :map
         payload.map { |e| e.capture_names if e.respond_to? :capture_names }
+      end
+
+      def expand(values)
+        expanded = Array(payload).map { |e| e.respond_to?(:expand) ? e.expand(values) : e.to_s }
+        expanded.join
       end
 
       autoload :Capture,       'mustermann/ast/node/capture'

@@ -6,7 +6,7 @@ RSpec::Matchers.define :expand do |values = {}|
     rescue Exception
       false
     else
-      @string ? @string == expandend : expandend
+      @string ? @string == expanded : !!expanded
     end
   end
 
@@ -16,12 +16,8 @@ RSpec::Matchers.define :expand do |values = {}|
 
   failure_message_for_should do |pattern|
     message = "expected %p to be expandable with %p" % [pattern, values]
-    begin
-      expanded = pattern.expand(values)
-      message << " and result in %p, but got %p" % [@string, expanded] if @string
-    rescue Exception => error
-      message << ", but raised %p" % error
-    end
+    expanded = pattern.expand(values)
+    message << " and result in %p, but got %p" % [@string, expanded] if @string
     message
   end
 

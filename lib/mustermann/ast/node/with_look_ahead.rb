@@ -21,6 +21,10 @@ module Mustermann
           lookahead << (at_end ? '$' : '/')
           head.compile(lookahead: lookahead, **options) + super
         end
+
+        def expand(values)
+          head.expand(values) + super
+        end
       end
     end
   end

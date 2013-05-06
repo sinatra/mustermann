@@ -42,7 +42,9 @@ module Mustermann
       # @raise (see Mustermann::Pattern#expand)
       # @see Mustermann::Pattern#expand
       def expand(**values)
-        @ast.expand(**values)
+        expanded = @ast.expand(values)
+        raise ExpandError, "cannot expand %p" % values.keys if values.any?
+        expanded
       end
 
       private :compile

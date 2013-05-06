@@ -96,7 +96,7 @@ describe Mustermann::Rails do
   pattern '/?:foo?/?:bar?' do
     it { should match('/?hello?/?world?').capturing foo: 'hello', bar: 'world' }
     it { should_not match('/hello/world/') }
-    it { should expand(foo: 'hello', bar: 'worlds').to('/%3Ffoo/%3Fbar%3F') }
+    it { should expand(foo: 'hello', bar: 'world').to('/%3Fhello%3F/%3Fworld%3F') }
   end
 
   pattern '/:foo_bar' do
@@ -109,11 +109,12 @@ describe Mustermann::Rails do
     it { should match('/foo')     .capturing foo: 'foo' }
     it { should match('/foo/bar') .capturing foo: 'foo/bar' }
 
-    it { should expand                  .to('/foo') }
-    it { should expand(foo:  nil)       .to('/foo') }
-    it { should expand(foo:  '')        .to('/foo') }
-    it { should expand(foo: 'foo')      .to('/foo') }
-    it { should expand(foo: 'foo/bar')  .to('/foo') }
+    it { should expand                  .to('/')        }
+    it { should expand(foo:  nil)       .to('/')        }
+    it { should expand(foo:  '')        .to('/')        }
+    it { should expand(foo: 'foo')      .to('/foo')     }
+    it { should expand(foo: 'foo/bar')  .to('/foo/bar') }
+    it { should expand(foo: 'foo.bar')  .to('/foo.bar') }
   end
 
   pattern '/:foo/*bar' do
@@ -123,7 +124,7 @@ describe Mustermann::Rails do
     it { should match('/h%20w/h%20a%20y') .capturing foo: 'h%20w',     bar: 'h%20a%20y' }
     it { should_not match('/foo') }
 
-    it { should expand(foo: 'foo')                     .to('/foo')           }
+    it { should expand(foo: 'foo')                     .to('/foo/')          }
     it { should expand(foo: 'foo',     bar: 'bar')     .to('/foo/bar')       }
     it { should expand(foo: 'foo',     bar: 'foo/bar') .to('/foo/foo/bar')   }
     it { should expand(foo: 'foo/bar', bar: 'bar')     .to('/foo%2Fbar/bar') }
@@ -131,7 +132,7 @@ describe Mustermann::Rails do
 
   pattern '/test$/' do
     it { should match('/test$/') }
-    it { should expand.to(/test$/) }
+    it { should expand.to('/test$/') }
   end
 
   pattern '/te+st/' do
@@ -142,10 +143,10 @@ describe Mustermann::Rails do
   end
 
   pattern "/path with spaces" do
-    it { should match('/path%20with%20spaces') }
-    it { should match('/path%2Bwith%2Bspaces') }
-    it { should match('/path+with+spaces')     }
-    it { should expand.to('/path+with+spaces') }
+    it { should match('/path%20with%20spaces')     }
+    it { should match('/path%2Bwith%2Bspaces')     }
+    it { should match('/path+with+spaces')         }
+    it { should expand.to('/path%20with%20spaces') }
   end
 
   pattern '/foo&bar' do
@@ -175,7 +176,7 @@ describe Mustermann::Rails do
     it { should match('/pony正..jpg')         .capturing file: 'pony正.',        ext: 'jpg' }
 
     it { should_not match('/.jpg') }
-    it { should expand(file: 'pony', ext: 'jpg').to('pony.jpg') }
+    it { should expand(file: 'pony', ext: 'jpg').to('/pony.jpg') }
   end
 
   pattern '/:a(x)' do
@@ -194,8 +195,8 @@ describe Mustermann::Rails do
     it { should match('/foo.foo@bar') .capturing user: 'foo.foo', host: 'bar'     }
     it { should match('/foo@bar.bar') .capturing user: 'foo',     host: 'bar.bar' }
 
-    it { should expand(user: 'foo')              .to('foo')     }
-    it { should expand(user: 'foo', host: 'bar') .to('foo@bar') }
+    it { should expand(user: 'foo')              .to('/foo')     }
+    it { should expand(user: 'foo', host: 'bar') .to('/foo@bar') }
   end
 
   pattern '/:file(.:ext)' do
@@ -241,7 +242,7 @@ describe Mustermann::Rails do
     it { should match('/a.b/c.d') .capturing a: 'a.b', b: 'c', c: 'd' }
     it { should_not match('/a.b/c.d/e') }
 
-    it { should expand(a: ?a, b: ?b)        .to('/a/b')   }
+    it { should expand(a: ?a, b: ?b)        .to('/a/b.')  }
     it { should expand(a: ?a, b: ?b, c: ?c) .to('/a/b.c') }
   end
 

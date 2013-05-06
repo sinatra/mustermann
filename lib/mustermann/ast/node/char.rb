@@ -22,6 +22,10 @@ module Mustermann
         def lookahead(ahead, options)
           ahead + compile(options)
         end
+
+        def expand(values)
+          escape(payload, also_escape: /[\/\?#\&\=]/)
+        end
       end
     end
   end
