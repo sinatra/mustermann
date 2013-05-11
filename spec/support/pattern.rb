@@ -4,7 +4,7 @@ module Support
       description = "pattern %p" % pattern
 
       if options
-        description << " with options %p" % options
+        description << " with options %p" % [options]
         instance = described_class.new(pattern, options)
       else
         instance = described_class.new(pattern)

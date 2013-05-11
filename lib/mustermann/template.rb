@@ -1,4 +1,4 @@
-require 'mustermann/ast'
+require 'mustermann/ast/pattern'
 
 module Mustermann
   # URI template pattern implementation.
@@ -17,12 +17,11 @@ module Mustermann
       end
 
       operator   = buffer.scan(/[\+\#\.\/;\?\&\=\,\!\@\|]/)
-      expression = node(:expression, variable[], operator: operator) { variable[] if scan(?,) }
+      expression = node(:expression, [variable[]], operator: operator) { variable[] if scan(?,) }
       expression if expect(?})
     end
 
     on(?}) { |c| unexpected(c) }
-    on(?/) { |c| node(:separator, ?/)}
 
     # @!visibility private
     def compile(*args, **options)

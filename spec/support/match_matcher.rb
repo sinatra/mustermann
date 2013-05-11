@@ -15,9 +15,17 @@ RSpec::Matchers.define :match do |expected|
     match = actual.match(expected)
     if match
       key, value = @captures.detect { |k, v| match[k] != v }
-      "expected %p to capture %p as %p when matching %p, but got %p\n\nRegular Expression:\n%p" % [
+      message = "expected %p to capture %p as %p when matching %p, but got %p\n\nRegular Expression:\n%p" % [
         actual.to_s, key, value, expected, match[key], actual.regexp
       ]
+
+      if ast = actual.instance_variable_get(:@ast)
+        require 'mustermann/ast/tree_renderer'
+        tree = Mustermann::AST::TreeRenderer.render(ast)
+        message << "\n\nAST:\n#{tree}"
+      end
+
+      message
     else
       "expected %p to match %p" % [ actual, expected ]
     end

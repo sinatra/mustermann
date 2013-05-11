@@ -1,4 +1,4 @@
-require 'mustermann/ast'
+require 'mustermann/ast/node'
 require 'forwardable'
 require 'strscan'
 
@@ -12,8 +12,8 @@ module Mustermann
       # @param [Hash] **options parse options
       # @return [Mustermann::AST::Node] parse tree for string
       # @!visibility private
-      def self.parse(string, **options)
-        new(**options).parse(string)
+      def self.parse(string)
+        new.parse(string)
       end
 
       # Defines another grammar rule for first character.
@@ -44,11 +44,6 @@ module Mustermann
       extend Forwardable
       def_delegators :buffer, :eos?, :getch
 
-      # @param [Hash] **options parse options
-      # @!visibility private
-      def initialize(**options)
-      end
-
       # @param [String] string to be parsed
       # @return [Mustermann::AST::Node] parse tree for string
       # @!visibility private
@@ -69,13 +64,17 @@ module Mustermann
         block ? type.parse(*args, &block) : type.new(*args)
       end
 
+      def default_node(char)
+        char == ?/ ? node(:separator, char) : node(:char, char)
+      end
+
       # Reads the next element from the buffer.
       # @return [Mustermann::AST::Node] next element
       # @!visibility private
       def read
         char    = getch
         method  = "read %p" % char
-        element = respond_to?(method) ? send(method, char) : node(:char, char)
+        element = respond_to?(method) ? send(method, char) : default_node(char)
         read_suffix(element)
       end
 

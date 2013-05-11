@@ -1,4 +1,8 @@
-require 'mustermann/ast'
+require 'mustermann/ast/parser'
+require 'mustermann/ast/compiler'
+require 'mustermann/ast/transformer'
+require 'mustermann/ast/validation'
+require 'mustermann/ast/expander'
 require 'mustermann/regexp_based'
 
 module Mustermann
@@ -11,7 +15,12 @@ module Mustermann
 
       extend Forwardable, SingleForwardable
       single_delegate on: :parser, suffix: :parser
-      instance_delegate parser: "self.class", compiler: "self.class", parse: :parser
+      instance_delegate %i[parser compiler transformer validation expander_class] => 'self.class'
+      instance_delegate parse: :parser, transform: :transformer, validate: :validation
+
+      # @api private
+      # @return [#expand] expander object for pattern
+      attr_accessor :expander
 
       # @api private
       # @return [#parse] parser object for pattern
@@ -27,11 +36,34 @@ module Mustermann
         Compiler
       end
 
+      # @api private
+      # @return [#transform] compiler object for pattern
+      def self.transformer
+        Transformer
+      end
+
+      # @api private
+      # @return [#validate] validation object for pattern
+      def self.validation
+        Validation
+      end
+
+      # @api private
+      # @return [#new] expander factory for pattern
+      def self.expander_class
+        Expander
+      end
+
       # @!visibility private
       def compile(string, **options)
-        options[:except] &&= parse(options[:except], **options)
-        @ast = parse(string, **options)
-        compiler.compile(@ast, **options)
+        self.expander      = expander_class.new
+        options[:except] &&= parse options[:except]
+        ast                = validate(transform(parse(string)))
+        expander.add(ast)
+        compiler.compile(ast, **options)
+      rescue CompileError => error
+        error.message << ": %p" % string
+        raise error
       end
 
       # All AST-based pattern implementations support expanding.
@@ -42,9 +74,7 @@ module Mustermann
       # @raise (see Mustermann::Pattern#expand)
       # @see Mustermann::Pattern#expand
       def expand(**values)
-        expanded = @ast.expand(values)
-        raise ExpandError, "cannot expand %p" % values.keys if values.any?
-        expanded
+        expander.expand(**values)
       end
 
       private :compile
