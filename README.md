@@ -666,10 +666,13 @@ As there has been no stable release yet, the API might still change, though I co
 ### Upcoming Releases
 
 * **Mustermann 0.1.0** (next release)
+    * Add `Pattern#expand` for generating strings from patterns.
+    * Add better internal API for working with the AST.
     * Improved documentation.
     * Avoids parsing the path twice when used as Sinatra extension.
     * Better exceptions for unknown pattern types.
     * Better handling of edge cases around extend.
     * More specs to ensure API stability.
+    * Largely rework internals of Sinatra, Rails and Template patterns.
 * **Mustermann 1.0.0** (before Sinatra 2.0)
     * First stable release.
