@@ -670,10 +670,7 @@ As there has been no stable release yet, the API might still change, though I co
       [RubyDoc.info](rubydoc.info/gems/mustermann/0.0.1/frames),
       [GitHub.com](https://github.com/rkh/mustermann/tree/v0.0.1)
     * Initial Release.
-
-### Upcoming Releases
-
-* **Mustermann 0.1.0** (next release)
+* **Mustermann 0.1.0** (2013-05-12)
     * Add `Pattern#expand` for generating strings from patterns.
     * Add better internal API for working with the AST.
     * Improved documentation.
@@ -682,5 +679,9 @@ As there has been no stable release yet, the API might still change, though I co
     * Better handling of edge cases around extend.
     * More specs to ensure API stability.
     * Largely rework internals of Sinatra, Rails and Template patterns.
+
+### Upcoming Releases
+
+* **Mustermann 0.2.0** (next release with new features)
 * **Mustermann 1.0.0** (before Sinatra 2.0)
     * First stable release.
