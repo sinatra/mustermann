@@ -74,6 +74,12 @@ describe Mustermann::Sinatra do
     it { should match('')             .capturing foo: nil,     bar: nil     }
 
     it { should_not match('/hello/world/') }
+
+    # it { should expand(foo: 'hello')               .to('/hello')       }
+    # it { should expand(foo: 'hello', bar: 'world') .to('/hello/world') }
+    # it { should expand(bar: 'world')               .to('//world')      }
+    # it { should expand                             .to('')             }
+    # it { should_not expand(baz: '') }
   end
 
   pattern '/:foo_bar' do

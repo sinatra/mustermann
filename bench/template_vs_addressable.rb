@@ -18,6 +18,9 @@ require 'addressable/template'
     explode = klass.new("{/segments*}")
     x.report("explode, match") { 1_000.times { explode.match("/a/b/c").captures } }
     x.report("explode, miss") { 1_000.times { explode.match("/a/b/c.miss") } }
+
+    expand = klass.new("/prefix/{foo}/something/{bar}")
+    x.report("expand") { 100.times { expand.expand(foo: 'foo', bar: 'bar').to_s } }
   end
   puts
 end

@@ -1,4 +1,6 @@
-# Mustermann [![Build Status](https://travis-ci.org/rkh/mustermann.png?branch=master)](https://travis-ci.org/rkh/mustermann) [![Coverage Status](https://coveralls.io/repos/rkh/mustermann/badge.png?branch=master)](https://coveralls.io/r/rkh/mustermann) [![Code Climate](https://codeclimate.com/github/rkh/mustermann.png)](https://codeclimate.com/github/rkh/mustermann) [![Dependency Status](https://gemnasium.com/rkh/mustermann.png)](https://gemnasium.com/rkh/mustermann) [![Gem Version](https://badge.fury.io/rb/mustermann.png)](http://badge.fury.io/rb/mustermann)
+# The Amazing Mustermann
+
+[![Build Status](https://travis-ci.org/rkh/mustermann.png?branch=master)](https://travis-ci.org/rkh/mustermann) [![Coverage Status](https://coveralls.io/repos/rkh/mustermann/badge.png?branch=master)](https://coveralls.io/r/rkh/mustermann) [![Code Climate](https://codeclimate.com/github/rkh/mustermann.png)](https://codeclimate.com/github/rkh/mustermann) [![Dependency Status](https://gemnasium.com/rkh/mustermann.png)](https://gemnasium.com/rkh/mustermann) [![Gem Version](https://badge.fury.io/rb/mustermann.png)](http://badge.fury.io/rb/mustermann)
 
 *Make sure you view the correct docs: [latest release](http://rubydoc.info/gems/mustermann/frames), [master](http://rubydoc.info/github/rkh/mustermann/master/frames).*
 
@@ -25,7 +27,15 @@ pattern = Mustermann.new('/:prefix/*.*')
 pattern.params('/a/b.c') # => { "prefix" => "a", splat => ["b", "c"] }
 ```
 
-It's generally a good idea to reuse pattern objects, since as much computation as possible is happening during object creation, so that the actual matching is quite fast.
+Similarly, it is also possible to generate a string from a pattern by expanding it with such a hash:
+
+``` ruby
+pattern = Mustermann.new('/:file(.:ext)?')
+pattern.expand(file: 'pony')             # => "/pony"
+pattern.expand(file: 'pony', ext: 'jpg') # => "/pony.jpg"
+```
+
+It's generally a good idea to reuse pattern objects, since as much computation as possible is happening during object creation, so that the actual matching or expanding is quite fast.
 
 ## Types and Options
 
@@ -664,10 +674,13 @@ As there has been no stable release yet, the API might still change, though I co
 ### Upcoming Releases
 
 * **Mustermann 0.1.0** (next release)
+    * Add `Pattern#expand` for generating strings from patterns.
+    * Add better internal API for working with the AST.
     * Improved documentation.
     * Avoids parsing the path twice when used as Sinatra extension.
     * Better exceptions for unknown pattern types.
     * Better handling of edge cases around extend.
     * More specs to ensure API stability.
+    * Largely rework internals of Sinatra, Rails and Template patterns.
 * **Mustermann 1.0.0** (before Sinatra 2.0)
     * First stable release.

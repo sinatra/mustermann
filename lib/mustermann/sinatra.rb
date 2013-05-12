@@ -1,4 +1,4 @@
-require 'mustermann/ast'
+require 'mustermann/ast/pattern'
 
 module Mustermann
   # Sinatra 2.0 style pattern implementation.
@@ -11,7 +11,6 @@ module Mustermann
   class Sinatra < AST::Pattern
     on(nil, ??, ?)) { |c| unexpected(c) }
     on(?*)          { |c| node(:splat) }
-    on(?/)          { |c| node(:separator, c) }
     on(?()          { |c| node(:group) { read unless scan(?)) } }
     on(?:)          { |c| node(:capture) { scan(/\w+/) } }
     on(?\\)         { |c| node(:char, expect(/./)) }
