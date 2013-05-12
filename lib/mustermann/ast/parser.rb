@@ -64,7 +64,7 @@ module Mustermann
         block ? type.parse(*args, &block) : type.new(*args)
       end
 
-      # Create a node for a character we don't have an explicite rule for.
+      # Create a node for a character we don't have an explicit rule for.
       #
       # @param [String] char the character
       # @return [Mustermann::AST::Node] the node
@@ -122,7 +122,7 @@ module Mustermann
       # Helper for raising an exception for an unexpected character.
       # Will read character from buffer if buffer is passed in.
       #
-      # @param [String, nil] char the unexcpected character
+      # @param [String, nil] char the unexpected character
       # @raise [Mustermann::ParseError, Exception]
       # @!visibility private
       def unexpected(char = getch, exception: ParseError)

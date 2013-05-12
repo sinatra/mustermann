@@ -4,7 +4,7 @@ module Mustermann
   module AST
     # Checks the AST for certain validations, like correct capture names.
     #
-    # Internally a poor man's visitor (abusing translator to not have to impelment a visitor).
+    # Internally a poor man's visitor (abusing translator to not have to implement a visitor).
     # @!visibility private
     class Validation < Translator
       # Runs validations.
