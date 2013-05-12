@@ -22,8 +22,8 @@ module Mustermann
       # @param [Mustermann::AST::Node] tree to be transformed
       # @return [Mustermann::AST::Node] transformed tree
       # @!visibility private
-      def self.transform(ast)
-        new.translate(ast)
+      def self.transform(tree)
+        new.translate(tree)
       end
 
       translate(:node) { self }
