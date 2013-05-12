@@ -21,13 +21,16 @@ module Mustermann
       translate(Object, :splat) {}
       translate(:node) { t(payload) }
       translate(Array) { each { |p| t(p)} }
+      translate(:capture, :variable, :named_splat) { t.check_name(name) }
 
-      translate(:capture, :variable, :named_splat) do
+      # @raises [Mustermann::CompileError] if name is not acceptable
+      # @!visibility private
+      def check_name(name)
         raise CompileError, "capture name can't be empty" if name.nil? or name.empty?
         raise CompileError, "capture name must start with underscore or lower case letter" unless name =~ /^[a-z_]/
         raise CompileError, "capture name can't be #{name}" if name == "splat" or name == "captures"
-        raise CompileError, "can't use the same capture name twice" if t.names.include? name
-        t.names << name
+        raise CompileError, "can't use the same capture name twice" if names.include? name
+        names << name
       end
 
       # @return [Array<String>] list of capture names in tree
