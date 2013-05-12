@@ -22,6 +22,7 @@ module Mustermann
       end
 
       # URI expression transformations depending on operator
+      # @!visibility private
       class ExpressionTransform < NodeTranslator
         register :expression
 
