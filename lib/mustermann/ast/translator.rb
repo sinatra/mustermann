@@ -12,7 +12,7 @@ module Mustermann
       # Encapsulates a single node translation
       # @!visibility private
       class NodeTranslator < DelegateClass(Node)
-        # @param [Array<Symbol, Class>] list of types to register for.
+        # @param [Array<Symbol, Class>] types list of types to register for.
         # @!visibility private
         def self.register(*types)
           types.each do |type|

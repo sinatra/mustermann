@@ -11,7 +11,7 @@ module Mustermann
       #
       # @param [Mustermann::AST::Node] ast to be validated
       # @return [Mustermann::AST::Node] the validated ast
-      # @raises [Mustermann::AST::CompileError] if validation fails
+      # @raise [Mustermann::AST::CompileError] if validation fails
       # @!visibility private
       def self.validate(ast)
         new.translate(ast)
