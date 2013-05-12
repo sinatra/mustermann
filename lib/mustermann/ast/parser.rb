@@ -9,7 +9,6 @@ module Mustermann
     # @!visibility private
     class Parser
       # @param [String] string to be parsed
-      # @param [Hash] **options parse options
       # @return [Mustermann::AST::Node] parse tree for string
       # @!visibility private
       def self.parse(string)
