@@ -5,17 +5,6 @@ module Mustermann
     # Takes a tree, turns it into an even better tree.
     # @!visibility private
     class Transformer < Translator
-      # @!visibility private
-      Operator  ||= Struct.new(:separator, :allow_reserved, :prefix, :parametric)
-
-      # Operators available for expressions.
-      # @!visibility private
-      OPERATORS ||= {
-        nil => Operator.new(?,, false, false, false), ?+  => Operator.new(?,, true,  false, false),
-        ?#  => Operator.new(?,, true,  ?#,    false), ?.  => Operator.new(?., false, ?.,    false),
-        ?/  => Operator.new(?/, false, ?/,    false), ?;  => Operator.new(?;, false, ?;,    true),
-        ??  => Operator.new(?&, false, ??,    true),  ?&  => Operator.new(?&, false, ?&,    true)
-      }
 
       # Transforms a tree.
       # @note might mutate handed in tree instead of creating a new one
@@ -27,19 +16,37 @@ module Mustermann
       end
 
       translate(:node) { self }
-
-      translate(:expression) do
-        self.operator = OPERATORS.fetch(operator) { raise CompileError, "#{operator} operator not supported" }
-        separator     = Node[:separator].new(operator.separator)
-        prefix        = Node[:separator].new(operator.prefix)
-        self.payload  = Array(payload.inject { |list, element| Array(list) << t(separator) << t(element) })
-        payload.unshift(prefix) if operator.prefix
-        self
-      end
-
       translate(:group, :root) do
         self.payload = t(payload)
         self
+      end
+
+      # URI expression transformations depending on operator
+      class ExpressionTransform < NodeTranslator
+        register :expression
+
+        # @!visibility private
+        Operator  ||= Struct.new(:separator, :allow_reserved, :prefix, :parametric)
+
+        # Operators available for expressions.
+        # @!visibility private
+        OPERATORS ||= {
+          nil => Operator.new(?,, false, false, false), ?+  => Operator.new(?,, true,  false, false),
+          ?#  => Operator.new(?,, true,  ?#,    false), ?.  => Operator.new(?., false, ?.,    false),
+          ?/  => Operator.new(?/, false, ?/,    false), ?;  => Operator.new(?;, false, ?;,    true),
+          ??  => Operator.new(?&, false, ??,    true),  ?&  => Operator.new(?&, false, ?&,    true)
+        }
+
+        # Sets operator and inserts separators in between variables.
+        # @!visibility private
+        def translate
+          self.operator = OPERATORS.fetch(operator) { raise CompileError, "#{operator} operator not supported" }
+          separator     = Node[:separator].new(operator.separator)
+          prefix        = Node[:separator].new(operator.prefix)
+          self.payload  = Array(payload.inject { |list, element| Array(list) << t(separator) << t(element) })
+          payload.unshift(prefix) if operator.prefix
+          self
+        end
       end
 
       # Inserts with_look_ahead nodes wherever appropriate
