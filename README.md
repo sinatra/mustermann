@@ -671,6 +671,10 @@ As there has been no stable release yet, the API might still change, though I co
       [GitHub.com](https://github.com/rkh/mustermann/tree/v0.0.1)
     * Initial Release.
 * **Mustermann 0.1.0** (2013-05-12)
+    * More Infos:
+      [RubyGems.org](http://rubygems.org/gems/mustermann/versions/0.1.0),
+      [RubyDoc.info](rubydoc.info/gems/mustermann/0.1.0/frames),
+      [GitHub.com](https://github.com/rkh/mustermann/tree/v0.1.0)
     * Add `Pattern#expand` for generating strings from patterns.
     * Add better internal API for working with the AST.
     * Improved documentation.
