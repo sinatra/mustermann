@@ -88,9 +88,9 @@ module Mustermann
       # @return [Mustermann::AST::Node] node with suffix
       # @!visibility private
       def read_suffix(element)
-        self.class.suffix.inject(element) do |element, (regexp, callback)|
-          next element unless payload = scan(regexp)
-          instance_exec(payload, element, &callback)
+        self.class.suffix.inject(element) do |ele, (regexp, callback)|
+          next ele unless payload = scan(regexp)
+          instance_exec(payload, ele, &callback)
         end
       end
 
