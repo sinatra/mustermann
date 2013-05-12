@@ -45,6 +45,8 @@ module Mustermann
         end
       end
 
+      # Loop through all nodes that don't have child nodes.
+      # @!visibility private
       def each_leaf(&block)
         return enum_for(__method__) unless block_given?
         called = false

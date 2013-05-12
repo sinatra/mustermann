@@ -20,10 +20,12 @@ module Mustermann
 
       # @api private
       # @return [#expand] expander object for pattern
+      # @!visibility private
       attr_accessor :expander
 
       # @api private
       # @return [#parse] parser object for pattern
+      # @!visibility private
       def self.parser
         return Parser if self == AST::Pattern
         const_set :Parser, Class.new(superclass.parser) unless const_defined? :Parser, false
@@ -32,24 +34,28 @@ module Mustermann
 
       # @api private
       # @return [#compile] compiler object for pattern
+      # @!visibility private
       def self.compiler
         Compiler
       end
 
       # @api private
       # @return [#transform] compiler object for pattern
+      # @!visibility private
       def self.transformer
         Transformer
       end
 
       # @api private
       # @return [#validate] validation object for pattern
+      # @!visibility private
       def self.validation
         Validation
       end
 
       # @api private
       # @return [#new] expander factory for pattern
+      # @!visibility private
       def self.expander_class
         Expander
       end

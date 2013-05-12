@@ -27,7 +27,15 @@ pattern = Mustermann.new('/:prefix/*.*')
 pattern.params('/a/b.c') # => { "prefix" => "a", splat => ["b", "c"] }
 ```
 
-It's generally a good idea to reuse pattern objects, since as much computation as possible is happening during object creation, so that the actual matching is quite fast.
+Similarly, it is also possible to generate a string from a pattern by expanding it with such a hash:
+
+``` ruby
+pattern = Mustermann.new('/:file(.:ext)?')
+pattern.expand(file: 'pony')             # => "/pony"
+pattern.expand(file: 'pony', ext: 'jpg') # => "/pony.jpg"
+```
+
+It's generally a good idea to reuse pattern objects, since as much computation as possible is happening during object creation, so that the actual matching or expanding is quite fast.
 
 ## Types and Options
 

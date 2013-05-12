@@ -3,6 +3,8 @@ require 'mustermann/ast/translator'
 module Mustermann
   # @see Mustermann::AST::Pattern
   module AST
+    # Regexp compilation logic.
+    # @!visibility private
     class Compiler < Translator
       raises CompileError
 
@@ -26,9 +28,12 @@ module Mustermann
         t(head, lookahead: lookahead, **options) + t(payload, **options)
       end
 
+      # Capture compilation is complex. :(
+      # @!visibility private
       class Capture < NodeTranslator
         register :capture
 
+        # @!visibility private
         def translate(**options)
           return pattern(options) if options[:no_captures]
           "(?<#{name}>#{translate(no_captures: true, **options)})"
@@ -58,16 +63,21 @@ module Mustermann
           def default(**options) "[^/\\?#]" end
       end
 
+      # @!visibility private
       class Splat < Capture
         register :splat, :named_splat
+        # splats are always non-greedy
+        # @!visibility private
         def pattern(**options)
           ".*?"
         end
       end
 
+      # @!visibility private
       class Variable < Capture
         register :variable
 
+        # @!visibility private
         def translate(**options)
           return super(**options) if explode or not options[:parametric]
           parametric super(parametric: false, **options)
@@ -114,10 +124,20 @@ module Mustermann
         "(?:%s)" % list.join("|")
       end
 
+      # Compiles an AST to a regular expression.
+      # @param [Mustermann::AST::Node] ast the tree
+      # @return [Regexp] corresponding regular expression.
+      #
+      # @!visibility private
       def self.compile(ast, **options)
         new.compile(ast, **options)
       end
 
+      # Compiles an AST to a regular expression.
+      # @param [Mustermann::AST::Node] ast the tree
+      # @return [Regexp] corresponding regular expression.
+      #
+      # @!visibility private
       def compile(ast, except: nil, **options)
         except   &&= "(?!#{translate(except, no_captures: true, **options)}\\Z)"
         expression = "\\A#{except}#{translate(ast, **options)}\\Z"

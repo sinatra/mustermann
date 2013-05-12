@@ -64,6 +64,11 @@ module Mustermann
         block ? type.parse(*args, &block) : type.new(*args)
       end
 
+      # Create a node for a character we don't have an explicite rule for.
+      #
+      # @param [String] char the character
+      # @return [Mustermann::AST::Node] the node
+      # @!visibility private
       def default_node(char)
         char == ?/ ? node(:separator, char) : node(:char, char)
       end

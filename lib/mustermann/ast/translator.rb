@@ -4,8 +4,16 @@ require 'delegate'
 
 module Mustermann
   module AST
+    # Implements translator pattern
+    #
+    # @abstract
+    # @!visibility private
     class Translator
+      # Encapsulates a single node translation
+      # @!visibility private
       class NodeTranslator < DelegateClass(Node)
+        # @param [Array<Symbol, Class>] list of types to register for.
+        # @!visibility private
         def self.register(*types)
           types.each do |type|
             type = Node.constant_name(type) if type.is_a? Symbol
@@ -13,25 +21,37 @@ module Mustermann
           end
         end
 
+        # @param node [Mustermann::AST::Node, Object]
+        # @param translator [Mustermann::AST::Translator]
+        #
+        # @!visibility private
         def initialize(node, translator)
           @translator = translator
           super(node)
         end
 
+        # @!visibility private
         attr_reader :translator
 
+        # shorthand for translating a nested object
+        # @!visibility private
         def t(*args, &block)
           return translator unless args.any?
           translator.translate(*args, &block)
         end
 
+        # @!visibility private
         alias_method :node, :__getobj__
       end
 
+      # maps types to translations
+      # @!visibility private
       def self.dispatch_table
         @dispatch_table ||= {}
       end
 
+      # some magic sauce so {NodeTranslator}s know whom to talk to for {#register}
+      # @!visibility private
       def self.inherited(subclass)
         node_translator = Class.new(NodeTranslator)
         node_translator.define_singleton_method(:translator) { subclass }
@@ -39,10 +59,14 @@ module Mustermann
         super
       end
 
+      # DSL-ish method for specifying the exception class to use.
+      # @!visibility private
       def self.raises(error)
         define_method(:error_class) { error }
       end
 
+      # DSL method for defining single method translations.
+      # @!visibility private
       def self.translate(*types, &block)
         Class.new(const_get(:NodeTranslator)) do
           register(*types)
@@ -52,18 +76,26 @@ module Mustermann
 
       raises Mustermann::Error
 
+      # @param [Mustermann::AST::Node, Object] object to translate
+      # @return decorator encapsulating translation
+      #
+      # @!visibility private
       def decorator_for(node)
         factory = node.class.ancestors.inject(nil) { |d,a| d || self.class.dispatch_table[a.name] }
         raise error_class, "#{self.class}: Cannot translate #{node.class}" unless factory
         factory.new(node, self)
       end
 
+      # Start the translation dance for a (sub)tree.
+      # @!visibility private
       def translate(node, *args, &block)
         result = decorator_for(node).translate(*args, &block)
         result = result.node while result.is_a? NodeTranslator
         result
       end
 
+      # Reusing URI::Parser instance gives > 50% performance boost for some operations, like expanding.
+      # @!visibility private
       def uri_parser
         @uri_parser ||= URI::Parser.new
       end
