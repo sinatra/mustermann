@@ -91,17 +91,17 @@ module Mustermann
       # @see Mustermann::AST::Translator#expand
       # @!visibility private
       def escape(string, *args)
-        # URI::Parser is pretty slow, let's not had every string to it, even if it's uneccessary
+        # URI::Parser is pretty slow, let's not had every string to it, even if it's unnecessary
         string =~ /\A\w*\Z/ ? string : super
       end
 
-      # Turns a sprintf pattern into our secret internal data strucutre.
+      # Turns a sprintf pattern into our secret internal data structure.
       # @!visibility private
       def pattern(string = "", *keys, **filters)
         [[keys, string, filters]]
       end
 
-      # Creates the product of two of our secret internal data strucutres.
+      # Creates the product of two of our secret internal data structures.
       # @!visibility private
       def add_to(list, result)
         list << [[], ""] if list.empty?

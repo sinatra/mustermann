@@ -76,7 +76,7 @@ module Mustermann
 
       raises Mustermann::Error
 
-      # @param [Mustermann::AST::Node, Object] object to translate
+      # @param [Mustermann::AST::Node, Object] node to translate
       # @return decorator encapsulating translation
       #
       # @!visibility private
