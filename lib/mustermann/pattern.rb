@@ -111,6 +111,35 @@ module Mustermann
       Hash[params]
     end
 
+    # @note This method is only implemented by certain subclasses.
+    #
+    # @example Expanding a pattern
+    #   pattern = Mustermann.new('/:name(.:ext)?')
+    #   pattern.expand(name: 'hello')             # => "/hello"
+    #   pattern.expand(name: 'hello', ext: 'png') # => "/hello.png"
+    #
+    # @example Checking if a pattern supports expanding
+    #   if pattern.respond_to? :expand
+    #     pattern.expand(name: "foo")
+    #   else
+    #     warn "does not support expanding"
+    #   end
+    #
+    # @param [Hash{Symbol: #to_s, Array<#to_s>}] **values values to use for expansion
+    # @return [String] expanded string
+    # @raise [NotImplementedError] raised if expand is not supported.
+    # @raise [ArgumentError] raised if a value is missing or unknown
+    def expand(**values)
+      raise NotImplementedError, "expanding not supported by #{self.class}"
+    end
+
+    # @!visibility private
+    # @return [Boolean]
+    # @see Object#respond_to?
+    def respond_to?(method, *args)
+      method.to_s == 'expand' ? false : super
+    end
+
     # @!visibility private
     def inspect
       "#<%p:%p>" % [self.class, @string]

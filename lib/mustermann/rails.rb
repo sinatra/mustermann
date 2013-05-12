@@ -1,4 +1,4 @@
-require 'mustermann/ast'
+require 'mustermann/ast/pattern'
 
 module Mustermann
   # Rails style pattern implementation.
@@ -11,7 +11,6 @@ module Mustermann
   class Rails < AST::Pattern
     on(nil, ?)) { |c| unexpected(c) }
     on(?*)      { |c| node(:named_splat) { scan(/\w+/) } }
-    on(?/)      { |c| node(:separator, c) }
     on(?()      { |c| node(:optional, node(:group) { read unless scan(?)) }) }
     on(?:)      { |c| node(:capture) { scan(/\w+/) } }
   end
