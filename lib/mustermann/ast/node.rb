@@ -107,7 +107,6 @@ module Mustermann
           root         = new
           root.pattern = string
           root.parse(&block)
-          #root.transform
           root
         end
       end
