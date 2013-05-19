@@ -10,13 +10,20 @@ module Mustermann
   # @see Mustermann::Pattern
   # @see file:README.md#shell Syntax description in the README
   class Shell < Pattern
-    FLAGS ||= File::FNM_PATHNAME | File::FNM_DOTMATCH | File::FNM_EXTGLOB
+    # @param (see Mustermann::Pattern#initialize)
+    # @return (see Mustermann::Pattern#initialize)
+    # @see (see Mustermann::Pattern#initialize)
+    def initialize(string, **options)
+      @flags = File::FNM_PATHNAME | File::FNM_DOTMATCH
+      @flags |= File::FNM_EXTGLOB if string.include? '{'
+      super
+    end
 
     # @param (see Mustermann::Pattern#===)
     # @return (see Mustermann::Pattern#===)
     # @see (see Mustermann::Pattern#===)
     def ===(string)
-      File.fnmatch? @string, unescape(string), FLAGS
+      File.fnmatch? @string, unescape(string), @flags
     end
   end
 end
