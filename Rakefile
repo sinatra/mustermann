@@ -1,4 +1,4 @@
-ENV['JRUBY_OPTS'] = '--2.0'
+ENV['JRUBY_OPTS'] = '--2.0 -X-C'
 ENV['RBXOPT'] = '-X20'
 
 task(:spec) { ruby '-w -S rspec' }
