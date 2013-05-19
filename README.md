@@ -666,12 +666,6 @@ As there has been no stable release yet, the API might still change, though I co
 
 ### Development Releases
 
-* **Mustermann 0.0.1** (2013-04-27)
-    * More Infos:
-      [RubyGems.org](http://rubygems.org/gems/mustermann/versions/0.0.1),
-      [RubyDoc.info](rubydoc.info/gems/mustermann/0.0.1/frames),
-      [GitHub.com](https://github.com/rkh/mustermann/tree/v0.0.1)
-    * Initial Release.
 * **Mustermann 0.1.0** (2013-05-12)
     * More Infos:
       [RubyGems.org](http://rubygems.org/gems/mustermann/versions/0.1.0),
@@ -685,6 +679,12 @@ As there has been no stable release yet, the API might still change, though I co
     * Better handling of edge cases around extend.
     * More specs to ensure API stability.
     * Largely rework internals of Sinatra, Rails and Template patterns.
+* **Mustermann 0.0.1** (2013-04-27)
+    * More Infos:
+      [RubyGems.org](http://rubygems.org/gems/mustermann/versions/0.0.1),
+      [RubyDoc.info](rubydoc.info/gems/mustermann/0.0.1/frames),
+      [GitHub.com](https://github.com/rkh/mustermann/tree/v0.0.1)
+    * Initial Release.
 
 ### Upcoming Releases
 
