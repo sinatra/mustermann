@@ -650,8 +650,10 @@ If you are looking for an alternative implementation that also supports expandin
 Mustermann has no dependencies besides a Ruby 2.0 compatible Ruby implementation.
 
 It is known to work on **MRI 2.0** and **MRI trunk**.
-**JRuby** is not yet supported, but is likely to follow soon (see [issue #2](https://github.com/rkh/mustermann/issues/2) for up to date information on JRuby).
-**Rubinius** is not yet able to parse the Mustermann source code.
+
+**JRuby is not yet fully supported. It is possible to run large parts of Mustermann by passing in `--2.0 -X-C` starting from JRuby 1.7.4. See [issue #2](https://github.com/rkh/mustermann/issues/2) for up to date information.
+
+**Rubinius** is not yet able to parse the Mustermann source code. See [issue #14](https://github.com/rkh/mustermann/issues/14) for up to date information.
 
 ## Release History
 
