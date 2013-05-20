@@ -81,6 +81,12 @@ module Mustermann
         pattern % values.values_at(*keys)
       end
 
+      # @see Mustermann::Expander#with_rest
+      # @!visibility private
+      def expandable_keys(keys)
+        mappings.keys.select { |k| (k - keys).empty? }.max_by(&:size) || keys
+      end
+
       # helper method for raising an error for unexpandable values
       # @!visibility private
       def error_for(values)

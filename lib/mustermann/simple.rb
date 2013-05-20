@@ -11,8 +11,8 @@ module Mustermann
   class Simple < RegexpBased
     supported_options :greedy, :space_matches_plus
 
-    def compile(string, greedy: true, uri_decode: true, space_matches_plus: true, **options)
-      pattern = string.gsub(/[^\?\%\\\/\:\*\w]/) { |c| encoded(c, uri_decode, space_matches_plus) }
+    def compile(greedy: true, uri_decode: true, space_matches_plus: true, **options)
+      pattern = @string.gsub(/[^\?\%\\\/\:\*\w]/) { |c| encoded(c, uri_decode, space_matches_plus) }
       pattern.gsub!(/((:\w+)|\*)/) do |match|
         match == "*" ? "(?<splat>.*?)" : "(?<#{$2[1..-1]}>[^/?#]+#{?? unless greedy})"
       end

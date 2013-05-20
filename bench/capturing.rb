@@ -7,14 +7,14 @@ require 'addressable/template'
 
 
 Mustermann.register(:regexp, Class.new(Mustermann::RegexpBased) {
-  def compile(string, **options)
-    Regexp.new(string)
+  def compile(**options)
+    Regexp.new(@string)
   end
 }, load: false)
 
 Mustermann.register(:addressable, Class.new(Mustermann::RegexpBased) {
-  def compile(string, **options)
-    Addressable::Template.new(string)
+  def compile(**options)
+    Addressable::Template.new(@string)
   end
 }, load: false)
 

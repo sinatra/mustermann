@@ -2,8 +2,10 @@ require 'mustermann/ast/parser'
 require 'mustermann/ast/compiler'
 require 'mustermann/ast/transformer'
 require 'mustermann/ast/validation'
-require 'mustermann/ast/expander'
+
 require 'mustermann/regexp_based'
+require 'mustermann/equality_map'
+require 'mustermann/expander'
 
 module Mustermann
   # @see Mustermann::AST::Pattern
@@ -15,13 +17,8 @@ module Mustermann
 
       extend Forwardable, SingleForwardable
       single_delegate on: :parser, suffix: :parser
-      instance_delegate %i[parser compiler transformer validation expander_class] => 'self.class'
+      instance_delegate %i[parser compiler transformer validation] => 'self.class'
       instance_delegate parse: :parser, transform: :transformer, validate: :validation
-
-      # @api private
-      # @return [#expand] expander object for pattern
-      # @!visibility private
-      attr_accessor :expander
 
       # @api private
       # @return [#parse] parser object for pattern
@@ -53,23 +50,20 @@ module Mustermann
         Validation
       end
 
-      # @api private
-      # @return [#new] expander factory for pattern
       # @!visibility private
-      def self.expander_class
-        Expander
+      def compile(**options)
+        options[:except] &&= parse options[:except]
+        compiler.compile(to_ast, **options)
+      rescue CompileError => error
+        error.message << ": %p" % @string
+        raise error
       end
 
+      # Internal AST representation of pattern.
       # @!visibility private
-      def compile(string, **options)
-        self.expander      = expander_class.new
-        options[:except] &&= parse options[:except]
-        ast                = validate(transform(parse(string)))
-        expander.add(ast)
-        compiler.compile(ast, **options)
-      rescue CompileError => error
-        error.message << ": %p" % string
-        raise error
+      def to_ast
+        @ast_cache ||= EqualityMap.new
+        @ast_cache.fetch(@string) { validate(transform(parse(@string))) }
       end
 
       # All AST-based pattern implementations support expanding.
@@ -79,8 +73,10 @@ module Mustermann
       # @return (see Mustermann::Pattern#expand)
       # @raise (see Mustermann::Pattern#expand)
       # @see Mustermann::Pattern#expand
+      # @see Mustermann::Expander
       def expand(**values)
-        expander.expand(**values)
+        @expander ||= Mustermann::Expander.new(self)
+        @expander.expand(**values)
       end
 
       private :compile

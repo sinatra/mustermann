@@ -27,14 +27,6 @@ pattern = Mustermann.new('/:prefix/*.*')
 pattern.params('/a/b.c') # => { "prefix" => "a", splat => ["b", "c"] }
 ```
 
-Similarly, it is also possible to generate a string from a pattern by expanding it with such a hash:
-
-``` ruby
-pattern = Mustermann.new('/:file(.:ext)?')
-pattern.expand(file: 'pony')             # => "/pony"
-pattern.expand(file: 'pony', ext: 'jpg') # => "/pony.jpg"
-```
-
 It's generally a good idea to reuse pattern objects, since as much computation as possible is happening during object creation, so that the actual matching or expanding is quite fast.
 
 ## Types and Options
@@ -60,6 +52,7 @@ The available types are:
       <th>Description</th>
       <th>Example</th>
       <th>Available Options</th>
+      <th>Additional Features</th>
     </tr>
   </thead>
   <tbody>
@@ -71,6 +64,7 @@ The available types are:
         <a href="#ignore_unknown_options"><tt>ignore_unknown_options</tt></a>,
         <a href="#uri_decode"><tt>uri_decode</tt></a>
       </td>
+      <td></td>
     </tr>
     <tr>
       <th><a href="#rails"><tt>rails</tt></a></th>
@@ -84,6 +78,9 @@ The available types are:
         <a href="#space_matches_plus"><tt>space_matches_plus</tt></a>,
         <a href="#uri_decode"><tt>uri_decode</tt></a>
       </td>
+      <td>
+        <a href="#pattern_expanding">Expanding</a>
+      </td>
     </tr>
     <tr>
       <th><a href="#shell"><tt>shell</tt></th>
@@ -93,6 +90,7 @@ The available types are:
         <a href="#ignore_unknown_options"><tt>ignore_unknown_options</tt></a>,
         <a href="#uri_decode"><tt>uri_decode</tt></a>
       </td>
+      <td></td>
     </tr>
     <tr>
       <th><a href="#simple"><tt>simple</tt></a></th>
@@ -104,6 +102,7 @@ The available types are:
         <a href="#space_matches_plus"><tt>space_matches_plus</tt></a>,
         <a href="#uri_decode"><tt>uri_decode</tt></a>
       </td>
+      <td></td>
     </tr>
     <tr>
       <th><a href="#sinatra"><tt>sinatra</tt></a></th>
@@ -117,6 +116,9 @@ The available types are:
         <a href="#space_matches_plus"><tt>space_matches_plus</tt></a>,
         <a href="#uri_decode"><tt>uri_decode</tt></a>
       </td>
+      <td>
+        <a href="#pattern_expanding">Expanding</a>
+      </td>
     </tr>
     <tr>
       <th><a href="#template"><tt>template</tt></a></th>
@@ -129,6 +131,9 @@ The available types are:
         <a href="#ignore_unknown_options"><tt>ignore_unknown_options</tt></a>,
         <a href="#space_matches_plus"><tt>space_matches_plus</tt></a>,
         <a href="#uri_decode"><tt>uri_decode</tt></a>
+      </td>
+      <td>
+        <a href="#pattern_expanding">Expanding</a>
       </td>
     </tr>
   </tbody>
@@ -257,6 +262,89 @@ end
 * It would introduce breaking changes, even though these would be minor
 * Like Sinatra 2.0, Mustermann requires Ruby 2.0 or newer
 
+<a name="pattern_expanding"></a>
+## Expanding
+
+Similarly to parsing, it is also possible to generate a string from a pattern by expanding it with a hash.
+For simple expansions, you can use `Pattern#expand`.
+
+``` ruby
+pattern = Mustermann.new('/:file(.:ext)?')
+pattern.expand(file: 'pony')             # => "/pony"
+pattern.expand(file: 'pony', ext: 'jpg') # => "/pony.jpg"
+pattern.expand(ext: 'jpg')               # raises Mustermann::ExpandError
+```
+
+Expanding can be useful for instance when implementing link helpers.
+
+### Expander Objects
+
+To get fine-grained control over expansion, you can use `Mustermann::Expander` directly.
+
+You can create an expander object directly from a string:
+
+``` ruby
+require 'mustermann/expander'
+expander = Mustermann::Expander("/:file.jpg")
+expander.expand(file: 'pony') # => "/pony.jpg"
+
+expander = Mustermann::Expander(":file(.:ext)", type: :rails)
+expander.expand(file: 'pony', ext: 'jpg) # => "/pony.jpg"
+```
+
+Or you can pass it a pattern instance:
+
+``` ruby
+require 'mustermann'
+pattern = Mustermann.new("/:file")
+
+require 'mustermann/expander'
+expander = Mustermann::Expander.new(pattern)
+```
+
+### Expanding Multiple Patterns
+
+You can add patterns to an expander object via `<<`:
+
+``` ruby
+expander = Mustermann::Expander.new
+expander << "/users/:user_id"
+expander << "/pages/:page_id"
+
+expander.expand(user_id: 15) # => "/users/15"
+expander.expand(page_id: 58) # => "/pages/58"
+```
+
+You can set pattern options when creating the expander:
+
+``` ruby
+expander = Mustermann::Expander.new(type: :template)
+expander << "/users/{user_id}"
+expander << "/pages/{page_id}"
+```
+
+Additionally, it is possible to combine patterns of different types:
+
+``` ruby
+expander = Mustermann::Expander.new
+expander << Mustermann.new("/users/{user_id}", type: :template)
+expander << Mustermann.new("/pages/:page_id",  type: :rails)
+```
+
+### Handling Additional Values
+
+The handling of additional values passed in to `expand` can be changed by setting the `additional_values` option:
+
+``` ruby
+expander = Mustermann::Expander.new("/:slug", additional_values: :raise)
+expander.expand(slug: "foo", value: "bar") # raises Mustermann::ExpandError
+
+expander = Mustermann::Expander.new("/:slug", additional_values: :ignore)
+expander.expand(slug: "foo", value: "bar") # => "/foo"
+
+expander = Mustermann::Expander.new("/:slug", additional_values: :append)
+expander.expand(slug: "foo", value: "bar") # => "/foo?value=bar"
+```
 
 ## Partial Loading and Thread Safety
 
