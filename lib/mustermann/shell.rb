@@ -16,7 +16,7 @@ module Mustermann
     def initialize(string, **options)
       @flags = File::FNM_PATHNAME | File::FNM_DOTMATCH
       @flags |= File::FNM_EXTGLOB if defined? File::FNM_EXTGLOB
-      super
+      super(string, **options)
     end
 
     # @param (see Mustermann::Pattern#===)
