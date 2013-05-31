@@ -23,7 +23,7 @@ module Mustermann
       translate(Array) { each { |p| t(p)} }
       translate(:capture, :variable, :named_splat) { t.check_name(name) }
 
-      # @raises [Mustermann::CompileError] if name is not acceptable
+      # @raise [Mustermann::CompileError] if name is not acceptable
       # @!visibility private
       def check_name(name)
         raise CompileError, "capture name can't be empty" if name.nil? or name.empty?
