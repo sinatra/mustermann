@@ -52,4 +52,21 @@ describe Mustermann::Expander do
       example { expect { expander.expand(b: ?b) }.to raise_error(Mustermann::ExpandError) }
     end
   end
+
+  describe :cast do
+    subject(:expander) { Mustermann::Expander.new('/:a(/:b)?') }
+
+    example { expander.cast          { "FOOBAR"          }.expand(a: "foo")           .should be == "/FOOBAR"   }
+    example { expander.cast          { |v| v.upcase      }.expand(a: "foo")           .should be == "/FOO"      }
+    example { expander.cast          { |v| v.upcase      }.expand(a: "foo", b: "bar") .should be == "/FOO/BAR"  }
+    example { expander.cast(:a)      { |v| v.upcase      }.expand(a: "foo", b: "bar") .should be == "/FOO/bar"  }
+    example { expander.cast(:a, :b)  { |v| v.upcase      }.expand(a: "foo", b: "bar") .should be == "/FOO/BAR"  }
+    example { expander.cast(Integer) { |k,v| "#{k}_#{v}" }.expand(a: "foo", b: 42)    .should be == "/foo/b_42" }
+
+    example do
+      expander.cast(:a) { |v| v.upcase   }
+      expander.cast(:b) { |v| v.downcase }
+      expander.expand(a: "fOo", b: "bAr").should be == "/FOO/bar"
+    end
+  end
 end
