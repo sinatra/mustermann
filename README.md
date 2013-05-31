@@ -289,7 +289,7 @@ expander = Mustermann::Expander("/:file.jpg")
 expander.expand(file: 'pony') # => "/pony.jpg"
 
 expander = Mustermann::Expander(":file(.:ext)", type: :rails)
-expander.expand(file: 'pony', ext: 'jpg) # => "/pony.jpg"
+expander.expand(file: 'pony', ext: 'jpg') # => "/pony.jpg"
 ```
 
 Or you can pass it a pattern instance:
