@@ -94,7 +94,7 @@ module Mustermann
       {}
     end
 
-    # @return [Hash{String}: Array<Integer>] capture names mapped to capture index.
+    # @return [Hash{String: Array<Integer>}] capture names mapped to capture index.
     # @see http://ruby-doc.org/core-2.0/Regexp.html#method-i-names Regexp#names
     def names
       []
@@ -127,10 +127,11 @@ module Mustermann
     #     warn "does not support expanding"
     #   end
     #
-    # @param [Hash{Symbol: #to_s, Array<#to_s>}] **values values to use for expansion
+    # @param [Hash{Symbol: #to_s, Array<#to_s>}] values values to use for expansion
     # @return [String] expanded string
     # @raise [NotImplementedError] raised if expand is not supported.
-    # @raise [ArgumentError] raised if a value is missing or unknown
+    # @raise [Mustermann::ExpandError] raised if a value is missing or unknown
+    # @see Mustermann::Expander
     def expand(**values)
       raise NotImplementedError, "expanding not supported by #{self.class}"
     end
