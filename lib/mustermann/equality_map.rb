@@ -18,6 +18,9 @@ module Mustermann
     def fetch(*key)
       identity = @keys[key.hash]
       key      = identity == key ? identity : key
+
+      # it is ok that this is not thread-safe, worst case it has double cost in
+      # generating, object equality is not guaranteed anyways
       @map[key] ||= track(key, yield)
     end
 
