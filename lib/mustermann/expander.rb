@@ -15,7 +15,7 @@ module Mustermann
     attr_reader :patterns, :additional_values, :caster
 
     # @param [Array<#to_str, Mustermann::Pattern>] patterns list of patterns to expand, see {#add}.
-    # @param [Symbol] additional_values behavior when encountering additinal values, see {#expand}.
+    # @param [Symbol] additional_values behavior when encountering additional values, see {#expand}.
     # @param [Hash] options used when creating/expanding patterns, see {Mustermann.new}.
     def initialize(*patterns, additional_values: :raise, **options)
       unless additional_values == :raise or additional_values == :ignore or additional_values == :append
@@ -123,12 +123,12 @@ module Mustermann
     #   pattern.expand(:append, name: 'hello', ext: 'png', scale: '2x') # => "/hello.png?scale=2x"
     #   pattern.expand(:raise,  name: 'hello', ext: 'png', scale: '2x') # raises Mustermann::ExpandError
     #
-    # @example Setting additinal values behavior fir the expander object
+    # @example Setting additional values behavior for the expander object
     #   pattern = Mustermann::Expander.new('/:name', '/:name.:ext', additional_values: :append)
     #   pattern.expand(name: 'hello', ext: 'png', scale: '2x') # => "/hello.png?scale=2x"
     #
     # @param [Symbol] behavior
-    #   What to do with additinal key/value pairs not present in the values hash.
+    #   What to do with additional key/value pairs not present in the values hash.
     #   Possible options: :raise, :ignore, :append.
     #
     # @param [Hash{Symbol: #to_s, Array<#to_s>}] values
