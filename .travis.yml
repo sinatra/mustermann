@@ -1,6 +1,6 @@
 rvm:
   - 2.0.0
-  - ruby-head
+#  - ruby-head
 #  - jruby-head
 #matrix:
 #  allow_failures:
