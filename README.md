@@ -743,6 +743,47 @@ It is known to work on **MRI 2.0** and **MRI trunk**.
 
 **Rubinius** is not yet able to parse the Mustermann source code. See [issue #14](https://github.com/rkh/mustermann/issues/14) for up to date information.
 
+## Routers
+
+Mustermann comes with basic router implementations that will call certain callbacks depending on the input.
+
+### Simple Router
+
+The simple router chooses callbacks based on an input string.
+
+``` ruby
+require 'mustermann/router/simple'
+
+router = Mustermann::Router::Simple.new(default: 42)
+router.on(':name', capture: :digit) { |string| string.to_i }
+router.call("23")      # => 23
+router.call("example") # => 42
+```
+
+### Rack Router
+
+This is not a full replacement for Rails, Sinatra, Cuba, etc, as it only cares about path based routing.
+
+``` ruby
+require 'mustermann/router/rack'
+
+router = Mustermann::Rack do
+  on '/' do |env|
+    [200, {'Content-Type' => 'text/plain'}, ['Hello World!']]
+  end
+
+  on '/:name' do |env|
+    name = env['mustermann.params']['name']
+    [200, {'Content-Type' => 'text/plain'}, ["Hello #{name}!"]]
+  end
+
+  on '/something/*', call: SomeApp
+end
+```
+
+# in a config.ru
+run router
+
 ## Release History
 
 Mustermann follows [Semantic Versioning 2.0](http://semver.org/). Anything documented in the README or via YARD and not declared private is part of the public API.
