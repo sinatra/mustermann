@@ -779,10 +779,10 @@ router = Mustermann::Rack do
 
   on '/something/*', call: SomeApp
 end
-```
 
 # in a config.ru
 run router
+```
 
 ## Release History
 
