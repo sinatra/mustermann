@@ -795,10 +795,25 @@ As there has been no stable release yet, the API might still change, though I co
 
 ### Development Releases
 
+* **Mustermann 0.2.0** (2013-08-24)
+    * More Infos:
+      [RubyGems.org](http://rubygems.org/gems/mustermann/versions/0.2.0),
+      [RubyDoc.info](http://rubydoc.info/gems/mustermann/0.2.0/frames),
+      [GitHub.com](https://github.com/rkh/mustermann/tree/v0.2.0)
+    * Add first class expander objects.
+    * Add params casting for expander.
+    * Add simple router and rack router.
+    * Add weak equality map to significantly improve performance.
+    * Fix Ruby warnings.
+    * Improve documentation.
+    * Refactor pattern validation, AST transformations.
+    * Increase test coverage (from 100%+ to 100%++).
+    * Improve JRuby compatibility.
+    * Work around bug in 2.0.0-p0.
 * **Mustermann 0.1.0** (2013-05-12)
     * More Infos:
       [RubyGems.org](http://rubygems.org/gems/mustermann/versions/0.1.0),
-      [RubyDoc.info](rubydoc.info/gems/mustermann/0.1.0/frames),
+      [RubyDoc.info](http://rubydoc.info/gems/mustermann/0.1.0/frames),
       [GitHub.com](https://github.com/rkh/mustermann/tree/v0.1.0)
     * Add `Pattern#expand` for generating strings from patterns.
     * Add better internal API for working with the AST.
@@ -811,22 +826,12 @@ As there has been no stable release yet, the API might still change, though I co
 * **Mustermann 0.0.1** (2013-04-27)
     * More Infos:
       [RubyGems.org](http://rubygems.org/gems/mustermann/versions/0.0.1),
-      [RubyDoc.info](rubydoc.info/gems/mustermann/0.0.1/frames),
+      [RubyDoc.info](http://rubydoc.info/gems/mustermann/0.0.1/frames),
       [GitHub.com](https://github.com/rkh/mustermann/tree/v0.0.1)
     * Initial Release.
 
 ### Upcoming Releases
 
-* **Mustermann 0.2.0** (next release with new features)
-    * Add first class expander objects.
-    * Add params casting for expander.
-    * Add simple router and rack router.
-    * Add weak equality map to significantly improve performance.
-    * Fix Ruby warnings.
-    * Improve documentation.
-    * Refactor pattern validation, AST transformations.
-    * Increase test coverage (from 100%+ to 100%++).
-    * Improve JRuby compatibility.
-    * Work around bug in 2.0.0-p0.
+* **Mustermann 0.3.0** (next release with new features)
 * **Mustermann 1.0.0** (before Sinatra 2.0)
     * First stable release.
