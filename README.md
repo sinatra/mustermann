@@ -733,16 +733,6 @@ you should set `uri_decode` to `false` in order to conform with the specificatio
 
 If you are looking for an alternative implementation that also supports expanding, check out [addressable](http://addressable.rubyforge.org/).
 
-## Requirements
-
-Mustermann has no dependencies besides a Ruby 2.0 compatible Ruby implementation.
-
-It is known to work on **MRI 2.0** and **MRI trunk**.
-
-**JRuby is not yet fully supported. It is possible to run large parts of Mustermann by passing in `--2.0 -X-C` starting from JRuby 1.7.4. See [issue #2](https://github.com/rkh/mustermann/issues/2) for up to date information.
-
-**Rubinius** is not yet able to parse the Mustermann source code. See [issue #14](https://github.com/rkh/mustermann/issues/14) for up to date information.
-
 ## Routers
 
 Mustermann comes with basic router implementations that will call certain callbacks depending on the input.
@@ -783,6 +773,16 @@ end
 # in a config.ru
 run router
 ```
+
+## Requirements
+
+Mustermann has no dependencies besides a Ruby 2.0 compatible Ruby implementation.
+
+It is known to work on **MRI 2.0** and **MRI trunk**.
+
+**JRuby** is not yet fully supported. It is possible to run large parts of Mustermann by passing in `--2.0 -X-C` starting from JRuby 1.7.4. See [issue #2](https://github.com/rkh/mustermann/issues/2) for up to date information.
+
+**Rubinius** is not yet able to parse the Mustermann source code. See [issue #14](https://github.com/rkh/mustermann/issues/14) for up to date information.
 
 ## Release History
 
