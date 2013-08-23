@@ -818,5 +818,15 @@ As there has been no stable release yet, the API might still change, though I co
 ### Upcoming Releases
 
 * **Mustermann 0.2.0** (next release with new features)
+    * Add first class expander objects.
+    * Add params casting for expander.
+    * Add simple router and rack router.
+    * Add weak equality map to significantly improve performance.
+    * Fix Ruby warnings.
+    * Improve documentation.
+    * Refactor pattern validation, AST transformations.
+    * Increase test coverage (from 100%+ to 100%++).
+    * Improve JRuby compatibility.
+    * Work around bug in 2.0.0-p0.
 * **Mustermann 1.0.0** (before Sinatra 2.0)
     * First stable release.
