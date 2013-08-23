@@ -25,6 +25,11 @@ describe Mustermann::Expander do
     expander.expand(bar: 23).should be == "/23"
   end
 
+  it 'ignores nil values' do
+    expander = Mustermann::Expander.new << Mustermann.new("/:foo(.:ext)?")
+    expander.expand(foo: 'pony', ext: nil).should be == '/pony'
+  end
+
   describe :additional_values do
     context "illegal value" do
       example { expect { Mustermann::Expander.new(additional_values: :foo) }.to raise_error(ArgumentError) }
