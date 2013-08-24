@@ -28,7 +28,7 @@ module Mustermann
     # @param [Object] object to be stored
     # @return [Object] same as the second parameter
     def track(key, object)
-      ObjectSpace.define_finalizer(object, finalizer(hash))
+      ObjectSpace.define_finalizer(object, finalizer(key.hash))
       @keys[key.hash] = key
       object
     end
