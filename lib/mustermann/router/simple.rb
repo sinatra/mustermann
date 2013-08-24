@@ -118,7 +118,7 @@ module Mustermann
 
       # Finds the matching callback and calls `call` on it with the given input and the params.
       # @return the callback's return value
-      def call(input, &fallback)
+      def call(input)
         @map.each do |pattern, callback|
           catch(:pass) do
             next unless params = pattern.params(string_for(input))
