@@ -93,7 +93,7 @@ module Mustermann
     #
     #   @param [Array<Symbol, Regexp, #===>] type_matchers
     #     To identify key/value pairs to match against.
-    #     Regexps and Symbols match againg key, everything else matches against value.
+    #     Regexps and Symbols match against key, everything else matches against value.
     #
     #   @yield every key/value pair
     #   @yieldparam key [Symbol] omitted if block takes less than 2
