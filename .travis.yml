@@ -1,5 +1,6 @@
 rvm:
   - 2.0.0
+  - rbx-2.0
 #  - ruby-head
 #  - jruby-head
 #matrix:
