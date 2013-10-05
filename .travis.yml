@@ -1,3 +1,5 @@
+before_install:
+- "[ $TRAVIS_RUBY_VERSION = rbx-2.0.0 ] && gem install rubysl"
 rvm:
 - 2.0.0
 - rbx-2.0.0
