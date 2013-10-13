@@ -94,6 +94,19 @@ describe Mustermann::Sinatra do
     example { pattern.params('/foo').should be == {"splat" => ["foo"]} }
   end
 
+  pattern '/*foo' do
+    it { should match('/')        .capturing foo: ''        }
+    it { should match('/foo')     .capturing foo: 'foo'     }
+    it { should match('/foo/bar') .capturing foo: 'foo/bar' }
+
+    example { pattern.params('/foo')     .should be == {"foo" => "foo"     } }
+    example { pattern.params('/foo/bar') .should be == {"foo" => "foo/bar" } }
+  end
+
+  pattern '/*foo/*bar' do
+    it { should match('/foo/bar') .capturing foo: 'foo', bar: 'bar' }
+  end
+
   pattern '/:foo/*' do
     it { should match("/foo/bar/baz")     .capturing foo: 'foo',   splat: 'bar/baz'   }
     it { should match("/foo/")            .capturing foo: 'foo',   splat: ''          }

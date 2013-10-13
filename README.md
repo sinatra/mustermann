@@ -817,6 +817,12 @@ pattern === "/foo.bar"     # => true
 pattern === "/foo/bar"     # => true
 pattern.params("/foo.bar") # => { "splat" => ["foo.bar"] }
 pattern.params("/foo/bar") # => { "splat" => ["foo/bar"] }
+
+pattern = Mustermann.new('/*example')
+pattern === "/foo.bar"     # => true
+pattern === "/foo/bar"     # => true
+pattern.params("/foo.bar") # => { "example" => "foo.bar" }
+pattern.params("/foo/bar") # => { "example" => "foo/bar" }
 ```
 
 <table>
@@ -832,6 +838,12 @@ pattern.params("/foo/bar") # => { "splat" => ["foo/bar"] }
       <td>
         Captures anything but a forward slash in a semi-greedy fashion. Capture is named <i>name</i>.
         Capture behavior can be modified with <a href="#capture"><tt>capture</tt></a> and <a href="#greedy"><tt>greedy</tt></a> option.
+      </td>
+    </tr>
+    <tr>
+      <td><b>*</b><i>name</i></td>
+      <td>
+        Captures anything in a non-greedy fashion. Capture is named <i>name</i>.
       </td>
     </tr>
     <tr>
@@ -1032,6 +1044,7 @@ As there has been no stable release yet, the API might still change, though I co
 
 * **Mustermann 0.3.0** (next release with new features)
     * Add `regexp` pattern.
+    * Add named splats to Sinatra patterns.
     * Improve duck typing support.
     * Improve documentation.
 * **Mustermann 1.0.0** (before Sinatra 2.0)
