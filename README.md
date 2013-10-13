@@ -913,5 +913,7 @@ As there has been no stable release yet, the API might still change, though I co
 ### Upcoming Releases
 
 * **Mustermann 0.3.0** (next release with new features)
+    * Add `regexp` pattern.
+    * Improve duck typing support.
 * **Mustermann 1.0.0** (before Sinatra 2.0)
     * First stable release.
