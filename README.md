@@ -83,6 +83,16 @@ The available types are:
       </td>
     </tr>
     <tr>
+      <th><a href="#regexp"><tt>regexp</tt></a></th>
+      <td>Regular expressions as implemented by Ruby</td>
+      <td><tt>/(?&lt;slug&gt;.*)</tt></td>
+      <td>
+        <a href="#ignore_unknown_options"><tt>ignore_unknown_options</tt></a>,
+        <a href="#uri_decode"><tt>uri_decode</tt></a>
+      </td>
+      <td></td>
+    </tr>
+    <tr>
       <th><a href="#shell"><tt>shell</tt></th>
       <td>Unix style patterns</td>
       <td><tt>/*.{png,jpg}</tt></td>
@@ -539,6 +549,32 @@ Patterns with the syntax used in Rails route definitions.
     </tr>
   </tbody>
 </table>
+
+### `regexp`
+
+Regular expression patterns, as used implemented by Ruby. Do not include characters for matching beginning or end of string/line.
+
+<table>
+  <thead>
+    <tr>
+      <th>Syntax Element</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><i>any string</i></td>
+      <td>Interpreted as regular expression.</td>
+    </tr>
+  </tbody>
+</table>
+
+It is also possible to turn a proper Regexp instance into a pattern object by passing it to `Mustermann.new`:
+
+``` ruby
+require 'mustermann'
+Mustermann.new(/(?<example>.*)/).params("input") # => { "example" => "input" }
+```
 
 ### `shell`
 

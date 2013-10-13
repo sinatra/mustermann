@@ -1,15 +1,22 @@
+require 'mustermann/pattern'
+
 # Namespace and main entry point for the Mustermann library.
 #
 # Under normal circumstances the only external API entry point you should be using is {Mustermann.new}.
 module Mustermann
-  # @param [String] string The string representation of the new pattern
+  # @param [String, Pattern, Regexp, #to_pattern] input The representation of the new pattern
   # @param [Hash] options The options hash
   # @return [Mustermann::Pattern] pattern corresponding to string.
   # @raise (see [])
   # @raise (see Mustermann::Pattern.new)
   # @see file:README.md#Types_and_Options "Types and Options" in the README
-  def self.new(string, type: :sinatra, **options)
-    options.any? ? self[type].new(string, **options) : self[type].new(string)
+  def self.new(input, type: :sinatra, **options)
+    case input
+    when Pattern then input
+    when Regexp  then self[:regexp].new(input, **options)
+    when String  then self[type].new(input, **options)
+    else input.to_pattern(type: type, **options)
+    end
   end
 
   # Maps a type to its factory.
@@ -27,9 +34,9 @@ module Mustermann
   end
 
   # @!visibility private
-  def self.register(identifier = nil, constant = identifier.to_s.capitalize, load: "mustermann/#{identifier}")
+  def self.register(*identifiers, constant: identifiers.first.to_s.capitalize, load: "mustermann/#{identifiers.first}")
     @register ||= {}
-    @register[identifier] = [constant, load] if identifier
+    identifiers.each { |i| @register[i] = [constant, load] }
     @register
   end
 
@@ -42,6 +49,7 @@ module Mustermann
 
   register :identity
   register :rails
+  register :regular, :regexp
   register :shell
   register :simple
   register :sinatra

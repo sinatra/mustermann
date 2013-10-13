@@ -5,16 +5,36 @@ require 'sinatra/base'
 
 describe Mustermann do
   describe :new do
-    example { Mustermann.new('')                  .should be_a(Mustermann::Sinatra)  }
-    example { Mustermann.new('', type: :identity) .should be_a(Mustermann::Identity) }
-    example { Mustermann.new('', type: :rails)    .should be_a(Mustermann::Rails)    }
-    example { Mustermann.new('', type: :shell)    .should be_a(Mustermann::Shell)    }
-    example { Mustermann.new('', type: :sinatra)  .should be_a(Mustermann::Sinatra)  }
-    example { Mustermann.new('', type: :simple)   .should be_a(Mustermann::Simple)   }
-    example { Mustermann.new('', type: :template) .should be_a(Mustermann::Template) }
+    context "string argument" do
+      example { Mustermann.new('')                  .should be_a(Mustermann::Sinatra)  }
+      example { Mustermann.new('', type: :identity) .should be_a(Mustermann::Identity) }
+      example { Mustermann.new('', type: :rails)    .should be_a(Mustermann::Rails)    }
+      example { Mustermann.new('', type: :shell)    .should be_a(Mustermann::Shell)    }
+      example { Mustermann.new('', type: :sinatra)  .should be_a(Mustermann::Sinatra)  }
+      example { Mustermann.new('', type: :simple)   .should be_a(Mustermann::Simple)   }
+      example { Mustermann.new('', type: :template) .should be_a(Mustermann::Template) }
 
-    example { expect { Mustermann.new('', foo:  :bar) }.to raise_error(ArgumentError, "unsupported option :foo for Mustermann::Sinatra") }
-    example { expect { Mustermann.new('', type: :ast) }.to raise_error(ArgumentError, "unsupported type :ast") }
+      example { expect { Mustermann.new('', foo:  :bar) }.to raise_error(ArgumentError, "unsupported option :foo for Mustermann::Sinatra") }
+      example { expect { Mustermann.new('', type: :ast) }.to raise_error(ArgumentError, "unsupported type :ast") }
+    end
+
+    context "pattern argument" do
+      subject(:pattern) { Mustermann.new('') }
+      example { Mustermann.new(pattern).should be == pattern }
+      example { Mustermann.new(pattern, type: :rails).should be_a(Mustermann::Sinatra) }
+    end
+
+    context "regexp argument" do
+      example { Mustermann.new(//)               .should be_a(Mustermann::Regular) }
+      example { Mustermann.new(//, type: :rails) .should be_a(Mustermann::Regular) }
+    end
+
+    context "argument implementing #to_pattern" do
+      subject(:pattern) { Class.new { def to_pattern(**o) Mustermann.new('foo', **o) end }.new }
+      example { Mustermann.new(pattern)               .should be_a(Mustermann::Sinatra) }
+      example { Mustermann.new(pattern, type: :rails) .should be_a(Mustermann::Rails) }
+      example { Mustermann.new(pattern).to_s.should be == 'foo' }
+    end
   end
 
   describe :[] do
