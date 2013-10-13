@@ -5,7 +5,7 @@ module Mustermann
     # Simple pattern based router that allows matching paths to a given Rack application.
     #
     # @example config.ru
-    #    router = Mustermann::Rack do
+    #    router = Mustermann::Rack.new do
     #      on '/' do |env|
     #        [200, {'Content-Type' => 'text/plain'}, ['Hello World!']]
     #      end

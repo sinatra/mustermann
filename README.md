@@ -967,7 +967,7 @@ This is not a full replacement for Rails, Sinatra, Cuba, etc, as it only cares a
 ``` ruby
 require 'mustermann/router/rack'
 
-router = Mustermann::Router::Rack do
+router = Mustermann::Router::Rack.new do
   on '/' do |env|
     [200, {'Content-Type' => 'text/plain'}, ['Hello World!']]
   end
