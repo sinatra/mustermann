@@ -356,6 +356,50 @@ expander = Mustermann::Expander.new("/:slug", additional_values: :append)
 expander.expand(slug: "foo", value: "bar") # => "/foo?value=bar"
 ```
 
+## Duck Typing
+
+All methods converting string input to pattern objects will also accept any arbitrary object that implements `to_pattern`:
+
+``` ruby
+require 'mustermann'
+
+class MyObject
+  def to_pattern(**options)
+    Mustermann.new("/foo", **options)
+  end
+end
+
+object = MyObject.new
+Mustermann.new(object, type: :rails) # => #<Mustermann::Rails:"/foo">
+```
+
+It might also be that you want to call `to_pattern` yourself instead of `Mustermann.new`. You can load `mustermann/to_pattern` to implement this method for strings, regular expressions and pattern objects:
+
+``` ruby
+require 'mustermann/to_pattern'
+
+"/foo".to_pattern               # => #<Mustermann::Sinatra:"/foo">
+"/foo".to_pattern(type: :rails) # => #<Mustermann::Rails:"/foo">
+%r{/foo}.to_pattern             # => #<Mustermann::Regular:"\\/foo">
+"/foo".to_pattern.to_pattern    # => #<Mustermann::Sinatra:"/foo">
+```
+
+You can also use the `Mustermann::ToPattern` mixin to easily add `to_pattern` to your own objects:
+
+``` ruby
+require 'mustermann/to_pattern'
+
+class MyObject
+  include Mustermann::ToPattern
+
+  def to_s
+    "/foo"
+  end
+end
+
+MyObject.new.to_pattern # => #<Mustermann::Sinatra:"/foo">
+```
+
 ## Partial Loading and Thread Safety
 
 Pattern objects are generally assumed to be thread-safe. You can easily match strings against the same pattern object concurrently.
