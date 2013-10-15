@@ -3,3 +3,6 @@ rvm:
 - 2.1.0-preview1
 - ruby-head
 - jruby-head
+- rbx-2.0.0
+matrix:
+  allow_failures: [ rvm: rbx-2.0.0 ]
