@@ -74,4 +74,32 @@ describe Mustermann::Expander do
       expander.expand(a: "fOo", b: "bAr").should be == "/FOO/bar"
     end
   end
+
+  describe :== do
+    example { Mustermann::Expander.new('/foo')               .should     be == Mustermann::Expander.new('/foo') }
+    example { Mustermann::Expander.new('/foo')               .should_not be == Mustermann::Expander.new('/bar') }
+    example { Mustermann::Expander.new('/foo', type: :rails) .should     be == Mustermann::Expander.new('/foo', type: :rails) }
+    example { Mustermann::Expander.new('/foo', type: :rails) .should_not be == Mustermann::Expander.new('/foo', type: :sinatra) }
+  end
+
+  describe :hash do
+    example { Mustermann::Expander.new('/foo')               .hash.should     be == Mustermann::Expander.new('/foo').hash }
+    example { Mustermann::Expander.new('/foo')               .hash.should_not be == Mustermann::Expander.new('/bar').hash }
+    example { Mustermann::Expander.new('/foo', type: :rails) .hash.should     be == Mustermann::Expander.new('/foo', type: :rails).hash }
+    example { Mustermann::Expander.new('/foo', type: :rails) .hash.should_not be == Mustermann::Expander.new('/foo', type: :sinatra).hash }
+  end
+
+  describe :eql? do
+    example { Mustermann::Expander.new('/foo')               .should     be_eql Mustermann::Expander.new('/foo') }
+    example { Mustermann::Expander.new('/foo')               .should_not be_eql Mustermann::Expander.new('/bar') }
+    example { Mustermann::Expander.new('/foo', type: :rails) .should     be_eql Mustermann::Expander.new('/foo', type: :rails) }
+    example { Mustermann::Expander.new('/foo', type: :rails) .should_not be_eql Mustermann::Expander.new('/foo', type: :sinatra) }
+  end
+
+  describe :equal? do
+    example { Mustermann::Expander.new('/foo')               .should_not be_equal Mustermann::Expander.new('/foo') }
+    example { Mustermann::Expander.new('/foo')               .should_not be_equal Mustermann::Expander.new('/bar') }
+    example { Mustermann::Expander.new('/foo', type: :rails) .should_not be_equal Mustermann::Expander.new('/foo', type: :rails) }
+    example { Mustermann::Expander.new('/foo', type: :rails) .should_not be_equal Mustermann::Expander.new('/foo', type: :sinatra) }
+  end
 end

@@ -943,6 +943,19 @@ you should set `uri_decode` to `false` in order to conform with the specificatio
 
 If you are looking for an alternative implementation that also supports expanding, check out [addressable](http://addressable.rubyforge.org/).
 
+## Mapper
+
+You can use a mapper to transform stings according to two or more mapping:
+
+``` ruby
+require 'mustermann/mapper'
+
+mapper = Mustermann::Mapper.new("/:page(.:format)?" => ["/:page/view.:format", "/:page/view.html"])
+mapper['/foo']     # => "/foo/view.html"
+mapper['/foo.xml'] # => "/foo/view.xml"
+mapper['/foo/bar'] # => "/foo/bar"
+```
+
 ## Routers
 
 Mustermann comes with basic router implementations that will call certain callbacks depending on the input.
@@ -1045,6 +1058,7 @@ As there has been no stable release yet, the API might still change, though I co
 * **Mustermann 0.3.0** (next release with new features)
     * Add `regexp` pattern.
     * Add named splats to Sinatra patterns.
+    * Add `Mustermann::Mapper`.
     * Improve duck typing support.
     * Improve documentation.
 * **Mustermann 1.0.0** (before Sinatra 2.0)

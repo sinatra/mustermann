@@ -59,10 +59,17 @@ module Mustermann
         @mappings ||= {}
       end
 
+      # all the known keys
+      # @!visibility private
+      def keys
+        @keys ||= []
+      end
+
       # add a tree for expansion
       # @!visibility private
       def add(ast)
         translate(ast).each do |keys, pattern, filter|
+          self.keys.concat(keys).uniq!
           mappings[keys.uniq.sort] ||= [keys, pattern, filter]
         end
       end
@@ -79,6 +86,14 @@ module Mustermann
         keys, pattern, filters = mappings.fetch(values.keys.sort) { error_for(values) }
         filters.each { |key, filter| values[key] &&= escape(values[key], also_escape: filter) }
         pattern % values.values_at(*keys)
+      end
+
+      # @see Mustermann::Pattern#expandable?
+      # @!visibility private
+      def expandable?(values)
+        values = values.keys if values.respond_to? :keys
+        values = values.sort if values.respond_to? :sort
+        mappings.include? values
       end
 
       # @see Mustermann::Expander#with_rest

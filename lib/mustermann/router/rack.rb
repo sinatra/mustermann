@@ -23,7 +23,7 @@ module Mustermann
     class Rack < Simple
       def initialize(env_prefix: "mustermann", params_key: "#{env_prefix}.params", pattern_key: "#{env_prefix}.pattern", **options, &block)
         @params_key, @pattern_key = params_key, pattern_key
-        options[:default] ||= [404, {"Content-Type" => "text/plain", "X-Cascade" => "pass"}, ["Not Found"]]
+        options[:default] = [404, {"Content-Type" => "text/plain", "X-Cascade" => "pass"}, ["Not Found"]] unless options.include? :default
         super(**options, &block)
       end
 
