@@ -945,7 +945,7 @@ If you are looking for an alternative implementation that also supports expandin
 
 ## Mapper
 
-You can use a mapper to transform stings according to two or more mapping:
+You can use a mapper to transform strings according to two or more mappings:
 
 ``` ruby
 require 'mustermann/mapper'
