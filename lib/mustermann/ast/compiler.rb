@@ -163,6 +163,6 @@ module Mustermann
       end
     end
 
-    private_constant :Compiler
+    #private_constant :Compiler
   end
 end

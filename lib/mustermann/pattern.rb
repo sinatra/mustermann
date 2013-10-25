@@ -178,6 +178,6 @@ module Mustermann
     end
 
     private :unescape, :map_param
-    private_constant :ALWAYS_ARRAY
+    #private_constant :ALWAYS_ARRAY
   end
 end

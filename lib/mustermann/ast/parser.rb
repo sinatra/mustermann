@@ -132,6 +132,6 @@ module Mustermann
       end
     end
 
-    private_constant :Parser
+    #private_constant :Parser
   end
 end
