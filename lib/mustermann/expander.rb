@@ -141,7 +141,7 @@ module Mustermann
     # @raise [Mustermann::ExpandError] raised if a value is missing or unknown
     def expand(behavior = nil, values = {})
       values, behavior = behavior, nil if behavior.is_a?(Hash)
-      values = caster.cast(values)
+      values = map_values(values)
 
       case behavior || additional_values
       when :raise  then @api_expander.expand(values)
@@ -151,10 +151,38 @@ module Mustermann
       end
     end
 
+    # @see Object#==
+    def ==(other)
+      return false unless other.class == self.class
+      other.patterns == patterns and other.additional_values == additional_values
+    end
+
+    # @see Object#eql?
+    def eql?(other)
+      return false unless other.class == self.class
+      other.patterns.eql? patterns and other.additional_values.eql? additional_values
+    end
+
+    # @see Object#hash
+    def hash
+      patterns.hash + additional_values.hash
+    end
+
+    def expandable?(values)
+      return false unless values
+      expandable, _ = split_values(map_values(values))
+      @api_expander.expandable? expandable
+    end
+
     def with_rest(values)
+      expandable, non_expandable = split_values(values)
+      yield expand(:raise, slice(values, expandable)), slice(values, non_expandable)
+    end
+
+    def split_values(values)
       expandable     = @api_expander.expandable_keys(values.keys)
       non_expandable = values.keys - expandable
-      yield expand(:raise, slice(values, expandable)), slice(values, non_expandable)
+      [expandable, non_expandable]
     end
 
     def slice(hash, keys)
@@ -167,6 +195,12 @@ module Mustermann
       "#{ uri }#{ uri[??]??&:?? }#{ entries.join(?&) }"
     end
 
-    private :with_rest, :slice, :append, :caster
+    def map_values(values)
+      values = values.dup
+      @api_expander.keys.each { |key| values[key] ||= values.delete(key.to_s) if values.include? key.to_s }
+      caster.cast(values)
+    end
+
+    private :with_rest, :slice, :append, :caster, :map_values, :split_values
   end
 end

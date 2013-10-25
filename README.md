@@ -83,6 +83,16 @@ The available types are:
       </td>
     </tr>
     <tr>
+      <th><a href="#regexp"><tt>regexp</tt></a></th>
+      <td>Regular expressions as implemented by Ruby</td>
+      <td><tt>/(?&lt;slug&gt;.*)</tt></td>
+      <td>
+        <a href="#ignore_unknown_options"><tt>ignore_unknown_options</tt></a>,
+        <a href="#uri_decode"><tt>uri_decode</tt></a>
+      </td>
+      <td></td>
+    </tr>
+    <tr>
       <th><a href="#shell"><tt>shell</tt></th>
       <td>Unix style patterns</td>
       <td><tt>/*.{png,jpg}</tt></td>
@@ -346,6 +356,50 @@ expander = Mustermann::Expander.new("/:slug", additional_values: :append)
 expander.expand(slug: "foo", value: "bar") # => "/foo?value=bar"
 ```
 
+## Duck Typing
+
+All methods converting string input to pattern objects will also accept any arbitrary object that implements `to_pattern`:
+
+``` ruby
+require 'mustermann'
+
+class MyObject
+  def to_pattern(**options)
+    Mustermann.new("/foo", **options)
+  end
+end
+
+object = MyObject.new
+Mustermann.new(object, type: :rails) # => #<Mustermann::Rails:"/foo">
+```
+
+It might also be that you want to call `to_pattern` yourself instead of `Mustermann.new`. You can load `mustermann/to_pattern` to implement this method for strings, regular expressions and pattern objects:
+
+``` ruby
+require 'mustermann/to_pattern'
+
+"/foo".to_pattern               # => #<Mustermann::Sinatra:"/foo">
+"/foo".to_pattern(type: :rails) # => #<Mustermann::Rails:"/foo">
+%r{/foo}.to_pattern             # => #<Mustermann::Regular:"\\/foo">
+"/foo".to_pattern.to_pattern    # => #<Mustermann::Sinatra:"/foo">
+```
+
+You can also use the `Mustermann::ToPattern` mixin to easily add `to_pattern` to your own objects:
+
+``` ruby
+require 'mustermann/to_pattern'
+
+class MyObject
+  include Mustermann::ToPattern
+
+  def to_s
+    "/foo"
+  end
+end
+
+MyObject.new.to_pattern # => #<Mustermann::Sinatra:"/foo">
+```
+
 ## Partial Loading and Thread Safety
 
 Pattern objects are generally assumed to be thread-safe. You can easily match strings against the same pattern object concurrently.
@@ -481,7 +535,17 @@ By setting `ignore_unknown_options` to `true`, it will happily ignore the option
 
 ### `identity`
 
-Patterns that are no real patterns, just string matching.
+Identity patterns are strings that have to match the input exactly.
+
+``` ruby
+require 'mustermann'
+
+pattern = Mustermann.new('/:example', type: :identity)
+pattern === "/foo.bar"      # => false
+pattern === "/:example"     # => true
+pattern.params("/foo.bar")  # => nil
+pattern.params("/:example") # => {}
+```
 
 <table>
   <thead>
@@ -501,6 +565,28 @@ Patterns that are no real patterns, just string matching.
 ### `rails`
 
 Patterns with the syntax used in Rails route definitions.
+
+``` ruby
+require 'mustermann'
+
+pattern = Mustermann.new('/:example', type: :rails)
+pattern === "/foo.bar"     # => true
+pattern === "/foo/bar"     # => false
+pattern.params("/foo.bar") # => { "example" => "foo.bar" }
+pattern.params("/foo/bar") # => nil
+
+pattern = Mustermann.new('/:example(/:optional)', type: :rails)
+pattern === "/foo.bar"     # => true
+pattern === "/foo/bar"     # => true
+pattern.params("/foo.bar") # => { "example" => "foo.bar", "optional" => nil   }
+pattern.params("/foo/bar") # => { "example" => "foo",     "optional" => "bar" }
+
+pattern = Mustermann.new('/*example', type: :rails)
+pattern === "/foo.bar"     # => true
+pattern === "/foo/bar"     # => true
+pattern.params("/foo.bar") # => { "example" => "foo.bar" }
+pattern.params("/foo/bar") # => { "example" => "foo/bar" }
+```
 
 <table>
   <thead>
@@ -540,9 +626,63 @@ Patterns with the syntax used in Rails route definitions.
   </tbody>
 </table>
 
+### `regexp`
+
+Regular expression patterns, as used implemented by Ruby. Do not include characters for matching beginning or end of string/line.
+This pattern type is also known as `regular` and the pattern class is `Mustermann::Regular` (located in `mustermann/regular`).
+
+``` ruby
+require 'mustermann'
+
+pattern = Mustermann.new('/(?<example>.*)', type: :regexp)
+pattern === "/foo.bar"     # => true
+pattern === "/foo/bar"     # => true
+pattern.params("/foo.bar") # => { "example" => "foo.bar" }
+pattern.params("/foo/bar") # => { "example" => "foo/bar" }
+```
+
+<table>
+  <thead>
+    <tr>
+      <th>Syntax Element</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><i>any string</i></td>
+      <td>Interpreted as regular expression.</td>
+    </tr>
+  </tbody>
+</table>
+
+It is also possible to turn a proper Regexp instance into a pattern object by passing it to `Mustermann.new`:
+
+``` ruby
+require 'mustermann'
+Mustermann.new(/(?<example>.*)/).params("input") # => { "example" => "input" }
+```
+
 ### `shell`
 
 Shell patterns, as used in Bash or with `Dir.glob`.
+
+``` ruby
+require 'mustermann'
+
+pattern = Mustermann.new('/*', type: :shell)
+pattern === "/foo.bar" # => true
+pattern === "/foo/bar" # => false
+
+pattern = Mustermann.new('/**/*', type: :shell)
+pattern === "/foo.bar" # => true
+pattern === "/foo/bar" # => true
+
+pattern = Mustermann.new('/{foo,bar}', type: :shell)
+pattern === "/foo"     # => true
+pattern === "/bar"     # => true
+pattern === "/baz"     # => false
+```
 
 <table>
   <thead>
@@ -581,7 +721,29 @@ Shell patterns, as used in Bash or with `Dir.glob`.
 
 ### `simple`
 
-Patterns as used by Sinatra 1.3. Useful for porting an application that relies on this behavior to a later Sinatra version and to make sure [Sinatra 2.0](#sinatra) patterns do not decrease performance.
+Patterns as used by Sinatra 1.3. Useful for porting an application that relies on this behavior to a later Sinatra version and to make sure [Sinatra 2.0](#sinatra) patterns do not decrease performance. Simple patterns internally use the same code older Sinatra versions used for compiling the pattern. Error messages for broken patterns will therefore not be as informative as for other pattern implementations.
+
+``` ruby
+require 'mustermann'
+
+pattern = Mustermann.new('/:example', type: :simple)
+pattern === "/foo.bar"     # => true
+pattern === "/foo/bar"     # => false
+pattern.params("/foo.bar") # => { "example" => "foo.bar" }
+pattern.params("/foo/bar") # => nil
+
+pattern = Mustermann.new('/:example/?:optional?', type: :simple)
+pattern === "/foo.bar"     # => true
+pattern === "/foo/bar"     # => true
+pattern.params("/foo.bar") # => { "example" => "foo.bar", "optional" => nil   }
+pattern.params("/foo/bar") # => { "example" => "foo",     "optional" => "bar" }
+
+pattern = Mustermann.new('/*', type: :simple)
+pattern === "/foo.bar"     # => true
+pattern === "/foo/bar"     # => true
+pattern.params("/foo.bar") # => { "splat" => ["foo.bar"] }
+pattern.params("/foo/bar") # => { "splat" => ["foo/bar"] }
+```
 
 <table>
   <thead>
@@ -629,6 +791,40 @@ Patterns as used by Sinatra 1.3. Useful for porting an application that relies o
 
 Sinatra 2.0 style patterns. The default used by Mustermann.
 
+``` ruby
+require 'mustermann'
+
+pattern = Mustermann.new('/:example')
+pattern === "/foo.bar"     # => true
+pattern === "/foo/bar"     # => false
+pattern.params("/foo.bar") # => { "example" => "foo.bar" }
+pattern.params("/foo/bar") # => nil
+
+pattern = Mustermann.new('/\:example')
+pattern === "/foo.bar"      # => false
+pattern === "/:example"     # => true
+pattern.params("/foo.bar")  # => nil
+pattern.params("/:example") # => {}
+
+pattern = Mustermann.new('/:example(/:optional)?')
+pattern === "/foo.bar"     # => true
+pattern === "/foo/bar"     # => true
+pattern.params("/foo.bar") # => { "example" => "foo.bar", "optional" => nil   }
+pattern.params("/foo/bar") # => { "example" => "foo",     "optional" => "bar" }
+
+pattern = Mustermann.new('/*')
+pattern === "/foo.bar"     # => true
+pattern === "/foo/bar"     # => true
+pattern.params("/foo.bar") # => { "splat" => ["foo.bar"] }
+pattern.params("/foo/bar") # => { "splat" => ["foo/bar"] }
+
+pattern = Mustermann.new('/*example')
+pattern === "/foo.bar"     # => true
+pattern === "/foo/bar"     # => true
+pattern.params("/foo.bar") # => { "example" => "foo.bar" }
+pattern.params("/foo/bar") # => { "example" => "foo/bar" }
+```
+
 <table>
   <thead>
     <tr>
@@ -642,6 +838,12 @@ Sinatra 2.0 style patterns. The default used by Mustermann.
       <td>
         Captures anything but a forward slash in a semi-greedy fashion. Capture is named <i>name</i>.
         Capture behavior can be modified with <a href="#capture"><tt>capture</tt></a> and <a href="#greedy"><tt>greedy</tt></a> option.
+      </td>
+    </tr>
+    <tr>
+      <td><b>*</b><i>name</i></td>
+      <td>
+        Captures anything in a non-greedy fashion. Capture is named <i>name</i>.
       </td>
     </tr>
     <tr>
@@ -685,6 +887,19 @@ Parses fully expanded URI templates as specified by [RFC 6570](http://tools.ietf
 
 Note that it differs from URI templates in that it takes the unescaped version of special character instead of the escaped version.
 
+``` ruby
+require 'mustermann'
+
+pattern = Mustermann.new('/{example}', type: :template)
+pattern === "/foo.bar"     # => true
+pattern === "/foo/bar"     # => false
+pattern.params("/foo.bar") # => { "example" => "foo.bar" }
+pattern.params("/foo/bar") # => nil
+
+pattern = Mustermann.new("{/segments*}/{page}{.ext,cmpr:2}", type: :template)
+pattern.params("/a/b/c.tar.gz") # => {"segments"=>["a","b"], "page"=>"c", "ext"=>"tar", "cmpr"=>"gz"}
+```
+
 <table>
   <thead>
     <tr>
@@ -718,11 +933,6 @@ The operators `+` and `#` will always match non-greedy, whereas all other operat
 All modifiers and operators are supported. However, it does not parse lists as single values without the *explode* modifier (aka *star*).
 Parametric operators (`;`, `?` and `&`) currently only match parameters in given order.
 
-``` ruby
-pattern = Mustermann.new("{/segments*}/{page}{.ext,cmpr:2}", type: :template)
-pattern.params("/a/b/c.tar.gz") # => {"segments"=>["a","b"], "page"=>"c", "ext"=>"tar", "cmpr"=>"gz"}
-```
-
 Please keep the following in mind:
 
 > "Some URI Templates can be used in reverse for the purpose of variable matching: comparing the template to a fully formed URI in order to extract the variable parts from that URI and assign them to the named variables.  Variable matching only works well if the template expressions are delimited by the beginning or end of the URI or by characters that cannot be part of the expansion, such as reserved characters surrounding a simple string expression.  In general, regular expression languages are better suited for variable matching."
@@ -732,6 +942,19 @@ If you reuse the exact same templates and expose them via an external API meant 
 you should set `uri_decode` to `false` in order to conform with the specification.
 
 If you are looking for an alternative implementation that also supports expanding, check out [addressable](http://addressable.rubyforge.org/).
+
+## Mapper
+
+You can use a mapper to transform strings according to two or more mappings:
+
+``` ruby
+require 'mustermann/mapper'
+
+mapper = Mustermann::Mapper.new("/:page(.:format)?" => ["/:page/view.:format", "/:page/view.html"])
+mapper['/foo']     # => "/foo/view.html"
+mapper['/foo.xml'] # => "/foo/view.xml"
+mapper['/foo/bar'] # => "/foo/bar"
+```
 
 ## Routers
 
@@ -757,7 +980,7 @@ This is not a full replacement for Rails, Sinatra, Cuba, etc, as it only cares a
 ``` ruby
 require 'mustermann/router/rack'
 
-router = Mustermann::Router::Rack do
+router = Mustermann::Router::Rack.new do
   on '/' do |env|
     [200, {'Content-Type' => 'text/plain'}, ['Hello World!']]
   end
@@ -833,5 +1056,10 @@ As there has been no stable release yet, the API might still change, though I co
 ### Upcoming Releases
 
 * **Mustermann 0.3.0** (next release with new features)
+    * Add `regexp` pattern.
+    * Add named splats to Sinatra patterns.
+    * Add `Mustermann::Mapper`.
+    * Improve duck typing support.
+    * Improve documentation.
 * **Mustermann 1.0.0** (before Sinatra 2.0)
     * First stable release.

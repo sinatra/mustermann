@@ -59,7 +59,7 @@ module Mustermann
     def initialize(string, options = {})
       uri_decode = options.fetch(:uri_decode, true)
       @uri_decode = uri_decode
-      @string     = string.dup
+      @string     = string.to_s.dup
     end
 
     # @return [String] the string representation of the pattern

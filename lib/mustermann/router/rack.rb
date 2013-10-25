@@ -5,7 +5,7 @@ module Mustermann
     # Simple pattern based router that allows matching paths to a given Rack application.
     #
     # @example config.ru
-    #    router = Mustermann::Rack do
+    #    router = Mustermann::Rack.new do
     #      on '/' do |env|
     #        [200, {'Content-Type' => 'text/plain'}, ['Hello World!']]
     #      end
@@ -26,7 +26,7 @@ module Mustermann
         params_key  = options.delete(:params_key) || "#{env_prefix}.params"
         pattern_key = options.delete(:pattern_key) || "#{env_prefix}.pattern"
         @params_key, @pattern_key = params_key, pattern_key
-        options[:default] ||= [404, {"Content-Type" => "text/plain", "X-Cascade" => "pass"}, ["Not Found"]]
+        options[:default] = [404, {"Content-Type" => "text/plain", "X-Cascade" => "pass"}, ["Not Found"]] unless options.include? :default
         super(options, &block)
       end
 

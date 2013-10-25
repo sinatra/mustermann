@@ -1,3 +1,5 @@
+require 'timeout'
+
 module Support
   module Pattern
     def pattern(pattern, options = nil, &block)
@@ -26,8 +28,10 @@ module Support
     end
 
     def subject_for(pattern, *args)
-      instance = described_class.new(pattern, *args)
+      instance = Timeout.timeout(1) { described_class.new(pattern, *args) }
       proc { instance }
+    rescue Timeout::Error => error
+      proc { raise Timeout::Error, "could not compile #{pattern.inspect} in time", error.backtrace }
     rescue Exception => error
       proc { raise error }
     end
