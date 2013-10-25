@@ -11,7 +11,11 @@ module Mustermann
       # @return [Class] factory for the node
       def self.[](name)
         @names ||= {}
-        @names.fetch(name) { Object.const_get(constant_name(name)) }
+        #@names.fetch(name) { Object.const_get(constant_name(name)) }
+        @names.fetch(name) do
+          const_name = constant_name(name)
+          const_name.split("::").inject(Object){|current, const| current.const_get(const) }
+        end
       end
 
       # @!visibility private
@@ -31,7 +35,11 @@ module Mustermann
       end
 
       # @!visibility private
-      def initialize(payload = nil, **options)
+      def initialize(payload = nil, options = {})
+        if payload.is_a?(Hash)
+          options = payload
+          payload = nil
+        end
         options.each { |key, value| public_send("#{key}=", value) }
         self.payload = payload
       end
@@ -85,8 +93,12 @@ module Mustermann
       # @!visibility private
       class Group < Node
         # @!visibility private
-        def initialize(payload = nil, **options)
-          super(Array(payload), **options)
+        def initialize(payload = nil, options = {})
+          if payload.is_a?(Hash)
+            options = payload
+            payload = nil
+          end
+          super(Array(payload), options)
         end
       end
 

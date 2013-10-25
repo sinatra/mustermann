@@ -1,3 +1,4 @@
+require 'enumerable/lazy'
 require 'delegate'
 
 module Mustermann

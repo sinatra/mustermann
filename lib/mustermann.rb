@@ -8,8 +8,9 @@ module Mustermann
   # @raise (see [])
   # @raise (see Mustermann::Pattern.new)
   # @see file:README.md#Types_and_Options "Types and Options" in the README
-  def self.new(string, type: :sinatra, **options)
-    options.any? ? self[type].new(string, **options) : self[type].new(string)
+  def self.new(string, options = {})
+    type = options.delete(:type) || :sinatra
+    options.any? ? self[type].new(string, options) : self[type].new(string)
   end
 
   # Maps a type to its factory.
@@ -27,9 +28,16 @@ module Mustermann
   end
 
   # @!visibility private
-  def self.register(identifier = nil, constant = identifier.to_s.capitalize, load: "mustermann/#{identifier}")
+  def self.register(identifier = nil, constant = identifier.to_s.capitalize, options = {})
+    if identifier.is_a?(Hash)
+      load = identifier 
+      identifier = nil
+    elsif constant.is_a?(Hash)
+      load = constant
+      constant = identifier.to_s.capitalize
+    end
     @register ||= {}
-    @register[identifier] = [constant, load] if identifier
+    @register[identifier] = [constant, load || "mustermann/#{identifier}"] if identifier
     @register
   end
 

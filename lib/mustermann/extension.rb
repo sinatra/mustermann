@@ -24,7 +24,10 @@ module Mustermann
   #
   # @see file:README.md#Sinatra_Integration "Sinatra Integration" in the README
   module Extension
-    def compile!(verb, path, block, except: nil, capture: nil, pattern: { }, **options)
+    def compile!(verb, path, block, options = {})
+      except  = options.delete(:except)
+      capture = options.delete(:capture)
+      pattern = options.delete(:pattern) || {}
       if path.respond_to? :to_str
         pattern[:except]  = except  if except
         pattern[:capture] = capture if capture
@@ -37,7 +40,7 @@ module Mustermann
           end
         end
 
-        path = Mustermann.new(path, **pattern)
+        path = Mustermann.new(path, pattern)
         condition { params.merge! path.params(captures: Array(params[:captures]), offset: -1) }
       end
 

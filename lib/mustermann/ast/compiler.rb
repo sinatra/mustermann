@@ -9,23 +9,24 @@ module Mustermann
       raises CompileError
 
       # Trivial compilations
-      translate(Array)      { |**o| map { |e| t(e, **o) }.join  }
-      translate(:node)      { |**o| t(payload, **o)             }
-      translate(:separator) { |**o| Regexp.escape(payload)      }
-      translate(:optional)  { |**o| "(?:%s)?" % t(payload, **o) }
-      translate(:char)      { |**o| t.encoded(payload, **o)     }
+      translate(Array)      { |o = {}| map { |e| t(e, o) }.join  }
+      translate(:node)      { |o = {}| t(payload, o)             }
+      translate(:separator) { |o = {}| Regexp.escape(payload)    }
+      translate(:optional)  { |o = {}| "(?:%s)?" % t(payload, o) }
+      translate(:char)      { |o = {}| t.encoded(payload, o)     }
 
-      translate :expression do |greedy: true, **options|
-        t(payload, allow_reserved: operator.allow_reserved, greedy: greedy && !operator.allow_reserved,
-          parametric: operator.parametric, separator: operator.separator, **options)
+      translate :expression do |options = {}|
+        greedy = options.fetch(:greedy, true)
+        t(payload, options.merge(allow_reserved: operator.allow_reserved, greedy: greedy && !operator.allow_reserved,
+          parametric: operator.parametric, separator: operator.separator))
       end
 
-      translate :with_look_ahead do |**options|
+      translate :with_look_ahead do |options = {}|
         lookahead = each_leaf.inject("") do |ahead, element|
-          ahead + t(element, skip_optional: true, lookahead: ahead, greedy: false, no_captures: true, **options).to_s
+          ahead + t(element, options.merge(skip_optional: true, lookahead: ahead, greedy: false, no_captures: true)).to_s
         end
         lookahead << (at_end ? '$' : '/')
-        t(head, lookahead: lookahead, **options) + t(payload, **options)
+        t(head, options.merge(lookahead: lookahead)) + t(payload, options)
       end
 
       # Capture compilation is complex. :(
@@ -34,33 +35,41 @@ module Mustermann
         register :capture
 
         # @!visibility private
-        def translate(**options)
+        def translate(options = {})
           return pattern(options) if options[:no_captures]
-          "(?<#{name}>#{translate(no_captures: true, **options)})"
+          "(?<#{name}>#{translate(options.merge(no_captures: true))})"
         end
 
         # @return [String] regexp without the named capture
         # @!visibility private
-        def pattern(capture: nil, **options)
+        def pattern(options = {})
+          capture = options.delete(:capture)
           case capture
-          when Symbol then from_symbol(capture, **options)
-          when Array  then from_array(capture, **options)
-          when Hash   then from_hash(capture, **options)
-          when String then from_string(capture, **options)
-          when nil    then from_nil(**options)
+          when Symbol then from_symbol(capture, options)
+          when Array  then from_array(capture, options)
+          when Hash   then from_hash(capture, options)
+          when String then from_string(capture, options)
+          when nil    then from_nil(options)
           else capture
           end
         end
 
         private
-          def qualified(string, greedy: true, **options)         "#{string}+#{?? unless greedy}"                                     end
-          def with_lookahead(string, lookahead: nil, **options)  lookahead ? "(?:(?!#{lookahead})#{string})" : string                end
-          def from_hash(hash,     **options)                     pattern(capture: hash[name.to_sym], **options)                      end
-          def from_array(array,   **options)                     Regexp.union(*array.map { |e| pattern(capture: e, **options) })     end
-          def from_symbol(symbol, **options)                     qualified(with_lookahead("[[:#{symbol}:]]", **options), **options)  end
-          def from_string(string, **options)                     Regexp.new(string.chars.map { |c| t.encoded(c, **options) }.join)   end
-          def from_nil(**options)                                qualified(with_lookahead(default(**options), **options), **options) end
-          def default(**options) "[^/\\?#]" end
+          def qualified(string, options = {})
+             greedy = options.fetch(:greedy, true)
+            "#{string}+#{?? unless greedy}"
+          end
+
+          def with_lookahead(string, options = {})
+            lookahead = options.delete(:lookahead)
+            lookahead ? "(?:(?!#{lookahead})#{string})" : string
+          end
+          def from_hash(hash,     options = {})                     pattern(options.merge(capture: hash[name.to_sym]))                      end
+          def from_array(array,   options = {})                     Regexp.union(*array.map { |e| pattern(options.merge(capture: e)) })     end
+          def from_symbol(symbol, options = {})                     qualified(with_lookahead("[[:#{symbol}:]]", options), options)  end
+          def from_string(string, options = {})                     Regexp.new(string.chars.map { |c| t.encoded(c, options) }.join)   end
+          def from_nil(options = {})                                qualified(with_lookahead(default(options), options), options) end
+          def default(options = {}) "[^/\\?#]" end
       end
 
       # @!visibility private
@@ -68,7 +77,7 @@ module Mustermann
         register :splat, :named_splat
         # splats are always non-greedy
         # @!visibility private
-        def pattern(**options)
+        def pattern(options = {})
           ".*?"
         end
       end
@@ -78,15 +87,17 @@ module Mustermann
         register :variable
 
         # @!visibility private
-        def translate(**options)
-          return super(**options) if explode or not options[:parametric]
-          parametric super(parametric: false, **options)
+        def translate(options = {})
+          return super(options) if explode or not options[:parametric]
+          parametric super(options.merge(parametric: false))
         end
 
         # @!visibility private
-        def pattern(parametric: false, separator: nil, **options)
-          register_param(parametric: parametric, separator: separator, **options)
-          pattern = super(**options)
+        def pattern(options = {})
+          parametric = options.delete(:parametric) || false
+          separator  = options.delete(:separator)
+          register_param(options.merge(parametric: parametric, separator: separator))
+          pattern = super(options)
           pattern = parametric(pattern) if parametric
           pattern = "#{pattern}(?:#{Regexp.escape(separator)}#{pattern})*" if explode and separator
           pattern
@@ -98,17 +109,21 @@ module Mustermann
         end
 
         # @!visibility private
-        def qualified(string, **options)
-          prefix ? "#{string}{1,#{prefix}}" : super(string, **options)
+        def qualified(string, options = {})
+          prefix ? "#{string}{1,#{prefix}}" : super(string, options)
         end
 
         # @!visibility private
-        def default(allow_reserved: false, **options)
+        def default(options = {})
+          allow_reserved = options.delete(:allow_reserved) || false
           allow_reserved ? '[\w\-\.~%\:/\?#\[\]@\!\$\&\'\(\)\*\+,;=]' : '[\w\-\.~%]'
         end
 
         # @!visibility private
-        def register_param(parametric: false, split_params: nil, separator: nil, **options)
+        def register_param(options = {})
+          parametric   = options.has_key?(:parametric) ? options.delete(:parametric) : false
+          split_params = options.delete(:split_params)
+          separator    = options.delete(:separator)
           return unless explode and split_params
           split_params[name] = { separator: separator, parametric: parametric }
         end
@@ -116,7 +131,9 @@ module Mustermann
 
       # @return [String] Regular expression for matching the given character in all representations
       # @!visibility private
-      def encoded(char, uri_decode: true, space_matches_plus: true, **options)
+      def encoded(char, options ={})
+        uri_decode         = options.fetch(:uri_decode, true)
+        space_matches_plus = options.fetch(:space_matches_plus, true)
         return Regexp.escape(char) unless uri_decode
         encoded = escape(char, escape: /./)
         list    = [escape(char), encoded.downcase, encoded.upcase].uniq.map { |c| Regexp.escape(c) }
@@ -129,8 +146,8 @@ module Mustermann
       # @return [Regexp] corresponding regular expression.
       #
       # @!visibility private
-      def self.compile(ast, **options)
-        new.compile(ast, **options)
+      def self.compile(ast, options = {})
+        new.compile(ast, options)
       end
 
       # Compiles an AST to a regular expression.
@@ -138,9 +155,10 @@ module Mustermann
       # @return [Regexp] corresponding regular expression.
       #
       # @!visibility private
-      def compile(ast, except: nil, **options)
-        except   &&= "(?!#{translate(except, no_captures: true, **options)}\\Z)"
-        expression = "\\A#{except}#{translate(ast, **options)}\\Z"
+      def compile(ast, options = {})
+        except = options.delete(:except)
+        except   &&= "(?!#{translate(except, options.merge(no_captures: true))}\\Z)"
+        expression = "\\A#{except}#{translate(ast, options)}\\Z"
         Regexp.new(expression)
       end
     end

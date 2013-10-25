@@ -17,7 +17,9 @@ module Mustermann
     # @param [Array<#to_str, Mustermann::Pattern>] patterns list of patterns to expand, see {#add}.
     # @param [Symbol] additional_values behavior when encountering additional values, see {#expand}.
     # @param [Hash] options used when creating/expanding patterns, see {Mustermann.new}.
-    def initialize(*patterns, additional_values: :raise, **options)
+    def initialize(*patterns)
+      options = patterns.last.is_a?(Hash) ? patterns.pop : {}
+      additional_values = options.delete(:additional_values) || :raise
       unless additional_values == :raise or additional_values == :ignore or additional_values == :append
         raise ArgumentError, "Illegal value %p for additional_values" % additional_values
       end
@@ -41,7 +43,7 @@ module Mustermann
     # @return [Mustermann::Expander] the expander
     def add(*patterns)
       patterns.each do |pattern|
-        pattern = Mustermann.new(pattern.to_str, **@options) if pattern.respond_to? :to_str
+        pattern = Mustermann.new(pattern.to_str, @options) if pattern.respond_to? :to_str
         raise NotImplementedError, "expanding not supported for #{pattern.class}" unless pattern.respond_to? :to_ast
         @api_expander.add(pattern.to_ast)
         @patterns << pattern
@@ -137,7 +139,11 @@ module Mustermann
     # @return [String] expanded string
     # @raise [NotImplementedError] raised if expand is not supported.
     # @raise [Mustermann::ExpandError] raised if a value is missing or unknown
-    def expand(behavior = nil, **values)
+    def expand(behavior = nil, values = {})
+      if behavior.is_a?(Hash)
+        values   = behavior
+        behavior = nil
+      end
       values = caster.cast(values)
 
       case behavior || additional_values

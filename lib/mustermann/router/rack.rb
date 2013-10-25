@@ -21,10 +21,13 @@ module Mustermann
     #    # in a config.ru
     #    run router
     class Rack < Simple
-      def initialize(env_prefix: "mustermann", params_key: "#{env_prefix}.params", pattern_key: "#{env_prefix}.pattern", **options, &block)
+      def initialize(options = {}, &block)
+        env_prefix  = options.delete(:env_prefix) || "mustermann"
+        params_key  = options.delete(:params_key) || "#{env_prefix}.params"
+        pattern_key = options.delete(:pattern_key) || "#{env_prefix}.pattern"
         @params_key, @pattern_key = params_key, pattern_key
         options[:default] ||= [404, {"Content-Type" => "text/plain", "X-Cascade" => "pass"}, ["Not Found"]]
-        super(**options, &block)
+        super(options, &block)
       end
 
       def invoke(callback, env, params, pattern)

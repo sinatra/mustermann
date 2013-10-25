@@ -17,7 +17,7 @@ module Mustermann
 
       extend Forwardable, SingleForwardable
       single_delegate on: :parser, suffix: :parser
-      instance_delegate %i[parser compiler transformer validation] => 'self.class'
+      instance_delegate %w[parser compiler transformer validation].map(&:to_sym) => 'self.class'
       instance_delegate parse: :parser, transform: :transformer, validate: :validation
 
       # @api private
@@ -51,9 +51,9 @@ module Mustermann
       end
 
       # @!visibility private
-      def compile(**options)
+      def compile(options = {})
         options[:except] &&= parse options[:except]
-        compiler.compile(to_ast, **options)
+        compiler.compile(to_ast, options)
       rescue CompileError => error
         error.message << ": %p" % @string
         raise error
@@ -74,9 +74,9 @@ module Mustermann
       # @raise (see Mustermann::Pattern#expand)
       # @see Mustermann::Pattern#expand
       # @see Mustermann::Expander
-      def expand(**values)
+      def expand(values = {})
         @expander ||= Mustermann::Expander.new(self)
-        @expander.expand(**values)
+        @expander.expand(values)
       end
 
       private :compile

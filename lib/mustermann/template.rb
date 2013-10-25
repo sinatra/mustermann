@@ -24,9 +24,10 @@ module Mustermann
     on(?}) { |c| unexpected(c) }
 
     # @!visibility private
-    def compile(*args, **options)
+    def compile(*args)
+      options = args.last.is_a?(Hash) ? args.pop : {}
       @split_params = {}
-      super(*args, split_params: @split_params, **options)
+      super(*args, options.merge(:split_params => @split_params))
     end
 
     # @!visibility private

@@ -8,7 +8,7 @@ module Mustermann
     # @!visibility private
     def initialize
       @keys = {}
-      @map  = ObjectSpace::WeakMap.new
+      @map  = {}
     end
 
     # @param [Array<#hash>] key for caching
