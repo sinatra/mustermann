@@ -30,14 +30,14 @@ module Mustermann
   # @!visibility private
   def self.register(identifier = nil, constant = identifier.to_s.capitalize, options = {})
     if identifier.is_a?(Hash)
-      load = identifier 
+      options[:load] = identifier 
       identifier = nil
     elsif constant.is_a?(Hash)
-      load = constant
+      options[:load] = constant
       constant = identifier.to_s.capitalize
     end
     @register ||= {}
-    @register[identifier] = [constant, load || "mustermann/#{identifier}"] if identifier
+    @register[identifier] = [constant, options[:load] || "mustermann/#{identifier}"] if identifier
     @register
   end
 

@@ -140,10 +140,7 @@ module Mustermann
     # @raise [NotImplementedError] raised if expand is not supported.
     # @raise [Mustermann::ExpandError] raised if a value is missing or unknown
     def expand(behavior = nil, values = {})
-      if behavior.is_a?(Hash)
-        values   = behavior
-        behavior = nil
-      end
+      values, behavior = behavior, nil if behavior.is_a?(Hash)
       values = caster.cast(values)
 
       case behavior || additional_values

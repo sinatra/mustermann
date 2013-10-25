@@ -36,10 +36,7 @@ module Mustermann
 
       # @!visibility private
       def initialize(payload = nil, options = {})
-        if payload.is_a?(Hash)
-          options = payload
-          payload = nil
-        end
+        options, payload = payload, nil if payload.is_a?(Hash)
         options.each { |key, value| public_send("#{key}=", value) }
         self.payload = payload
       end
@@ -94,10 +91,7 @@ module Mustermann
       class Group < Node
         # @!visibility private
         def initialize(payload = nil, options = {})
-          if payload.is_a?(Hash)
-            options = payload
-            payload = nil
-          end
+          options, payload = payload, nil if payload.is_a?(Hash)
           super(Array(payload), options)
         end
       end

@@ -106,10 +106,7 @@ module Mustermann
     # @param [String] string the string to match against
     # @return [Hash{String: String, Array<String>}, nil] Sinatra style params if pattern matches.
     def params(string = nil, options = {})
-      if string.is_a?(Hash)
-        options = string
-        string  = nil
-      end
+      options, string = string, nil if string.is_a?(Hash)
       captures = options[:captures]
       offset   = options[:offset] || 0
       return unless captures ||= match(string)
