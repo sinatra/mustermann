@@ -5,10 +5,12 @@ module Mustermann
   # @see #fetch
   # @!visibility private
   class EqualityMap
+    MAP_CLASS = defined?(ObjectSpace::WeakMap) ? ObjectSpace::WeakMap : Hash
+
     # @!visibility private
     def initialize
       @keys = {}
-      @map  = {}
+      @map  = MAP_CLASS.new
     end
 
     # @param [Array<#hash>] key for caching
