@@ -1,4 +1,4 @@
-require 'enumerable/lazy'
+require 'enumerable/lazy' unless Enumerable.method_defined?(:lazy)
 require 'delegate'
 
 module Mustermann
