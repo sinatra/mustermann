@@ -15,9 +15,9 @@ Gem::Specification.new do |s|
   s.executables           = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.extra_rdoc_files      = %w[README.md internals.md]
   s.require_path          = 'lib'
-  s.required_ruby_version = '>= 2.0.0'
+  s.required_ruby_version = '>= 1.9.2'
 
-  s.add_dependency 'enumerable-lazy'
+  s.add_dependency 'enumerable-lazy' if RUBY_VERSION < '2.0.0'
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'addressable'
   s.add_development_dependency 'sinatra', '~> 1.4'
