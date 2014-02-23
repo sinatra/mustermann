@@ -2,10 +2,9 @@ require 'mustermann/ast/parser'
 require 'mustermann/ast/compiler'
 require 'mustermann/ast/transformer'
 require 'mustermann/ast/validation'
-
 require 'mustermann/regexp_based'
-require 'mustermann/equality_map'
 require 'mustermann/expander'
+require 'tool/equality_map'
 
 module Mustermann
   # @see Mustermann::AST::Pattern
@@ -62,7 +61,7 @@ module Mustermann
       # Internal AST representation of pattern.
       # @!visibility private
       def to_ast
-        @ast_cache ||= EqualityMap.new
+        @ast_cache ||= Tool::EqualityMap.new
         @ast_cache.fetch(@string) { validate(transform(parse(@string))) }
       end
 
