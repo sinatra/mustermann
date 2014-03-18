@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/rkh/mustermann.png?branch=master)](https://travis-ci.org/rkh/mustermann) [![Coverage Status](https://coveralls.io/repos/rkh/mustermann/badge.png?branch=master)](https://coveralls.io/r/rkh/mustermann) [![Code Climate](https://codeclimate.com/github/rkh/mustermann.png)](https://codeclimate.com/github/rkh/mustermann) [![Dependency Status](https://gemnasium.com/rkh/mustermann.png)](https://gemnasium.com/rkh/mustermann) [![Gem Version](https://badge.fury.io/rb/mustermann.png)](http://badge.fury.io/rb/mustermann)
 [![Inline docs](http://inch-pages.github.io/github/rkh/mustermann.png)](http://inch-pages.github.io/github/rkh/mustermann)
 [![Documentation](http://img.shields.io/:yard-docs-38c800.png)](http://rubydoc.info/gems/mustermann/frames)
-[![License](http://img.shields.io/:license-mit-38c800.png)](http://doge.mit-license.org)
+[![License](http://img.shields.io/:license-MIT-38c800.png)](http://rkh.mit-license.org)
 [![Badges](http://img.shields.io/:badges-9/9-38c800.png)](http://img.shields.io) 
 
 
