@@ -1,7 +1,7 @@
 # The Amazing Mustermann
 
 [![Build Status](https://travis-ci.org/rkh/mustermann.svg?branch=master)](https://travis-ci.org/rkh/mustermann) [![Coverage Status](http://img.shields.io/coveralls/rkh/mustermann.svg?branch=master)](https://coveralls.io/r/rkh/mustermann) [![Code Climate](http://img.shields.io/codeclimate/github/rkh/mustermann.svg)](https://codeclimate.com/github/rkh/mustermann) [![Dependency Status](https://gemnasium.com/rkh/mustermann.svg)](https://gemnasium.com/rkh/mustermann) [![Gem Version](http://img.shields.io/gem/v/mustermann.svg)](https://rubygems.org/gems/mustermann)
-[![Inline docs](http://inch-pages.github.io/github/rkh/mustermann.svg)](http://inch-pages.github.io/github/rkh/mustermann)
+[![Inline docs](http://inch-ci.org/github/rkh/mustermann.svg)](http://inch-ci.org/github/rkh/mustermann)
 [![Documentation](http://img.shields.io/:yard-docs-38c800.svg)](http://rubydoc.info/gems/mustermann/frames)
 [![License](http://img.shields.io/:license-MIT-38c800.svg)](http://rkh.mit-license.org)
 [![Badges](http://img.shields.io/:badges-9/9-38c800.svg)](http://img.shields.io) 
