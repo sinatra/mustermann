@@ -4,3 +4,12 @@ if RUBY_VERSION < '2.0.0'
 end
 
 ENV['RACK_ENV'] = 'test'
+
+require 'rspec'
+require 'rspec/its'
+
+RSpec.configure do |config|
+  config.expect_with :rspec do |c|
+    c.syntax = [:should, :expect]
+  end
+end

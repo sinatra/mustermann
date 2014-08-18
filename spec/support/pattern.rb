@@ -3,7 +3,7 @@ require 'timeout'
 module Support
   module Pattern
     def pattern(pattern, options = nil, &block)
-      description = "pattern %p" % pattern
+      description   = "pattern %p" % pattern
 
       if options
         description << " with options %p" % [options]

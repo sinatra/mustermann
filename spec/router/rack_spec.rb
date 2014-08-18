@@ -2,7 +2,7 @@ require 'mustermann/router/rack'
 
 describe Mustermann::Router::Rack do
   include Rack::Test::Methods
-  subject(:app) { described_class.new }
+  subject(:app) { Mustermann::Router::Rack.new }
 
   context 'matching' do
     before { app.on('/foo') { [418, {'Content-Type' => 'text/plain'}, 'bar'] } }

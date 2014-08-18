@@ -103,6 +103,6 @@ describe Mustermann::Shell do
   end
 
   describe :=~ do
-    example { '/foo'.should be =~ described_class.new('/foo') }
+    example { '/foo'.should be =~ Mustermann::Shell.new('/foo') }
   end
 end

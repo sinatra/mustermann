@@ -2,7 +2,7 @@ require 'support'
 require 'mustermann/simple_match'
 
 describe Mustermann::SimpleMatch do
-  subject { described_class.new('example') }
+  subject { Mustermann::SimpleMatch.new('example') }
   its(:to_s) { should be == 'example' }
   its(:names) { should be == [] }
   its(:captures) { should be == [] }

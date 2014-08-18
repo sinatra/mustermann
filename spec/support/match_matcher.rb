@@ -10,7 +10,7 @@ RSpec::Matchers.define :match do |expected|
     @captures = captures
   end
 
-  failure_message_for_should do |actual|
+  failure_message do |actual|
     require 'pp'
     match = actual.match(expected)
     if match
@@ -31,7 +31,7 @@ RSpec::Matchers.define :match do |expected|
     end
   end
 
-  failure_message_for_should_not do |actual|
+  failure_message_when_negated do |actual|
     "expected %p not to match %p" % [
       actual.to_s, expected
     ]
