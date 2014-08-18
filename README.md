@@ -1023,6 +1023,16 @@ As there has been no stable release yet, the API might still change, though I co
 
 ### Development Releases
 
+* **Mustermann 0.3.0** (2014-08-18)
+    * More Infos:
+      [RubyGems.org](http://rubygems.org/gems/mustermann/versions/0.3.0),
+      [RubyDoc.info](http://rubydoc.info/gems/mustermann/0.3.0/frames),
+      [GitHub.com](https://github.com/rkh/mustermann/tree/v0.3.0)
+    * Add `regexp` pattern.
+    * Add named splats to Sinatra patterns.
+    * Add `Mustermann::Mapper`.
+    * Improve duck typing support.
+    * Improve documentation.
 * **Mustermann 0.2.0** (2013-08-24)
     * More Infos:
       [RubyGems.org](http://rubygems.org/gems/mustermann/versions/0.2.0),
@@ -1060,11 +1070,5 @@ As there has been no stable release yet, the API might still change, though I co
 
 ### Upcoming Releases
 
-* **Mustermann 0.3.0** (next release with new features)
-    * Add `regexp` pattern.
-    * Add named splats to Sinatra patterns.
-    * Add `Mustermann::Mapper`.
-    * Improve duck typing support.
-    * Improve documentation.
 * **Mustermann 1.0.0** (before Sinatra 2.0)
     * First stable release.
