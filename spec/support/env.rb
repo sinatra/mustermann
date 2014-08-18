@@ -5,6 +5,7 @@ end
 
 ENV['RACK_ENV'] = 'test'
 
+require 'tool/warning_filter'
 require 'rspec'
 require 'rspec/its'
 
