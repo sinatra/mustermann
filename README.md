@@ -1023,6 +1023,13 @@ As there has been no stable release yet, the API might still change, though I co
 
 ### Development Releases
 
+* **Mustermann 0.3.1** (2014-09-12)
+    * More Infos:
+      [RubyGems.org](http://rubygems.org/gems/mustermann/versions/0.3.1),
+      [RubyDoc.info](http://rubydoc.info/gems/mustermann/0.3.1/frames),
+      [GitHub.com](https://github.com/rkh/mustermann/tree/v0.3.1)
+    * Speed up pattern generation and matchin (thanks [Daniel Mendler](https://github.com/minad))
+    * Small change so `Mustermann === Mustermann.new('...')` returns `true`.
 * **Mustermann 0.3.0** (2014-08-18)
     * More Infos:
       [RubyGems.org](http://rubygems.org/gems/mustermann/versions/0.3.0),
