@@ -58,4 +58,8 @@ describe Mustermann do
       example { Sinatra .new.extend(Mustermann).should     be_a(Mustermann::Extension) }
     end
   end
+
+  describe :=== do
+    example { Mustermann.should be === Mustermann.new("") }
+  end
 end

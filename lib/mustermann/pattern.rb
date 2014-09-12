@@ -7,6 +7,8 @@ module Mustermann
   # Superclass for all pattern implementations.
   # @abstract
   class Pattern
+    include Mustermann
+
     # List of supported options.
     #
     # @overload supported_options
