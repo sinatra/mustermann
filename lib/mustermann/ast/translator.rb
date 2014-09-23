@@ -94,16 +94,10 @@ module Mustermann
         result
       end
 
-      # Reusing URI::Parser instance gives > 50% performance boost for some operations, like expanding.
-      # @!visibility private
-      def uri_parser
-        @uri_parser ||= URI::Parser.new
-      end
-
       # @return [String] escaped character
       # @!visibility private
       def escape(char, options = {})
-        parser      = options[:parser] || uri_parser
+        parser      = options[:parser] || URI::DEFAULT_PARSER
         escape      = options[:escape] || parser.regexp[:UNSAFE]
         also_escape = options[:also_escape]
         escape = Regexp.union(also_escape, escape) if also_escape

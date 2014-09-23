@@ -58,9 +58,9 @@ module Mustermann
 
     # Add multiple mappings.
     #
-    # @param input [Hash{String, Pattern: String, Pattern, Arry<String, Pattern>, Expander}] the mapping
-    def update(input)
-      input.to_hash.each_pair do |input, output|
+    # @param map [Hash{String, Pattern: String, Pattern, Arry<String, Pattern>, Expander}] the mapping
+    def update(map)
+      map.to_hash.each_pair do |input, output|
         input  = Mustermann.new(input, @options.dup)
         output = Expander.new(*output, @options.merge(additional_values: @additional_values)) unless output.is_a? Expander
         @map << [input, output]

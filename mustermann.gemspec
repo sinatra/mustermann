@@ -18,7 +18,8 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 1.9.2'
 
   s.add_dependency 'enumerable-lazy' if RUBY_VERSION < '2.0.0'
-  s.add_development_dependency 'rspec'
+  s.add_development_dependency 'rspec' #, '~> 2.14'
+  s.add_development_dependency 'rspec-its'
   s.add_development_dependency 'addressable'
   s.add_development_dependency 'sinatra', '~> 1.4'
   s.add_development_dependency 'rack-test'

@@ -2,10 +2,9 @@ require 'mustermann/ast/parser'
 require 'mustermann/ast/compiler'
 require 'mustermann/ast/transformer'
 require 'mustermann/ast/validation'
-
 require 'mustermann/regexp_based'
-require 'mustermann/equality_map'
 require 'mustermann/expander'
+require 'mustermann/equality_map'
 
 module Mustermann
   # @see Mustermann::AST::Pattern

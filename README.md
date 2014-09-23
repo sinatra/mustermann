@@ -1,6 +1,11 @@
 # The Amazing Mustermann
 
-[![Build Status](https://travis-ci.org/rkh/mustermann.png?branch=master)](https://travis-ci.org/rkh/mustermann) [![Coverage Status](https://coveralls.io/repos/rkh/mustermann/badge.png?branch=master)](https://coveralls.io/r/rkh/mustermann) [![Code Climate](https://codeclimate.com/github/rkh/mustermann.png)](https://codeclimate.com/github/rkh/mustermann) [![Dependency Status](https://gemnasium.com/rkh/mustermann.png)](https://gemnasium.com/rkh/mustermann) [![Gem Version](https://badge.fury.io/rb/mustermann.png)](http://badge.fury.io/rb/mustermann)
+[![Build Status](https://travis-ci.org/rkh/mustermann.svg?branch=master)](https://travis-ci.org/rkh/mustermann) [![Coverage Status](http://img.shields.io/coveralls/rkh/mustermann.svg?branch=master)](https://coveralls.io/r/rkh/mustermann) [![Code Climate](http://img.shields.io/codeclimate/github/rkh/mustermann.svg)](https://codeclimate.com/github/rkh/mustermann) [![Dependency Status](https://gemnasium.com/rkh/mustermann.svg)](https://gemnasium.com/rkh/mustermann) [![Gem Version](http://img.shields.io/gem/v/mustermann.svg)](https://rubygems.org/gems/mustermann)
+[![Inline docs](http://inch-ci.org/github/rkh/mustermann.svg)](http://inch-ci.org/github/rkh/mustermann)
+[![Documentation](http://img.shields.io/:yard-docs-38c800.svg)](http://rubydoc.info/gems/mustermann/frames)
+[![License](http://img.shields.io/:license-MIT-38c800.svg)](http://rkh.mit-license.org)
+[![Badges](http://img.shields.io/:badges-9/9-38c800.svg)](http://img.shields.io) 
+
 
 *Make sure you view the correct docs: [latest release](http://rubydoc.info/gems/mustermann/frames), [master](http://rubydoc.info/github/rkh/mustermann/master/frames).*
 
@@ -1018,6 +1023,23 @@ As there has been no stable release yet, the API might still change, though I co
 
 ### Development Releases
 
+* **Mustermann 0.3.1** (2014-09-12)
+    * More Infos:
+      [RubyGems.org](http://rubygems.org/gems/mustermann/versions/0.3.1),
+      [RubyDoc.info](http://rubydoc.info/gems/mustermann/0.3.1/frames),
+      [GitHub.com](https://github.com/rkh/mustermann/tree/v0.3.1)
+    * Speed up pattern generation and matchin (thanks [Daniel Mendler](https://github.com/minad))
+    * Small change so `Mustermann === Mustermann.new('...')` returns `true`.
+* **Mustermann 0.3.0** (2014-08-18)
+    * More Infos:
+      [RubyGems.org](http://rubygems.org/gems/mustermann/versions/0.3.0),
+      [RubyDoc.info](http://rubydoc.info/gems/mustermann/0.3.0/frames),
+      [GitHub.com](https://github.com/rkh/mustermann/tree/v0.3.0)
+    * Add `regexp` pattern.
+    * Add named splats to Sinatra patterns.
+    * Add `Mustermann::Mapper`.
+    * Improve duck typing support.
+    * Improve documentation.
 * **Mustermann 0.2.0** (2013-08-24)
     * More Infos:
       [RubyGems.org](http://rubygems.org/gems/mustermann/versions/0.2.0),
@@ -1055,11 +1077,5 @@ As there has been no stable release yet, the API might still change, though I co
 
 ### Upcoming Releases
 
-* **Mustermann 0.3.0** (next release with new features)
-    * Add `regexp` pattern.
-    * Add named splats to Sinatra patterns.
-    * Add `Mustermann::Mapper`.
-    * Improve duck typing support.
-    * Improve documentation.
 * **Mustermann 1.0.0** (before Sinatra 2.0)
     * First stable release.
