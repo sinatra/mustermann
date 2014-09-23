@@ -2,13 +2,13 @@ $:.unshift File.expand_path("../lib", __FILE__)
 require "mustermann/version"
 
 Gem::Specification.new do |s|
-  s.name                  = "mustermann"
+  s.name                  = "mustermann19"
   s.version               = Mustermann::VERSION
-  s.author                = "Konstantin Haase"
-  s.email                 = "konstantin.mailinglists@googlemail.com"
-  s.homepage              = "https://github.com/rkh/mustermann"
+  s.authors               = ["Konstantin Haase", "namusyaka"]
+  s.email                 = "namusyaka@gmail.com"
+  s.homepage              = "https://github.com/namusyaka/mustermann"
   s.summary               = %q{use patterns like regular expressions}
-  s.description           = %q{library implementing patterns that behave like regular expressions}
+  s.description           = %q{library implementing patterns that behave like regular expressions for use in Ruby 1.9}
   s.license               = 'MIT'
   s.files                 = `git ls-files`.split("\n")
   s.test_files            = `git ls-files -- {test,spec,features}/*`.split("\n")
