@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 module Mustermann
   # A simple wrapper around ObjectSpace::WeakMap that allows matching keys by equality rather than identity.
   # Used for caching.

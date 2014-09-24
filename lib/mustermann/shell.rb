@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 require 'mustermann/pattern'
 require 'mustermann/simple_match'
 

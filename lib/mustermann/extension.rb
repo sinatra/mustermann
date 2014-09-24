@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 require 'sinatra/version'
 fail "no need to load the Mustermann extension for #{::Sinatra::VERSION}" if ::Sinatra::VERSION >= '2.0.0'
 

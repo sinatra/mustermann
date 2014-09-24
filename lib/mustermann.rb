@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 require 'mustermann/pattern'
 
 # Namespace and main entry point for the Mustermann library.

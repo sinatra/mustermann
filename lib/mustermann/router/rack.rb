@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 require 'mustermann/router/simple'
 
 module Mustermann

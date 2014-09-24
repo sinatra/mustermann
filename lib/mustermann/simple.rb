@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 require 'mustermann/regexp_based'
 
 module Mustermann

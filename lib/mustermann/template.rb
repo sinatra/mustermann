@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 require 'mustermann/ast/pattern'
 
 module Mustermann

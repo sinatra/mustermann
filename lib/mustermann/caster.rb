@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 require 'enumerable/lazy' unless Enumerable.method_defined?(:lazy)
 require 'delegate'
 

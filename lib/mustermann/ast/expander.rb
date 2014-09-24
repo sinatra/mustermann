@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 require 'mustermann/ast/translator'
 require 'mustermann/ast/compiler'
 
