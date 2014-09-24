@@ -13,15 +13,15 @@ module Mustermann
     # @param (see Mustermann::Pattern#initialize)
     # @return (see Mustermann::Pattern#initialize)
     # @see (see Mustermann::Pattern#initialize)
-    def initialize(string, **options)
+    def initialize(string, options = {})
       super
-      @regexp = compile(**options)
+      @regexp = compile(options)
     end
 
     extend Forwardable
     def_delegators :regexp, :===, :=~, :match, :names, :named_captures
 
-    def compile(**options)
+    def compile(options = {})
       raise NotImplementedError, 'subclass responsibility'
     end
 

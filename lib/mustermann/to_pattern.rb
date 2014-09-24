@@ -34,8 +34,8 @@ module Mustermann
     #
     # @param [Hash] options The options hash.
     # @return [Mustermann::Pattern] pattern corresponding to object.
-    def to_pattern(**options)
-      Mustermann.new(self, **options)
+    def to_pattern(options = {})
+      Mustermann.new(self, options)
     end
 
     append_features String

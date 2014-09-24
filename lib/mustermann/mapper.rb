@@ -44,10 +44,14 @@ module Mustermann
     #   @example map after options
     #     require 'mustermann/mapper'
     #     Mustermann::Mapper.new(type: :rails, "/:foo" => "/:foo.html")
-    def initialize(map = {}, additional_values: :ignore, **options, &block)
+    def initialize(options = {}, &block)
       @map               = []
+      @additional_values = options.delete(:additional_values) || :ignore
       @options           = options
-      @additional_values = additional_values
+      map = @options.inject({}) do |result, entry|
+        result[entry[0]] = @options.delete(entry[0]) if entry[0].is_a?(String)
+        result
+      end
       block.arity == 0 ? update(yield) : yield(self) if block
       update(map) if map
     end
@@ -56,9 +60,9 @@ module Mustermann
     #
     # @param map [Hash{String, Pattern: String, Pattern, Arry<String, Pattern>, Expander}] the mapping
     def update(map)
-      map.to_h.each_pair do |input, output|
-        input  = Mustermann.new(input, **@options)
-        output = Expander.new(*output, additional_values: @additional_values, **@options) unless output.is_a? Expander
+      map.to_hash.each_pair do |input, output|
+        input  = Mustermann.new(input, @options.dup)
+        output = Expander.new(*output, @options.merge(additional_values: @additional_values)) unless output.is_a? Expander
         @map << [input, output]
       end
     end

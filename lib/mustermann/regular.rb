@@ -12,12 +12,12 @@ module Mustermann
     # @param (see Mustermann::Pattern#initialize)
     # @return (see Mustermann::Pattern#initialize)
     # @see (see Mustermann::Pattern#initialize)
-    def initialize(string, **options)
+    def initialize(string, options = {})
       string = $1 if string.to_s =~ /\A\(\?\-mix\:(.*)\)\Z/ && string.inspect == "/#$1/"
-      super(string, **options)
+      super(string, options)
     end
 
-    def compile(**options)
+    def compile(options = {})
       /\A#{@string}\Z/
     end
 

@@ -114,8 +114,8 @@ module Mustermann
       # @return [String, MatchData] the match
       # @raise [Mustermann::ParseError] if expectation wasn't met
       # @!visibility private
-      def expect(regexp, **options)
-        scan(regexp)|| unexpected(**options)
+      def expect(regexp, options = {})
+        scan(regexp)|| unexpected(options)
       end
 
       # Helper for raising an exception for an unexpected character.
@@ -124,12 +124,14 @@ module Mustermann
       # @param [String, nil] char the unexpected character
       # @raise [Mustermann::ParseError, Exception]
       # @!visibility private
-      def unexpected(char = getch, exception: ParseError)
+      def unexpected(char = getch, options = {})
+        options, char = char, getch if char.is_a?(Hash)
+        exception = options.fetch(:exception, ParseError)
         char = "space" if char == " "
         raise exception, "unexpected #{char || "end of string"} while parsing #{string.inspect}"
       end
     end
 
-    private_constant :Parser
+    #private_constant :Parser
   end
 end

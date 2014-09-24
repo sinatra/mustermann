@@ -10,12 +10,13 @@ module Mustermann
   # @raise (see [])
   # @raise (see Mustermann::Pattern.new)
   # @see file:README.md#Types_and_Options "Types and Options" in the README
-  def self.new(input, type: :sinatra, **options)
+  def self.new(input, options = {})
+    type = options.delete(:type) || :sinatra
     case input
     when Pattern then input
-    when Regexp  then self[:regexp].new(input, **options)
-    when String  then self[type].new(input, **options)
-    else input.to_pattern(type: type, **options)
+    when Regexp  then self[:regexp].new(input, options)
+    when String  then self[type].new(input, options)
+    else input.to_pattern(options.merge(type: type))
     end
   end
 
@@ -34,7 +35,10 @@ module Mustermann
   end
 
   # @!visibility private
-  def self.register(*identifiers, constant: identifiers.first.to_s.capitalize, load: "mustermann/#{identifiers.first}")
+  def self.register(*identifiers)
+    options  = identifiers.last.is_a?(Hash) ? identifiers.pop : {}
+    constant = options[:constant] || identifiers.first.to_s.capitalize
+    load     = options[:load] || "mustermann/#{identifiers.first}"
     @register ||= {}
     identifiers.each { |i| @register[i] = [constant, load] }
     @register

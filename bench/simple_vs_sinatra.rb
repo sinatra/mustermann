@@ -1,4 +1,4 @@
-$:.unshift File.expand_path('../lib', __dir__)
+$:.unshift File.expand_path('../lib', File.dirname(__FILE__))
 
 require 'benchmark'
 require 'mustermann/simple'

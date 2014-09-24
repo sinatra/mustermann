@@ -13,10 +13,10 @@ module Mustermann
     # @param (see Mustermann::Pattern#initialize)
     # @return (see Mustermann::Pattern#initialize)
     # @see (see Mustermann::Pattern#initialize)
-    def initialize(string, **options)
+    def initialize(string, options = {})
       @flags = File::FNM_PATHNAME | File::FNM_DOTMATCH
       @flags |= File::FNM_EXTGLOB if defined? File::FNM_EXTGLOB
-      super(string, **options)
+      super(string, options)
     end
 
     # @param (see Mustermann::Pattern#===)

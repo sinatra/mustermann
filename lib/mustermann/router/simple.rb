@@ -51,10 +51,10 @@ module Mustermann
       # @param default value to be returned if nothing matches
       # @param options [Hash] pattern options
       # @return [Mustermann::Router::Simple] new router instance
-      def initialize(default: nil, **options, &block)
+      def initialize(options = {}, &block)
         @options = options
         @map     = []
-        @default = default
+        @default = @options.delete(:default)
 
         block.arity == 0 ? instance_eval(&block) : yield(self) if block
       end
@@ -109,9 +109,11 @@ module Mustermann
       # @param patterns [Array<String, Pattern>]
       # @param call [#call] callback object, need to hand in block if missing
       # @param options [Hash] pattern options
-      def on(*patterns, call: Proc.new, **options)
+      def on(*patterns)
+        options = patterns.last.is_a?(Hash) ? patterns.pop : {}
+        call    = options.delete(:call) || Proc.new
         patterns.each do |pattern|
-          pattern = Mustermann.new(pattern.to_str, **options, **@options) if pattern.respond_to? :to_str
+          pattern = Mustermann.new(pattern.to_str, @options.merge(options)) if pattern.respond_to? :to_str
           @map << [pattern, call]
         end
       end

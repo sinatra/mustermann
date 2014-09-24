@@ -1,6 +1,6 @@
 require 'mustermann/error'
 require 'mustermann/simple_match'
-require 'tool/equality_map'
+require 'mustermann/equality_map'
 require 'uri'
 
 module Mustermann
@@ -38,13 +38,15 @@ module Mustermann
     # @raise [ArgumentError] if some option is not supported
     # @return [Mustermann::Pattern] a new instance of Mustermann::Pattern
     # @see #initialize
-    def self.new(string, ignore_unknown_options: false, **options)
+    def self.new(string, options = {})
+      ignore_unknown_options = options.fetch(:ignore_unknown_options, false)
+      options.delete(:ignore_unknown_options)
       unless ignore_unknown_options
         unsupported = options.keys.detect { |key| not supported?(key) }
         raise ArgumentError, "unsupported option %p for %p" % [unsupported, self] if unsupported
       end
 
-      @map ||= Tool::EqualityMap.new
+      @map ||= EqualityMap.new
       @map.fetch(string, options) { super(string, options) }
     end
 
@@ -56,7 +58,8 @@ module Mustermann
     # @raise [Mustermann::Error] if the pattern can't be generated from the string
     # @see file:README.md#Types_and_Options "Types and Options" in the README
     # @see Mustermann.new
-    def initialize(string, uri_decode: true, **options)
+    def initialize(string, options = {})
+      uri_decode = options.fetch(:uri_decode, true)
       @uri_decode = uri_decode
       @string     = string.to_s.dup
     end
@@ -104,7 +107,10 @@ module Mustermann
 
     # @param [String] string the string to match against
     # @return [Hash{String: String, Array<String>}, nil] Sinatra style params if pattern matches.
-    def params(string = nil, captures: nil, offset: 0)
+    def params(string = nil, options = {})
+      options, string = string, nil if string.is_a?(Hash)
+      captures = options[:captures]
+      offset   = options[:offset] || 0
       return unless captures ||= match(string)
       params   = named_captures.map do |name, positions|
         values = positions.map { |pos| map_param(name, captures[pos + offset]) }.flatten
@@ -134,7 +140,7 @@ module Mustermann
     # @raise [NotImplementedError] raised if expand is not supported.
     # @raise [Mustermann::ExpandError] raised if a value is missing or unknown
     # @see Mustermann::Expander
-    def expand(**values)
+    def expand(values = {})
       raise NotImplementedError, "expanding not supported by #{self.class}"
     end
 
@@ -171,6 +177,6 @@ module Mustermann
     end
 
     private :unescape, :map_param
-    private_constant :ALWAYS_ARRAY
+    #private_constant :ALWAYS_ARRAY
   end
 end

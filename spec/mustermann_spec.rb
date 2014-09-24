@@ -30,7 +30,7 @@ describe Mustermann do
     end
 
     context "argument implementing #to_pattern" do
-      subject(:pattern) { Class.new { def to_pattern(**o) Mustermann.new('foo', **o) end }.new }
+      subject(:pattern) { Class.new { def to_pattern(o={}) Mustermann.new('foo', o) end }.new }
       example { Mustermann.new(pattern)               .should be_a(Mustermann::Sinatra) }
       example { Mustermann.new(pattern, type: :rails) .should be_a(Mustermann::Rails) }
       example { Mustermann.new(pattern).to_s.should be == 'foo' }

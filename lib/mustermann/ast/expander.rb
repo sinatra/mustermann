@@ -76,13 +76,13 @@ module Mustermann
 
       # helper method for getting a capture's pattern.
       # @!visibility private
-      def pattern_for(node, **options)
-        Compiler.new.decorator_for(node).pattern(**options)
+      def pattern_for(node, options = {})
+        Compiler.new.decorator_for(node).pattern(options)
       end
 
       # @see Mustermann::Pattern#expand
       # @!visibility private
-      def expand(**values)
+      def expand(values = {})
         keys, pattern, filters = mappings.fetch(values.keys.sort) { error_for(values) }
         filters.each { |key, filter| values[key] &&= escape(values[key], also_escape: filter) }
         pattern % values.values_at(*keys)
@@ -118,7 +118,8 @@ module Mustermann
 
       # Turns a sprintf pattern into our secret internal data structure.
       # @!visibility private
-      def pattern(string = "", *keys, **filters)
+      def pattern(string = "", *keys)
+        filters = keys.last.is_a?(Hash) ? keys.pop : {}
         [[keys, string, filters]]
       end
 
@@ -126,7 +127,7 @@ module Mustermann
       # @!visibility private
       def add_to(list, result)
         list << [[], ""] if list.empty?
-        list.inject([]) { |l, (k1, p1, f1)| l + result.map { |k2, p2, f2| [k1+k2, p1+p2, **f1, **f2] } }
+        list.inject([]) { |l, (k1, p1, f1)| l + result.map { |k2, p2, f2| [k1+k2, p1+p2, f1.merge(f2)] } }
       end
     end
   end
