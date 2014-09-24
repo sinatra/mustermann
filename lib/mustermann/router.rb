@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 require 'mustermann/router/simple'
 require 'mustermann/router/rack'
 

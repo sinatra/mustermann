@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 module Mustermann
   Error        ||= Class.new(StandardError) # Raised if anything goes wrong while generating a {Pattern}.
   CompileError ||= Class.new(Error)         # Raised if anything goes wrong while compiling a {Pattern}.

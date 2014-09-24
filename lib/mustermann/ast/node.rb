@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 module Mustermann
   # @see Mustermann::AST::Pattern
   module AST

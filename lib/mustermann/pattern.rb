@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 require 'mustermann/error'
 require 'mustermann/simple_match'
 require 'mustermann/equality_map'

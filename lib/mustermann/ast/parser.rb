@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 require 'mustermann/ast/node'
 require 'forwardable'
 require 'strscan'

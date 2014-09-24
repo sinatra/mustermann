@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 require 'mustermann/ast/expander'
 require 'mustermann/caster'
 require 'mustermann'
