@@ -518,4 +518,12 @@ describe Mustermann::Rails do
       end
     end
   end
+
+  context 'Proc compatibility' do
+    describe :to_proc do
+      example { Mustermann::Rails.new("/").to_proc.should be_a(Proc) }
+      example('non-matching') { Mustermann::Rails.new("/")     .to_proc.call('/foo').should be == false }
+      example('matching')     { Mustermann::Rails.new("/:foo") .to_proc.call('/foo').should be == true  }
+    end
+  end
 end

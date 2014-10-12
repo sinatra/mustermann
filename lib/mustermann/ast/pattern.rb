@@ -65,6 +65,11 @@ module Mustermann
         @ast_cache.fetch(@string) { validate(transform(parse(@string))) }
       end
 
+      # @see Mustermann::Pattern#expandable?
+      def expandable?
+        true
+      end
+
       # All AST-based pattern implementations support expanding.
       #
       # @example (see Mustermann::Pattern#expand)
