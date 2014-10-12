@@ -405,6 +405,44 @@ end
 MyObject.new.to_pattern # => #<Mustermann::Sinatra:"/foo">
 ```
 
+## Binary Operators
+
+Patterns can be combined via binary operators. These are:
+
+* `|` (or):  Resulting pattern matches if at least one of the input pattern matches.
+* `&` (and): Resulting pattern matches if all input patterns match.
+* `^` (xor): Resulting pattern matches if exactly one of the input pattern matches.
+
+``` ruby
+require 'mustermann'
+
+first  = Mustermann.new('/foo/:input')
+second = Mustermann.new('/:input/bar')
+
+first | second === "/foo/foo" # => true
+first | second === "/foo/bar" # => true
+
+first & second === "/foo/foo" # => false
+first & second === "/foo/bar" # => true
+
+first ^ second === "/foo/foo" # => true
+first ^ second === "/foo/bar" # => false
+```
+
+These resulting objects are fully functional pattern objects, allowing you to call methods line `pattern` or `to_proc` on them. Moreover, *or* patterns created solely from expandable patterns will also be expandable.
+
+## As a Proc
+
+Patterns implement `to_proc` and can therefore be easily passed to methods expecting a block:
+
+``` ruby
+require 'mustermann'
+
+list    = ["foo", "example@email.com", "bar"]
+pattern = Mustermann.new(":name@:domain.:tld")
+email   = list.detec(&pattern)
+```
+
 ## Partial Loading and Thread Safety
 
 Pattern objects are generally assumed to be thread-safe. You can easily match strings against the same pattern object concurrently.
@@ -1077,5 +1115,8 @@ As there has been no stable release yet, the API might still change, though I co
 
 ### Upcoming Releases
 
+* **Mustermann 4.0.0** (next release with new features)
+    * Add `Pattern#to_proc`.
+    * Add `Pattern#|`, `Pattern#&` and `Pattern#^`.
 * **Mustermann 1.0.0** (before Sinatra 2.0)
     * First stable release.

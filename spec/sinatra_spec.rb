@@ -571,4 +571,12 @@ describe Mustermann::Sinatra do
       end
     end
   end
+
+  context 'Proc compatibility' do
+    describe :to_proc do
+      example { Mustermann::Sinatra.new("/").to_proc.should be_a(Proc) }
+      example('non-matching') { Mustermann::Sinatra.new("/")     .to_proc.call('/foo').should be == false }
+      example('matching')     { Mustermann::Sinatra.new("/:foo") .to_proc.call('/foo').should be == true  }
+    end
+  end
 end

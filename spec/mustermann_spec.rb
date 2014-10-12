@@ -35,6 +35,20 @@ describe Mustermann do
       example { Mustermann.new(pattern, type: :rails) .should be_a(Mustermann::Rails) }
       example { Mustermann.new(pattern).to_s.should be == 'foo' }
     end
+
+    context "multiple arguments" do
+      example { Mustermann.new('', '')                        .should be_a(Mustermann::Composite) }
+      example { Mustermann.new('', '').patterns.first         .should be_a(Mustermann::Sinatra)   }
+      example { Mustermann.new('', '').operator               .should be == :|                    }
+      example { Mustermann.new('', '', operator: :&).operator .should be == :&                    }
+      example { Mustermann.new('', '', greedy: true)          .should be_a(Mustermann::Composite) }
+    end
+
+    context "invalid arguments" do
+      it "raise a TypeError for unsupported types" do
+        expect { Mustermann.new(10) }.to raise_error(TypeError, "Fixnum can't be coerced into Mustermann::Pattern")
+      end
+    end
   end
 
   describe :[] do

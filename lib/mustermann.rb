@@ -1,22 +1,31 @@
 require 'mustermann/pattern'
+require 'mustermann/composite'
 
 # Namespace and main entry point for the Mustermann library.
 #
 # Under normal circumstances the only external API entry point you should be using is {Mustermann.new}.
 module Mustermann
-  # @param [String, Pattern, Regexp, #to_pattern] input The representation of the new pattern
+  # @param [String, Pattern, Regexp, #to_pattern, Array<String, Pattern, Regexp, #to_pattern>]
+  #   input The representation of the new pattern
   # @param [Hash] options The options hash
   # @return [Mustermann::Pattern] pattern corresponding to string.
   # @raise (see [])
   # @raise (see Mustermann::Pattern.new)
+  # @raise [TypeError] if the passed object cannot be converted to a pattern
   # @see file:README.md#Types_and_Options "Types and Options" in the README
-  def self.new(input, options = {})
+  def self.new(*input)
+    options = input.last.kind_of?(Hash) ? input.pop : {}
     type = options.delete(:type) || :sinatra
+    input = input.first if input.size < 2
     case input
     when Pattern then input
     when Regexp  then self[:regexp].new(input, options)
     when String  then self[type].new(input, options)
-    else input.to_pattern(options.merge(type: type))
+    when Array   then Composite.new(input, options.merge(:type => type))
+    else
+      pattern = input.to_pattern(options.merge(:type => type)) if input.respond_to? :to_pattern
+      raise TypeError, "#{input.class} can't be coerced into Mustermann::Pattern" if pattern.nil?
+      pattern
     end
   end
 

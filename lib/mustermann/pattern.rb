@@ -28,7 +28,7 @@ module Mustermann
 
     # @param [Symbol] option The option to check.
     # @return [Boolean] Whether or not option is supported.
-    def self.supported?(option)
+    def self.supported?(option, options = {})
       supported_options.include? option
     end
 
@@ -42,7 +42,7 @@ module Mustermann
       ignore_unknown_options = options.fetch(:ignore_unknown_options, false)
       options.delete(:ignore_unknown_options)
       unless ignore_unknown_options
-        unsupported = options.keys.detect { |key| not supported?(key) }
+        unsupported = options.keys.detect { |key| not supported?(key, options) }
         raise ArgumentError, "unsupported option %p for %p" % [unsupported, self] if unsupported
       end
 
@@ -144,16 +144,82 @@ module Mustermann
       raise NotImplementedError, "expanding not supported by #{self.class}"
     end
 
+    # @overload |(other)
+    #   Creates a pattern that matches any string matching either one of the patterns.
+    #   If a string is supplied, it is treated as an identity pattern.
+    #   
+    #   @example
+    #     pattern = Mustermann.new('/foo/:name') | Mustermann.new('/:first/:second')
+    #     pattern === '/foo/bar' # => true
+    #     pattern === '/fox/bar' # => true
+    #     pattern === '/foo'     # => false
+    #
+    # @overload &(other)
+    #   Creates a pattern that matches any string matching both of the patterns.
+    #   If a string is supplied, it is treated as an identity pattern.
+    #   
+    #   @example
+    #     pattern = Mustermann.new('/foo/:name') & Mustermann.new('/:first/:second')
+    #     pattern === '/foo/bar' # => true
+    #     pattern === '/fox/bar' # => false
+    #     pattern === '/foo'     # => false
+    #
+    # @overload ^(other)
+    #   Creates a pattern that matches any string matching exactly one of the patterns.
+    #   If a string is supplied, it is treated as an identity pattern.
+    #   
+    #   @example
+    #     pattern = Mustermann.new('/foo/:name') ^ Mustermann.new('/:first/:second')
+    #     pattern === '/foo/bar' # => false
+    #     pattern === '/fox/bar' # => true
+    #     pattern === '/foo'     # => false
+    #
+    # @param [Mustermann::Pattern, String] other the other pattern
+    # @return [Mustermann::Pattern] a composite pattern
+    def |(other)
+      Mustermann.new(self, other, :operator => :|, :type => :identity)
+    end
+
+    def &(other)
+      Mustermann.new(self, other, :operator => :&, :type => :identity)
+    end
+
+    def ^(other)
+      Mustermann.new(self, other, :operator => :^, :type => :identity)
+    end
+
+    # @see Pattern#expand
+    # @return [true, false] whether or not the pattern supports expanding
+    def expandable?
+      false
+    end
+
+    # @example
+    #   pattern = Mustermann.new('/:a/:b')
+    #   strings = ["foo/bar", "/foo/bar", "/foo/bar/"]
+    #   strings.detect(&pattern) # => "/foo/bar"
+    #
+    # @return [Proc] proc wrapping {#===}
+    def to_proc
+      @to_proc ||= method(:===).to_proc
+    end
+
     # @!visibility private
     # @return [Boolean]
     # @see Object#respond_to?
     def respond_to?(method, *args)
-      method.to_s == 'expand' ? false : super
+      method.to_s == 'expand' ? expandable? : super
     end
 
     # @!visibility private
     def inspect
       "#<%p:%p>" % [self.class, @string]
+    end
+
+    # @!visibility private
+    def simple_inspect
+      type = self.class.name[/[^:]+$/].downcase
+      "%s:%p" % [type, @string]
     end
 
     # @!visibility private
