@@ -148,11 +148,14 @@ module Mustermann
       # @!visibility private
       def read_brackets(open, close, options = {})
         char = options.delete(:char) || nil
+        escape = options.delete(:escape) || ?\\
         result = ""
+        escape = false if escape.nil?
         while current = getch
           case current
-          when close then return result
-          when open  then result << open << read_brackets(open, close) << close
+          when close  then return result
+          when open   then result << open   << read_brackets(open, close) << close
+          when escape then result << escape << getch
           else result << current
           end
         end

@@ -156,6 +156,13 @@ describe Mustermann::Express do
     it { should generate_template('/{foo}') }
   end
 
+  pattern '/:foo(\))' do
+    it { should_not match('/')    }
+    it { should_not match('/foo') }
+    it { should match('/)').capturing foo: ')' }
+    it { should generate_template('/{foo}') }
+  end
+
   pattern '/:foo(prefix(\d+|bar))' do
     it { should_not match('/prefix')    }
     it { should_not match('/prefixfoo') }
