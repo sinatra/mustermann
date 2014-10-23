@@ -90,9 +90,9 @@ module Mustermann
       # @raise (see Mustermann::Pattern#expand)
       # @see Mustermann::Pattern#expand
       # @see Mustermann::Expander
-      def expand(**values)
+      def expand(behavior = nil, **values)
         @expander ||= Mustermann::Expander.new(self)
-        @expander.expand(**values)
+        @expander.expand(behavior, **values)
       end
 
       # All AST-based pattern implementations support generating templates.

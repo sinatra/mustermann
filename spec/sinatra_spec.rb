@@ -72,7 +72,28 @@ describe Mustermann::Sinatra do
     it { should generate_template('/{foo}/{bar}') }
   end
 
+  pattern "/{foo}/{bar}" do
+    it { should match('/foo/bar')               .capturing foo: 'foo',              bar: 'bar'     }
+    it { should match('/foo.bar/bar.foo')       .capturing foo: 'foo.bar',          bar: 'bar.foo' }
+    it { should match('/user@example.com/name') .capturing foo: 'user@example.com', bar: 'name'    }
+    it { should match('/10.1/te.st')            .capturing foo: '10.1',             bar: 'te.st'   }
+    it { should match('/10.1.2/te.st')          .capturing foo: '10.1.2',           bar: 'te.st'   }
+
+    it { should_not match('/foo%2Fbar') }
+    it { should_not match('/foo%2fbar') }
+
+    example { pattern.params('/bar/foo').should be == {"foo" => "bar", "bar" => "foo"} }
+    example { pattern.params('').should be_nil }
+
+    it { should generate_template('/{foo}/{bar}') }
+  end
+
   pattern '/hello/:person' do
+    it { should match('/hello/Frank').capturing person: 'Frank' }
+    it { should generate_template('/hello/{person}') }
+  end
+
+  pattern '/hello/{person}' do
     it { should match('/hello/Frank').capturing person: 'Frank' }
     it { should generate_template('/hello/{person}') }
   end
@@ -98,7 +119,21 @@ describe Mustermann::Sinatra do
     it { should generate_template('/{foo_bar}') }
   end
 
+  pattern '/{foo.bar}' do
+    it { should match('/hello').capturing :"foo.bar" => 'hello' }
+    it { should generate_template('/{foo.bar}') }
+  end
+
   pattern '/*' do
+    it { should match('/')        .capturing splat: '' }
+    it { should match('/foo')     .capturing splat: 'foo' }
+    it { should match('/foo/bar') .capturing splat: 'foo/bar' }
+    it { should generate_template('/{+splat}') }
+
+    example { pattern.params('/foo').should be == {"splat" => ["foo"]} }
+  end
+
+  pattern '/{+splat}' do
     it { should match('/')        .capturing splat: '' }
     it { should match('/foo')     .capturing splat: 'foo' }
     it { should match('/foo/bar') .capturing splat: 'foo/bar' }
@@ -117,12 +152,38 @@ describe Mustermann::Sinatra do
     example { pattern.params('/foo/bar') .should be == {"foo" => "foo/bar" } }
   end
 
+  pattern '/{+foo}' do
+    it { should match('/')        .capturing foo: ''        }
+    it { should match('/foo')     .capturing foo: 'foo'     }
+    it { should match('/foo/bar') .capturing foo: 'foo/bar' }
+    it { should generate_template('/{+foo}') }
+
+    example { pattern.params('/foo')     .should be == {"foo" => "foo"     } }
+    example { pattern.params('/foo/bar') .should be == {"foo" => "foo/bar" } }
+  end
+
   pattern '/*foo/*bar' do
     it { should match('/foo/bar') .capturing foo: 'foo', bar: 'bar' }
     it { should generate_template('/{+foo}/{+bar}') }
   end
 
+  pattern '/{+foo}/{+bar}' do
+    it { should match('/foo/bar') .capturing foo: 'foo', bar: 'bar' }
+    it { should generate_template('/{+foo}/{+bar}') }
+  end
+
   pattern '/:foo/*' do
+    it { should match("/foo/bar/baz")     .capturing foo: 'foo',   splat: 'bar/baz'   }
+    it { should match("/foo/")            .capturing foo: 'foo',   splat: ''          }
+    it { should match('/h%20w/h%20a%20y') .capturing foo: 'h%20w', splat: 'h%20a%20y' }
+    it { should_not match('/foo') }
+    it { should generate_template('/{foo}/{+splat}') }
+
+    example { pattern.params('/bar/foo').should be == {"splat" => ["foo"], "foo" => "bar"} }
+    example { pattern.params('/bar/foo/f%20o').should be == {"splat" => ["foo/f o"], "foo" => "bar"} }
+  end
+
+  pattern '/{foo}/*' do
     it { should match("/foo/bar/baz")     .capturing foo: 'foo',   splat: 'bar/baz'   }
     it { should match("/foo/")            .capturing foo: 'foo',   splat: ''          }
     it { should match('/h%20w/h%20a%20y') .capturing foo: 'h%20w', splat: 'h%20a%20y' }
@@ -155,7 +216,27 @@ describe Mustermann::Sinatra do
     it { should match('/foo&bar') }
   end
 
+  pattern '/foo\{bar' do
+    it { should match('/foo%7Bbar') }
+  end
+
   pattern '/*/:foo/*/*' do
+    it { should match('/bar/foo/bling/baz/boom') }
+
+    it "should capture all splat parts" do
+      match = pattern.match('/bar/foo/bling/baz/boom')
+      match.captures.should be == ['bar', 'foo', 'bling', 'baz/boom']
+      match.names.should be == ['splat', 'foo']
+    end
+
+    it 'should map to proper params' do
+      pattern.params('/bar/foo/bling/baz/boom').should be == {
+        "foo" => "foo", "splat" => ['bar', 'bling', 'baz/boom']
+      }
+    end
+  end
+
+  pattern '/{+splat}/{foo}/{+splat}/{+splat}' do
     it { should match('/bar/foo/bling/baz/boom') }
 
     it "should capture all splat parts" do

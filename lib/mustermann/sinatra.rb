@@ -21,6 +21,14 @@ module Mustermann
       groups.size == 1 ? groups.first : node(:union, groups)
     end
 
+    on ?{ do |char|
+      type = scan(?+) ? :named_splat : :capture
+      name = expect(/[\w\.]+/)
+      type = :splat if type == :named_splat and name == 'splat'
+      expect(?})
+      node(type, name)
+    end
+
     suffix ?? do |char, element|
       node(:optional, element)
     end

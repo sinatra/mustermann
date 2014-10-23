@@ -142,7 +142,7 @@ module Mustermann
       values = map_values(values)
 
       case behavior || additional_values
-      when :raise  then @api_expander.expand(values)
+      when :raise  then @api_expander.expand(**values)
       when :ignore then with_rest(values) { |uri, rest| uri }
       when :append then with_rest(values) { |uri, rest| append(uri, rest) }
       else raise ArgumentError, "unknown behavior %p" % behavior
