@@ -102,4 +102,6 @@ module Mustermann
   register :simple
   register :sinatra
   register :template
+  register :flask
+  register :express
 end
