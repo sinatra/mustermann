@@ -429,7 +429,7 @@ first ^ second === "/foo/foo" # => true
 first ^ second === "/foo/bar" # => false
 ```
 
-These resulting objects are fully functional pattern objects, allowing you to call methods line `pattern` or `to_proc` on them. Moreover, *or* patterns created solely from expandable patterns will also be expandable.
+These resulting objects are fully functional pattern objects, allowing you to call methods like `params` or `to_proc` on them. Moreover, *or* patterns created solely from expandable patterns will also be expandable.
 
 ## As a Proc
 
