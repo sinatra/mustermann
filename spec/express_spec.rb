@@ -148,10 +148,33 @@ describe Mustermann::Express do
     it { should generate_template('/{foo}') }
   end
 
+  pattern '/:foo(\d+|bar)' do
+    it { should_not match('/')    }
+    it { should_not match('/foo') }
+    it { should match('/15')  .capturing foo: '15' }
+    it { should match('/bar') .capturing foo: 'bar' }
+    it { should generate_template('/{foo}') }
+  end
+
+  pattern '/:foo(prefix(\d+|bar))' do
+    it { should_not match('/prefix')    }
+    it { should_not match('/prefixfoo') }
+    it { should match('/prefix15')  .capturing foo: 'prefix15' }
+    it { should match('/prefixbar') .capturing foo: 'prefixbar' }
+    it { should generate_template('/{foo}') }
+  end
+
   pattern '/(.+)' do
     it { should_not match('/') }
     it { should match('/foo')     .capturing splat: 'foo' }
     it { should match('/foo/bar') .capturing splat: 'foo/bar' }
+    it { should generate_template('/{+splat}') }
+  end
+
+  pattern '/(foo(a|b))' do
+    it { should_not match('/') }
+    it { should match('/fooa') .capturing splat: 'fooa' }
+    it { should match('/foob') .capturing splat: 'foob' }
     it { should generate_template('/{+splat}') }
   end
 
@@ -163,7 +186,7 @@ describe Mustermann::Express do
 
     example 'missing closing parenthesis' do
       expect { Mustermann::Express.new('foo(bar') }.
-        to raise_error(Mustermann::ParseError, 'unexpected ( while parsing "foo(bar"')
+        to raise_error(Mustermann::ParseError, 'unexpected end of string while parsing "foo(bar"')
     end
 
     example 'unexpected ?' do
