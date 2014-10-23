@@ -65,6 +65,14 @@ module Mustermann
 
       # @!visibility private
       class Capture < Node
+        # @see Mustermann::AST::Compiler::Capture#default
+        # @!visibility private
+        attr_accessor :constraint
+
+        # @see Mustermann::AST::Pattern#map_param
+        # @!visibility private
+        attr_accessor :convert
+
         # @see Mustermann::AST::Node#parse
         # @!visibility private
         def parse

@@ -73,7 +73,7 @@ module Mustermann
           def from_symbol(symbol, options = {})                     qualified(with_lookahead("[[:#{symbol}:]]", options), options)  end
           def from_string(string, options = {})                     Regexp.new(string.chars.map { |c| t.encoded(c, options) }.join)   end
           def from_nil(options = {})                                qualified(with_lookahead(default(options), options), options) end
-          def default(options = {}) "[^/\\?#]" end
+          def default(options = {})                                 constraint || "[^/\\?#]" end
       end
 
       # @!visibility private

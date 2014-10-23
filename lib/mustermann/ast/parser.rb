@@ -132,7 +132,8 @@ module Mustermann
       # @raise [Mustermann::ParseError] if expectation wasn't met
       # @!visibility private
       def expect(regexp, options = {})
-        scan(regexp) || unexpected(options)
+        char = options.delete(:char) || nil
+        scan(regexp) || unexpected(char, options)
       end
 
       # Helper for raising an exception for an unexpected character.
@@ -141,8 +142,9 @@ module Mustermann
       # @param [String, nil] char the unexpected character
       # @raise [Mustermann::ParseError, Exception]
       # @!visibility private
-      def unexpected(char = getch, options = {})
-        options, char = char, getch if char.is_a?(Hash)
+      def unexpected(char = nil, options = {})
+        options, char = char, nil if char.is_a?(Hash)
+        char ||= getch
         exception = options.fetch(:exception, ParseError)
         char = "space" if char == " "
         raise exception, "unexpected #{char || "end of string"} while parsing #{string.inspect}"

@@ -6,6 +6,11 @@ module Mustermann
     # @!visibility private
     # @see Mustermann::AST::Pattern#to_templates
     class TemplateGenerator < Translator
+      # @!visibility private
+      def self.generate_templates(ast)
+        new.translate(ast).uniq
+      end
+
       # translate(:expression) is not needed, since template patterns simply call to_s
       translate(:root, :group)        { t(payload) || [""]            }
       translate(:separator, :char)    { t.escape(payload)             }
