@@ -4,7 +4,7 @@ module Mustermann
   # Flask style pattern implementation.
   #
   # @example
-  #   Mustermann.new('/<foo?', type: :flask) === '/bar' # => true
+  #   Mustermann.new('/<foo>', type: :flask) === '/bar' # => true
   #
   # @see Mustermann::Pattern
   # @see file:README.md#flask Syntax description in the README

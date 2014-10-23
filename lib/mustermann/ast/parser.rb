@@ -31,9 +31,10 @@ module Mustermann
       #
       # @see Mustermann::Sinatra
       # @!visibility private
-      def self.suffix(pattern = /./, &block)
+      def self.suffix(pattern = /./, options = {}, &block)
+        after = options[:after] || :node
         @suffix ||= []
-        @suffix << [pattern, block] if block
+        @suffix << [pattern, after, block] if block
         @suffix
       end
 
@@ -87,8 +88,8 @@ module Mustermann
       # @return [Mustermann::AST::Node] node with suffix
       # @!visibility private
       def read_suffix(element)
-        self.class.suffix.inject(element) do |ele, (regexp, callback)|
-          next ele unless payload = scan(regexp)
+        self.class.suffix.inject(element) do |ele, (regexp, after, callback)|
+          next ele unless ele.is_a?(after) and payload = scan(regexp)
           instance_exec(payload, ele, &callback)
         end
       end

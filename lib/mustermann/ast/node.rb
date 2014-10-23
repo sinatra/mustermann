@@ -19,6 +19,12 @@ module Mustermann
       end
 
       # @!visibility private
+      def is_a?(type)
+        type = Node[type] if type.is_a? Symbol
+        super(type)
+      end
+
+      # @!visibility private
       # @param [Symbol] name of the node
       # @return [String] qualified name of factory for the node
       def self.constant_name(name)
