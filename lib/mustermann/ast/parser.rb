@@ -144,12 +144,14 @@ module Mustermann
       #   buffer.rest # => "ba<r>"
       #
       # @!visibility private
-      def read_brackets(open, close, char: nil, **options)
+      def read_brackets(open, close, char: nil, escape: ?\\, **options)
         result = ""
+        escape = false if escape.nil?
         while current = getch
           case current
-          when close then return result
-          when open  then result << open << read_brackets(open, close) << close
+          when close  then return result
+          when open   then result << open   << read_brackets(open, close) << close
+          when escape then result << escape << getch
           else result << current
           end
         end
