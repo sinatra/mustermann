@@ -3,6 +3,7 @@ require 'mustermann/ast/compiler'
 require 'mustermann/ast/transformer'
 require 'mustermann/ast/validation'
 require 'mustermann/ast/template_generator'
+require 'mustermann/ast/param_scanner'
 require 'mustermann/regexp_based'
 require 'mustermann/expander'
 require 'tool/equality_map'
@@ -17,8 +18,9 @@ module Mustermann
 
       extend Forwardable, SingleForwardable
       single_delegate on: :parser, suffix: :parser
-      instance_delegate %i[parser compiler transformer validation] => 'self.class'
-      instance_delegate parse: :parser, transform: :transformer, validate: :validation
+      instance_delegate %i[parser compiler transformer validation template_generator param_scanner] => 'self.class'
+      instance_delegate parse: :parser, transform: :transformer, validate: :validation,
+        generate_templates: :template_generator, scan_params: :param_scanner
 
       # @api private
       # @return [#parse] parser object for pattern
@@ -48,6 +50,20 @@ module Mustermann
       # @!visibility private
       def self.validation
         Validation
+      end
+
+      # @api private
+      # @return [#generate_templates] generates URI templates for pattern
+      # @!visibility private
+      def self.template_generator
+        TemplateGenerator
+      end
+
+      # @api private
+      # @return [#scan_params] param scanner for pattern
+      # @!visibility private
+      def self.param_scanner
+        ParamScanner
       end
 
       # @!visibility private
@@ -86,10 +102,22 @@ module Mustermann
       # @return (see Mustermann::Pattern#to_templates)
       # @see Mustermann::Pattern#to_templates
       def to_templates
-        @to_templates ||= TemplateGenerator.new.translate(to_ast).uniq.freeze
+        @to_templates ||= generate_templates(to_ast)
       end
 
-      private :compile
+      # @!visibility private
+      # @see Mustermann::Pattern#map_param
+      def map_param(key, value)
+        return super unless param_converters.include? key
+        param_converters[key][super]
+      end
+
+      # @!visibility private
+      def param_converters
+        @param_converters ||= scan_params(to_ast)
+      end
+
+      private :compile, :parse, :transform, :validate, :generate_templates, :param_converters, :scan_params
     end
   end
 end
