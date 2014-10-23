@@ -8,7 +8,7 @@ RSpec::Matchers.define :generate_template do |template|
   end
 
   failure_message_when_negated do |pattern|
-    "expected %p to generate template %p" % [ pattern, template ]
+    "expected %p not to generate template %p" % [ pattern, template ]
   end
 end
 
@@ -22,6 +22,6 @@ RSpec::Matchers.define :generate_templates do |*templates|
   end
 
   failure_message_when_negated do |pattern|
-    "expected %p to generate templates %p" % [ pattern, templates ]
+    "expected %p not to generate templates %p" % [ pattern, templates ]
   end
 end

@@ -46,6 +46,10 @@ module Mustermann
         nested
       end
 
+      translate :union do
+        payload.map { |e| t(e) }.inject(:+)
+      end
+
       # helper method for captures
       # @!visibility private
       def for_capture(node)

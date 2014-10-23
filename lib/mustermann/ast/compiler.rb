@@ -15,6 +15,10 @@ module Mustermann
       translate(:optional)  { |o = {}| "(?:%s)?" % t(payload, o) }
       translate(:char)      { |o = {}| t.encoded(payload, o)     }
 
+      translate :union do |options = {}|
+        "(?:%s)" % payload.map { |e| "(?:%s)" % t(e, options) }.join(?|)
+      end
+
       translate :expression do |options = {}|
         greedy = options.fetch(:greedy, true)
         t(payload, options.merge(allow_reserved: operator.allow_reserved, greedy: greedy && !operator.allow_reserved,
