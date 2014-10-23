@@ -359,6 +359,17 @@ describe Mustermann::Sinatra do
     it { should generate_template('/bar') }
   end
 
+  pattern "/(foo\\|bar)" do
+    it { should match             "/foo%7Cbar" }
+    it { should generate_template "/foo%7Cbar" }
+
+    it { should_not match("/foo") }
+    it { should_not match("/bar") }
+
+    it { should_not generate_template('/foo') }
+    it { should_not generate_template('/bar') }
+  end
+
   pattern "/(:a/:b|:c)" do
     it { should match("/foo")     .capturing c: 'foo'           }
     it { should match("/foo/bar") .capturing a: 'foo', b: 'bar' }
@@ -554,6 +565,11 @@ describe Mustermann::Sinatra do
     example 'double ?' do
       expect { Mustermann::Sinatra.new('foo??bar') }.
         to raise_error(Mustermann::ParseError, 'unexpected ? while parsing "foo??bar"')
+    end
+
+    example '| outside of group' do
+      expect { Mustermann::Sinatra.new('foo|bar') }.
+        to raise_error(Mustermann::ParseError, 'unexpected | while parsing "foo|bar"')
     end
 
     example 'dangling escape' do
