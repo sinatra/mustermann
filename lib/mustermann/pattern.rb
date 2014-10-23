@@ -201,12 +201,13 @@ module Mustermann
     # the | operator) support expanding if all patterns they are composed of also
     # support expanding.
     #
-    # @param [Hash{Symbol: #to_s, Array<#to_s>}] values values to use for expansion
+    # @param (see Mustermann::Expander#expand)
     # @return [String] expanded string
     # @raise [NotImplementedError] raised if expand is not supported.
     # @raise [Mustermann::ExpandError] raised if a value is missing or unknown
     # @see Mustermann::Expander
-    def expand(values = {})
+    def expand(behavior = nil, values = {})
+      values, behavior = behavior, nil if behavior.kind_of?(Hash)
       raise NotImplementedError, "expanding not supported by #{self.class}"
     end
 
