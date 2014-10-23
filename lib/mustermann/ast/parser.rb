@@ -48,7 +48,7 @@ module Mustermann
       # @!visibility private
       def parse(string)
         @string = string
-        @buffer = StringScanner.new(string)
+        @buffer = ::StringScanner.new(string)
         node(:root, string) { read unless eos? }
       end
 

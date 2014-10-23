@@ -812,4 +812,23 @@ describe Mustermann::Template do
         to raise_error(Mustermann::ParseError, 'unexpected end of string while parsing "foo{bar"')
     end
   end
+
+  context "peeking" do
+    subject(:pattern) { Mustermann::Template.new("{name}bar") }
+
+    describe :peek_size do
+      example { pattern.peek_size("foo%20bar/blah") .should be == "foo%20bar".size }
+      example { pattern.peek_size("/foo bar")       .should be_nil }
+    end
+
+    describe :peek_match do
+      example { pattern.peek_match("foo%20bar/blah") .to_s .should be == "foo%20bar" }
+      example { pattern.peek_match("/foo bar")             .should be_nil }
+    end
+
+    describe :peek_params do
+      example { pattern.peek_params("foo%20bar/blah") .should be == [{"name" => "foo "}, "foo%20bar".size] }
+      example { pattern.peek_params("/foo bar")       .should be_nil }
+    end
+  end
 end

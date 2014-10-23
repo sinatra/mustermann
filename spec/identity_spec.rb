@@ -80,4 +80,26 @@ describe Mustermann::Identity do
     it { should_not match('/path%2Bwith%2Bspaces') }
     it { should_not match('/path+with+spaces')     }
   end
+
+  context "peeking" do
+    subject(:pattern) { Mustermann::Identity.new("foo bar") }
+
+    describe :peek_size do
+      example { pattern.peek_size("foo bar blah")   .should be == "foo bar".size }
+      example { pattern.peek_size("foo%20bar blah") .should be == "foo%20bar".size }
+      example { pattern.peek_size("foobar")         .should be_nil }
+    end
+
+    describe :peek_match do
+      example { pattern.peek_match("foo bar blah").to_s   .should be == "foo bar" }
+      example { pattern.peek_match("foo%20bar blah").to_s .should be == "foo%20bar" }
+      example { pattern.peek_match("foobar")              .should be_nil }
+    end
+
+    describe :peek_params do
+      example { pattern.peek_params("foo bar blah")   .should be == [{}, "foo bar".size] }
+      example { pattern.peek_params("foo%20bar blah") .should be == [{}, "foo%20bar".size] }
+      example { pattern.peek_params("foobar")         .should be_nil }
+    end
+  end
 end

@@ -25,5 +25,13 @@ module Mustermann
     def ===(string)
       File.fnmatch? @string, unescape(string), @flags
     end
+
+    # @param (see Mustermann::Pattern#peek_size)
+    # @return (see Mustermann::Pattern#peek_size)
+    # @see (see Mustermann::Pattern#peek_size)
+    def peek_size(string)
+      @peek_string ||= @string + "{**,/**,/**/*}"
+      super if File.fnmatch? @peek_string, unescape(string), @flags
+    end
   end
 end

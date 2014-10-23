@@ -19,7 +19,7 @@ module Mustermann
       pattern.gsub!(/((:\w+)|\*)/) do |match|
         match == "*" ? "(?<splat>.*?)" : "(?<#{$2[1..-1]}>[^/?#]+#{?? unless greedy})"
       end
-      /\A#{Regexp.new(pattern)}\Z/
+      Regexp.new(pattern)
     rescue SyntaxError, RegexpError => error
       type = error.message["invalid group name"] ? CompileError : ParseError
       raise type, error.message, error.backtrace

@@ -93,6 +93,66 @@ module Mustermann
       raise NotImplementedError, 'subclass responsibility'
     end
 
+    # Tries to match the pattern against the beginning of the string (as opposed to the full string).
+    # Will return the count of the matching characters if it matches.
+    #
+    # @example
+    #   pattern = Mustermann.new('/:name')
+    #   pattern.size("/Frank/Sinatra") # => 6
+    #
+    # @param [String] string The string to match against
+    # @return [Integer, nil] the number of characters that match
+    def peek_size(string)
+      # this is a very naive, unperformant implementation
+      string.size.downto(0).detect { |s| self === string[0, s] }
+    end
+
+    # Tries to match the pattern against the beginning of the string (as opposed to the full string).
+    # Will return the substring if it matches.
+    #
+    # @example
+    #   pattern = Mustermann.new('/:name')
+    #   pattern.peek("/Frank/Sinatra") # => "/Frank"
+    #
+    # @param [String] string The string to match against
+    # @return [String, nil] matched subsctring
+    def peek(string)
+      size = peek_size(string)
+      string[0, size] if size
+    end
+
+    # Tries to match the pattern against the beginning of the string (as opposed to the full string).
+    # Will return a MatchData or similar instance for the matched substring.
+    #
+    # @example
+    #   pattern = Mustermann.new('/:name')
+    #   pattern.peek("/Frank/Sinatra") # => #<MatchData "/Frank" name:"Frank">
+    #
+    # @param [String] string The string to match against
+    # @return [MatchData, Mustermann::SimpleMatch, nil] MatchData or similar object if the pattern matches.
+    # @see #peek_params
+    def peek_match(string)
+      matched = peek(string)
+      match(matched) if matched
+    end
+
+    # Tries to match the pattern against the beginning of the string (as opposed to the full string).
+    # Will return a two element Array with the params parsed from the substring as first entry and the length of
+    # the substring as second.
+    #
+    # @example
+    #   pattern   = Mustermann.new('/:name')
+    #   params, _ = pattern.peek_params("/Frank/Sinatra")
+    #
+    #   puts "Hello, #{params['name']}!" # Hello, Frank!
+    #
+    # @param [String] string The string to match against
+    # @return [Array<Hash, Integer>, nil] Array with params hash and length of substing if matched, nil otherwise
+    def peek_params(string)
+      match = peek_match(string)
+      [params(:captures => match), match.to_s.size] if match
+    end
+
     # @return [Array<String>] capture names.
     # @see http://ruby-doc.org/core-2.0/Regexp.html#method-i-named_captures Regexp#named_captures
     def named_captures
@@ -108,9 +168,10 @@ module Mustermann
     # @param [String] string the string to match against
     # @return [Hash{String: String, Array<String>}, nil] Sinatra style params if pattern matches.
     def params(string = nil, options = {})
+      p "string: #{string}"
       options, string = string, nil if string.is_a?(Hash)
-      captures = options[:captures]
-      offset   = options[:offset] || 0
+      captures = options.fetch(:captures, nil)
+      offset   = options.fetch(:offset, 0)
       return unless captures ||= match(string)
       params   = named_captures.map do |name, positions|
         values = positions.map { |pos| map_param(name, captures[pos + offset]) }.flatten

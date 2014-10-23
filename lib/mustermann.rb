@@ -5,8 +5,47 @@ require 'mustermann/composite'
 #
 # Under normal circumstances the only external API entry point you should be using is {Mustermann.new}.
 module Mustermann
-  # @param [String, Pattern, Regexp, #to_pattern, Array<String, Pattern, Regexp, #to_pattern>]
-  #   input The representation of the new pattern
+  # Creates a new pattern based on input.
+  #
+  # * From {Mustermann::Pattern}: returns given pattern.
+  # * From String: creates a pattern from the string, depending on type option (defaults to {Mustermann::Sinatra})
+  # * From Regexp: creates a {Mustermann::Regular} pattern.
+  # * From Symbol: creates a {Mustermann::Sinatra} pattern with a single named capture named after the input.
+  # * From an Array or multiple inputs: creates a new pattern from each element, combines them to a {Mustermann::Composite}.
+  # * From anything else: Will try to call to_pattern on it or raise a TypeError.
+  #
+  # Note that if the input is a {Mustermann::Pattern}, Regexp or Symbol, the type option is ignored and if to_pattern is
+  # called on the object, the type will be handed on but might be ignored by the input object.
+  #
+  # If you want to enforce the pattern type, you should create them via their expected class.
+  #
+  # @example creating patterns
+  #   require 'mustermann'
+  #
+  #   Mustermann.new("/:name")                    # => #<Mustermann::Sinatra:"/example">
+  #   Mustermann.new("/{name}", type: :template)  # => #<Mustermann::Template:"/{name}">
+  #   Mustermann.new(/.*/)                        # => #<Mustermann::Regular:".*">
+  #   Mustermann.new(:name, capture: :word)       # => #<Mustermann::Sinatra:":name">
+  #   Mustermann.new("/", "/*.jpg", type: :shell) # => #<Mustermann::Composite:(shell:"/" | shell:"/*.jpg")>
+  #
+  # @example using custom #to_pattern
+  #   require 'mustermann'
+  #
+  #   class MyObject
+  #     def to_pattern(**options)
+  #       Mustermann.new("/:name", **options)
+  #     end
+  #   end
+  #
+  #   Mustermann.new(MyObject.new, type: :rails) # => #<Mustermann::Rails:"/:name">
+  #
+  # @example enforcing type
+  #   require 'mustermann/sinatra'
+  #
+  #   Mustermann::Sinatra.new("/:name")
+  #
+  # @param [String, Pattern, Regexp, Symbol, #to_pattern, Array<String, Pattern, Regexp, Symbol, #to_pattern>]
+  #   input The representation of the pattern
   # @param [Hash] options The options hash
   # @return [Mustermann::Pattern] pattern corresponding to string.
   # @raise (see [])
@@ -21,6 +60,7 @@ module Mustermann
     when Pattern then input
     when Regexp  then self[:regexp].new(input, options)
     when String  then self[type].new(input, options)
+    when Symbol  then self[:sinatra].new(input.inspect, options)
     when Array   then Composite.new(input, options.merge(:type => type))
     else
       pattern = input.to_pattern(options.merge(:type => type)) if input.respond_to? :to_pattern

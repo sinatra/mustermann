@@ -15,7 +15,24 @@ module Mustermann
     # @see (see Mustermann::Pattern#initialize)
     def initialize(string, options = {})
       super
-      @regexp = compile(options)
+      regexp       = compile(options)
+      @peek_regexp = /\A(#{regexp})/
+      @regexp      = /\A#{regexp}\Z/
+    end
+
+    # @param (see Mustermann::Pattern#peek_size)
+    # @return (see Mustermann::Pattern#peek_size)
+    # @see (see Mustermann::Pattern#peek_size)
+    def peek_size(string)
+      return unless match = peek_match(string)
+      match.to_s.size
+    end
+
+    # @param (see Mustermann::Pattern#peek_match)
+    # @return (see Mustermann::Pattern#peek_match)
+    # @see (see Mustermann::Pattern#peek_match)
+    def peek_match(string)
+      @peek_regexp.match(string)
     end
 
     extend Forwardable
