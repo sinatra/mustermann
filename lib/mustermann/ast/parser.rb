@@ -115,7 +115,7 @@ module Mustermann
       # @raise [Mustermann::ParseError] if expectation wasn't met
       # @!visibility private
       def expect(regexp, options = {})
-        scan(regexp)|| unexpected(options)
+        scan(regexp) || unexpected(options)
       end
 
       # Helper for raising an exception for an unexpected character.
