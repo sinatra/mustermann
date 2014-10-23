@@ -2,6 +2,8 @@ require 'timeout'
 
 module Support
   module Pattern
+    extend RSpec::Matchers::DSL
+
     def pattern(pattern, options = nil, &block)
       description   = "pattern %p" % pattern
 
@@ -17,6 +19,7 @@ module Support
         its(:to_s) { should be == pattern }
         its(:inspect) { should be == "#<#{described_class}:#{pattern.inspect}>" }
         its(:names) { should be_an(Array) }
+        its(:to_templates) { should be == [pattern] } if described_class.name == "Mustermann::Template"
 
         example 'string should be immune to external change' do
           subject.to_s.replace "NOT THE PATTERN"

@@ -2,6 +2,7 @@ require 'mustermann/ast/parser'
 require 'mustermann/ast/compiler'
 require 'mustermann/ast/transformer'
 require 'mustermann/ast/validation'
+require 'mustermann/ast/template_generator'
 require 'mustermann/regexp_based'
 require 'mustermann/expander'
 require 'mustermann/equality_map'
@@ -65,11 +66,6 @@ module Mustermann
         @ast_cache.fetch(@string) { validate(transform(parse(@string))) }
       end
 
-      # @see Mustermann::Pattern#expandable?
-      def expandable?
-        true
-      end
-
       # All AST-based pattern implementations support expanding.
       #
       # @example (see Mustermann::Pattern#expand)
@@ -81,6 +77,16 @@ module Mustermann
       def expand(values = {})
         @expander ||= Mustermann::Expander.new(self)
         @expander.expand(values)
+      end
+
+      # All AST-based pattern implementations support generating templates.
+      #
+      # @example (see Mustermann::Pattern#to_templates)
+      # @param (see Mustermann::Pattern#to_templates)
+      # @return (see Mustermann::Pattern#to_templates)
+      # @see Mustermann::Pattern#to_templates
+      def to_templates
+        @to_templates ||= TemplateGenerator.new.translate(to_ast).uniq.freeze
       end
 
       private :compile

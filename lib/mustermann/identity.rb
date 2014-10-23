@@ -30,5 +30,16 @@ module Mustermann
         count + char_size
       end
     end
+
+    # URI templates support generating templates (the logic is quite complex, though).
+    #
+    # @example (see Mustermann::Pattern#to_templates)
+    # @param (see Mustermann::Pattern#to_templates)
+    # @return (see Mustermann::Pattern#to_templates)
+    # @see Mustermann::Pattern#to_templates
+    def to_templates
+      @uri ||= URI::Parser.new
+      [@uri.escape(to_s)]
+    end
   end
 end

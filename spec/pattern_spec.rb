@@ -20,10 +20,14 @@ describe Mustermann::Pattern do
     end
   end
 
-  describe :expand do
+  describe :respond_to? do
     subject(:pattern) { Mustermann::Pattern.new("") }
-    it { should_not respond_to(:expand) }
-    it { expect { pattern.expand }.to raise_error(NotImplementedError) }
+
+    it { should_not respond_to(:expand)       }
+    it { should_not respond_to(:to_templates) }
+
+    it { expect { pattern.expand }       .to raise_error(NotImplementedError) }
+    it { expect { pattern.to_templates } .to raise_error(NotImplementedError) }
   end
 
   describe :== do

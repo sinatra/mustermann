@@ -9,6 +9,7 @@ module Mustermann
   class Pattern
     include Mustermann
 
+    PATTERN_METHODS = %w[expand to_templates].map(&:to_sym)
     # List of supported options.
     #
     # @overload supported_options
@@ -168,7 +169,6 @@ module Mustermann
     # @param [String] string the string to match against
     # @return [Hash{String: String, Array<String>}, nil] Sinatra style params if pattern matches.
     def params(string = nil, options = {})
-      p "string: #{string}"
       options, string = string, nil if string.is_a?(Hash)
       captures = options.fetch(:captures, nil)
       offset   = options.fetch(:offset, 0)
@@ -196,6 +196,11 @@ module Mustermann
     #     warn "does not support expanding"
     #   end
     #
+    # Expanding is supported by {Mustermann::Sinatra}, {Mustermann::Rails} and
+    # {Mustermann::Template} patterns. Union {Mustermann::Composite} patterns (with
+    # the | operator) support expanding if all patterns they are composed of also
+    # support expanding.
+    #
     # @param [Hash{Symbol: #to_s, Array<#to_s>}] values values to use for expansion
     # @return [String] expanded string
     # @raise [NotImplementedError] raised if expand is not supported.
@@ -203,6 +208,45 @@ module Mustermann
     # @see Mustermann::Expander
     def expand(values = {})
       raise NotImplementedError, "expanding not supported by #{self.class}"
+    end
+
+    # @note This method is only implemented by certain subclasses.
+    #
+    # Generates a list of URI template strings representing the pattern.
+    #
+    # Note that this transformation is lossy and the strings matching these
+    # templates might not match the pattern (and vice versa).
+    #
+    # This comes in quite handy since URI templates are not made for pattern matching.
+    # That way you can easily use a more precise template syntax and have it automatically
+    # generate hypermedia links for you.
+    #
+    # @example generating templates
+    #   Mustermann.new("/:name").to_templates                   # => ["/{name}"]
+    #   Mustermann.new("/:foo(@:bar)?/*baz").to_templates       # => ["/{foo}@{bar}/{+baz}", "/{foo}/{+baz}"]
+    #   Mustermann.new("/{name}", type: :template).to_templates # => ["/{name}"]
+    #
+    # @example generating templates from composite patterns
+    #   pattern  = Mustermann.new('/:name')
+    #   pattern |= Mustermann.new('/{name}', type: :template)
+    #   pattern |= Mustermann.new('/example/*nested')
+    #   pattern.to_templates # => ["/{name}", "/example/{+nested}"]
+    #
+    # Template generation is supported by {Mustermann::Sinatra}, {Mustermann::Rails},
+    # {Mustermann::Template} and {Mustermann::Identity} patterns.  Union {Mustermann::Composite}
+    # patterns (with the | operator) support template generation if all patterns they are composed
+    # of also support it.
+    #
+    # @example Checking if a pattern supports expanding
+    #   if pattern.respond_to? :to_templates
+    #     pattern.to_templates
+    #   else
+    #     warn "does not support template generation"
+    #   end
+    #
+    # @return [Array<String>] list of URI templates
+    def to_templates
+      raise NotImplementedError, "template generation not supported by #{self.class}"
     end
 
     # @overload |(other)
@@ -249,12 +293,6 @@ module Mustermann
       Mustermann.new(self, other, :operator => :^, :type => :identity)
     end
 
-    # @see Pattern#expand
-    # @return [true, false] whether or not the pattern supports expanding
-    def expandable?
-      false
-    end
-
     # @example
     #   pattern = Mustermann.new('/:a/:b')
     #   strings = ["foo/bar", "/foo/bar", "/foo/bar/"]
@@ -269,7 +307,15 @@ module Mustermann
     # @return [Boolean]
     # @see Object#respond_to?
     def respond_to?(method, *args)
-      method.to_s == 'expand' ? expandable? : super
+      return super unless PATTERN_METHODS.include? method
+      respond_to_special?(method)
+    end
+
+    # @!visibility private
+    # @return [Boolean]
+    # @see #respond_to?
+    def respond_to_special?(method)
+      method(method).owner != Mustermann::Pattern
     end
 
     # @!visibility private
@@ -303,7 +349,7 @@ module Mustermann
       ALWAYS_ARRAY.include? key
     end
 
-    private :unescape, :map_param
+    private :unescape, :map_param, :respond_to_special?
     #private_constant :ALWAYS_ARRAY
   end
 end

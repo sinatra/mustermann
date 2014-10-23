@@ -8,6 +8,9 @@ describe Mustermann::Template do
   pattern '' do
     it { should     match('')  }
     it { should_not match('/') }
+
+    it { should respond_to(:expand)       }
+    it { should respond_to(:to_templates) }
   end
 
   pattern '/' do
