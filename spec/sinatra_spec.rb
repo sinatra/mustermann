@@ -160,7 +160,7 @@ describe Mustermann::Sinatra do
   end
 
   pattern '/:file.:ext' do
-    it { should match('/pony.jpg')    .capturing file: 'pony', ext: 'jpg' }
+    it { should match('/pony.jpg')   .capturing file: 'pony', ext: 'jpg' }
     it { should match('/pony%2Ejpg') .capturing file: 'pony', ext: 'jpg' }
     it { should match('/pony%2ejpg') .capturing file: 'pony', ext: 'jpg' }
 
