@@ -135,6 +135,27 @@ module Mustermann
         scan(regexp) || unexpected(char, **options)
       end
 
+      # Allows to read a string inside brackets. It does not expect the string
+      # to start with an opening bracket.
+      #
+      # @example
+      #   buffer.string = "fo<o>>ba<r>"
+      #   read_brackets(?<, ?>) # => "fo<o>"
+      #   buffer.rest # => "ba<r>"
+      #
+      # @!visibility private
+      def read_brackets(open, close, char: nil, **options)
+        result = ""
+        while current = getch
+          case current
+          when close then return result
+          when open  then result << open << read_brackets(open, close) << close
+          else result << current
+          end
+        end
+        unexpected(char, **options)
+      end
+
       # Helper for raising an exception for an unexpected character.
       # Will read character from buffer if buffer is passed in.
       #

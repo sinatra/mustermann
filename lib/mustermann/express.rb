@@ -11,11 +11,7 @@ module Mustermann
   class Express < AST::Pattern
     on(nil, ??, ?+, ?*, ?)) { |c| unexpected(c) }
     on(?:) { |c| node(:capture) { scan(/\w+/) } }
-
-    on(?() do |char|
-      match = expect(/(?<constraint> [^\(\)]+ ) \)/x, char: char)
-      node(:splat, constraint: match[:constraint])
-    end
+    on(?() { |c| node(:splat, constraint: read_brackets(?(, ?))) }
 
     suffix ??, after: :capture do |char, element|
       unexpected(char) unless element.is_a? :capture
@@ -30,8 +26,8 @@ module Mustermann
       node(:named_splat, element.name, constraint: ".+")
     end
 
-    suffix /\( (?<constraint> [^\(\)]+ ) \)/x, after: :capture do |match, element|
-      element.constraint = match[:constraint]
+    suffix ?(, after: :capture do |match, element|
+      element.constraint = read_brackets(?(, ?))
       element
     end
   end

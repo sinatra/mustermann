@@ -104,4 +104,5 @@ module Mustermann
   register :template
   register :flask
   register :express
+  register :pyramid
 end
