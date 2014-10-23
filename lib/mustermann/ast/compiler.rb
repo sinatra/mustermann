@@ -73,7 +73,7 @@ module Mustermann
         # splats are always non-greedy
         # @!visibility private
         def pattern(**options)
-          ".*?"
+          constraint || ".*?"
         end
       end
 
