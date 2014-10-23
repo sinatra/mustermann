@@ -83,11 +83,19 @@ module Mustermann
       end
 
       # @!visibility private
-      class Group < Node
+      class Composition < Node
         # @!visibility private
         def initialize(payload = nil, **options)
           super(Array(payload), **options)
         end
+      end
+
+      # @!visibility private
+      class Group < Composition
+      end
+
+      # @!visibility private
+      class Union < Composition
       end
 
       # @!visibility private

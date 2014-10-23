@@ -15,6 +15,12 @@ module Mustermann
     on(?:)          { |c| node(:capture) { scan(/\w+/) } }
     on(?\\)         { |c| node(:char, expect(/./)) }
 
+    on ?( do |char|
+      groups = []
+      groups << node(:group) { read unless check(?)) or scan(?|) } until scan(?))
+      groups.size == 1 ? groups.first : node(:union, groups)
+    end
+
     suffix ?? do |char, element|
       node(:optional, element)
     end

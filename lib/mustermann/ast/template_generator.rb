@@ -7,12 +7,13 @@ module Mustermann
     # @see Mustermann::AST::Pattern#to_templates
     class TemplateGenerator < Translator
       # translate(:expression) is not needed, since template patterns simply call to_s
-      translate(:root, :group)        { t(payload) || [""]  }
-      translate(:separator, :char)    { t.escape(payload)   }
-      translate(:capture)             { "{#{name}}"         }
-      translate(:optional)            { [t(payload), ""]    }
-      translate(:named_splat, :splat) { "{+#{name}}"        }
-      translate(:with_look_ahead)     { t([head, payload])  }
+      translate(:root, :group)        { t(payload) || [""]            }
+      translate(:separator, :char)    { t.escape(payload)             }
+      translate(:capture)             { "{#{name}}"                   }
+      translate(:optional)            { [t(payload), ""]              }
+      translate(:named_splat, :splat) { "{+#{name}}"                  }
+      translate(:with_look_ahead)     { t([head, payload])            }
+      translate(:union)               { payload.flat_map { |e| t(e) } }
 
       translate(Array) do
         map { |e| Array(t(e)) }.inject { |first, second| first.product(second).map(&:join) }
