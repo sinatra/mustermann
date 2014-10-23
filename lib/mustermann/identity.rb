@@ -15,5 +15,20 @@ module Mustermann
     def ===(string)
       unescape(string) == @string
     end
+
+    # @param (see Mustermann::Pattern#peek_size)
+    # @return (see Mustermann::Pattern#peek_size)
+    # @see (see Mustermann::Pattern#peek_size)
+    def peek_size(string)
+      return unless unescape(string).start_with? @string
+      return @string.size if string.start_with? @string # optimization
+      @uri ||= URI::Parser.new
+      @string.each_char.with_index.inject(0) do |count, (char, index)|
+        char_size = 1
+        escaped   = @uri.escape(char, /./)
+        char_size = escaped.size if string[index, escaped.size].downcase == escaped.downcase
+        count + char_size
+      end
+    end
   end
 end

@@ -105,4 +105,34 @@ describe Mustermann::Shell do
   describe :=~ do
     example { '/foo'.should be =~ Mustermann::Shell.new('/foo') }
   end
+
+  context "peeking" do
+    subject(:pattern) { Mustermann::Shell.new("foo*/") }
+
+    describe :peek_size do
+      example { pattern.peek_size("foo bar/blah")   .should be == "foo bar/".size }
+      example { pattern.peek_size("foo%20bar/blah") .should be == "foo%20bar/".size }
+      example { pattern.peek_size("/foo bar")       .should be_nil }
+
+      context 'with just * as pattern' do
+        subject(:pattern) { Mustermann::Shell.new('*') }
+        example { pattern.peek_size('foo')              .should be == 3 }
+        example { pattern.peek_size('foo/bar')          .should be == 3 }
+        example { pattern.peek_size('foo/bar/baz')      .should be == 3 }
+        example { pattern.peek_size('foo/bar/baz/blah') .should be == 3 }
+      end
+    end
+
+    describe :peek_match do
+      example { pattern.peek_match("foo bar/blah")   .to_s .should be == "foo bar/" }
+      example { pattern.peek_match("foo%20bar/blah") .to_s .should be == "foo%20bar/" }
+      example { pattern.peek_match("/foo bar")             .should be_nil }
+    end
+
+    describe :peek_params do
+      example { pattern.peek_params("foo bar/blah")   .should be == [{}, "foo bar/".size] }
+      example { pattern.peek_params("foo%20bar/blah") .should be == [{}, "foo%20bar/".size] }
+      example { pattern.peek_params("/foo bar")       .should be_nil }
+    end
+  end
 end

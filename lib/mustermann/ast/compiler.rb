@@ -120,7 +120,10 @@ module Mustermann
         return Regexp.escape(char) unless uri_decode
         encoded = escape(char, escape: /./)
         list    = [escape(char), encoded.downcase, encoded.upcase].uniq.map { |c| Regexp.escape(c) }
-        list << encoded('+') if space_matches_plus and char == " "
+        if char == " "
+          list << encoded('+') if space_matches_plus
+          list << " "
+        end
         "(?:%s)" % list.join("|")
       end
 
@@ -139,9 +142,8 @@ module Mustermann
       #
       # @!visibility private
       def compile(ast, except: nil, **options)
-        except   &&= "(?!#{translate(except, no_captures: true, **options)}\\Z)"
-        expression = "\\A#{except}#{translate(ast, **options)}\\Z"
-        Regexp.new(expression)
+        except &&= "(?!#{translate(except, no_captures: true, **options)}\\Z)"
+        Regexp.new("#{except}#{translate(ast, **options)}")
       end
     end
 

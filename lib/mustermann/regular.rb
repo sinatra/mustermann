@@ -18,7 +18,7 @@ module Mustermann
     end
 
     def compile(**options)
-      /\A#{@string}\Z/
+      /#{@string}/
     end
 
     private :compile

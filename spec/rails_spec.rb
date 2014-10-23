@@ -511,10 +511,10 @@ describe Mustermann::Rails do
     end
 
     describe :to_regexp do
-      example('empty pattern') { Mustermann::Rails.new('').to_regexp.should be == /\A\Z/ }
+      example('empty pattern') { Mustermann::Rails.new('').to_regexp.should be == /\A(?-mix:)\Z/ }
 
       context 'Regexp.try_convert' do
-        example('empty pattern') { Regexp.try_convert(Mustermann::Rails.new('')).should be == /\A\Z/ }
+        example('empty pattern') { Regexp.try_convert(Mustermann::Rails.new('')).should be == /\A(?-mix:)\Z/ }
       end
     end
   end
@@ -524,6 +524,28 @@ describe Mustermann::Rails do
       example { Mustermann::Rails.new("/").to_proc.should be_a(Proc) }
       example('non-matching') { Mustermann::Rails.new("/")     .to_proc.call('/foo').should be == false }
       example('matching')     { Mustermann::Rails.new("/:foo") .to_proc.call('/foo').should be == true  }
+    end
+  end
+
+  context "peeking" do
+    subject(:pattern) { Mustermann::Rails.new(":name") }
+
+    describe :peek_size do
+      example { pattern.peek_size("foo bar/blah")   .should be == "foo bar".size }
+      example { pattern.peek_size("foo%20bar/blah") .should be == "foo%20bar".size }
+      example { pattern.peek_size("/foo bar")       .should be_nil }
+    end
+
+    describe :peek_match do
+      example { pattern.peek_match("foo bar/blah")   .to_s .should be == "foo bar" }
+      example { pattern.peek_match("foo%20bar/blah") .to_s .should be == "foo%20bar" }
+      example { pattern.peek_match("/foo bar")             .should be_nil }
+    end
+
+    describe :peek_params do
+      example { pattern.peek_params("foo bar/blah")   .should be == [{"name" => "foo bar"}, "foo bar".size] }
+      example { pattern.peek_params("foo%20bar/blah") .should be == [{"name" => "foo bar"}, "foo%20bar".size] }
+      example { pattern.peek_params("/foo bar")       .should be_nil }
     end
   end
 end

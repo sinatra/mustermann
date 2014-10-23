@@ -80,7 +80,7 @@ module Mustermann
     # @!visibility private
     def with_matching(string, method)
       return unless self === string
-      pattern = patterns.detect { |pattern| pattern === string }
+      pattern = patterns.detect { |p| p === string }
       pattern.public_send(method, string) if pattern
     end
 

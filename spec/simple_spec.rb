@@ -233,4 +233,26 @@ describe Mustermann::Simple do
         to raise_error(Mustermann::CompileError)
     end
   end
+
+  context "peeking" do
+    subject(:pattern) { Mustermann::Simple.new(":name") }
+
+    describe :peek_size do
+      example { pattern.peek_size("foo bar/blah")   .should be == "foo bar".size }
+      example { pattern.peek_size("foo%20bar/blah") .should be == "foo%20bar".size }
+      example { pattern.peek_size("/foo bar")       .should be_nil }
+    end
+
+    describe :peek_match do
+      example { pattern.peek_match("foo bar/blah")   .to_s .should be == "foo bar" }
+      example { pattern.peek_match("foo%20bar/blah") .to_s .should be == "foo%20bar" }
+      example { pattern.peek_match("/foo bar")             .should be_nil }
+    end
+
+    describe :peek_params do
+      example { pattern.peek_params("foo bar/blah")   .should be == [{"name" => "foo bar"}, "foo bar".size] }
+      example { pattern.peek_params("foo%20bar/blah") .should be == [{"name" => "foo bar"}, "foo%20bar".size] }
+      example { pattern.peek_params("/foo bar")       .should be_nil }
+    end
+  end
 end

@@ -16,8 +16,11 @@ module Mustermann
   #
   #   Foo.new.to_pattern # => #<Mustermann::Sinatra:":foo/:bar">
   #
-  # By default included into {String}, {Symbol}, {Regexp} and {Mustermann::Pattern}.
+  # By default included into String, Symbol, Regexp, Array and {Mustermann::Pattern}.
   module ToPattern
+    PRIMITIVES = [String, Symbol, Array, Regexp, Mustermann::Pattern]
+    private_constant :PRIMITIVES
+
     # Converts the object into a {Mustermann::Pattern}.
     #
     # @example converting a string
@@ -30,16 +33,18 @@ module Mustermann
     #   /.*/.to_pattern # => #<Mustermann::Regular:".*">
     #
     # @example converting a pattern
-    #  Mustermann.new("foo").to_pattern # => #<Mustermann::Sinatra:"foo">
+    #   Mustermann.new("foo").to_pattern # => #<Mustermann::Sinatra:"foo">
     #
     # @param [Hash] options The options hash.
     # @return [Mustermann::Pattern] pattern corresponding to object.
     def to_pattern(**options)
-      Mustermann.new(self, **options)
+      input   = self if PRIMITIVES.any? { |p| self.is_a? p }
+      input ||= __getobj__ if respond_to?(:__getobj__)
+      Mustermann.new(input || to_s, **options)
     end
 
-    append_features String
-    append_features Regexp
-    append_features Mustermann::Pattern
+    PRIMITIVES.each do |klass|
+      append_features(klass)
+    end
   end
 end
