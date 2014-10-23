@@ -176,7 +176,7 @@ module Mustermann
 
     # Reverts the last operation that advanced the position.
     #
-    # Operations advancing the position: {#terminate}, {#scan}, {#scan_until}, #{getch}.
+    # Operations advancing the position: {#terminate}, {#scan}, {#scan_until}, {#getch}.
     # @return [Mustermann::StringScanner] the scanner itself
     def unscan
       raise ScanError, 'unscan failed: previous match record not exist' if @history.empty?
@@ -259,7 +259,7 @@ module Mustermann
 
     # Allows to peek at a number of still unscanned characters without advacing the {#position}.
     #
-    # @params [Integer] length how many characters to look at
+    # @param [Integer] length how many characters to look at
     # @return [String] the substring
     def peek(length = 1)
       @string[@position, length]

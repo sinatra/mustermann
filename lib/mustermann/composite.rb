@@ -48,10 +48,10 @@ module Mustermann
       with_matching(string, :match)
     end
 
-    # @see Mustermann::Pattern#expandable?
-    def expandable?
+    # @!visibility private
+    def respond_to_special?(method)
       return false unless operator == :|
-      patterns.all? { |p| p.expandable? }
+      patterns.all? { |p| p.respond_to?(method) }
     end
 
     # (see Mustermann::Pattern#expand)
@@ -59,6 +59,12 @@ module Mustermann
       raise NotImplementedError, 'expanding not supported' unless respond_to? :expand
       @expander ||= Mustermann::Expander.new(*patterns)
       @expander.expand(**values)
+    end
+
+    # (see Mustermann::Pattern#expand)
+    def to_templates
+      raise NotImplementedError, 'template generation not supported' unless respond_to? :to_templates
+      patterns.flat_map(&:to_templates).uniq
     end
 
     # @return [String] the string representation of the pattern

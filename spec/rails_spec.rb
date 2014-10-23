@@ -10,6 +10,11 @@ describe Mustermann::Rails do
 
     it { should expand.to('') }
     it { should_not expand(a: 1) }
+
+    it { should generate_template('') }
+
+    it { should respond_to(:expand)       }
+    it { should respond_to(:to_templates) }
   end
 
   pattern '/' do
@@ -61,6 +66,8 @@ describe Mustermann::Rails do
     it { should_not expand(foo: 'foo', bar: 'bar') }
     it { should_not expand(bar: 'bar') }
     it { should_not expand }
+
+    it { should generate_template('/{foo}') }
   end
 
   pattern '/föö' do
@@ -85,23 +92,29 @@ describe Mustermann::Rails do
     it { should expand(foo: 'foo', bar: 'bar').to('/foo/bar') }
     it { should_not expand(foo: 'foo') }
     it { should_not expand(bar: 'bar') }
+
+    it { should generate_template('/{foo}/{bar}') }
   end
 
   pattern '/hello/:person' do
     it { should match('/hello/Frank').capturing person: 'Frank' }
     it { should expand(person: 'Frank')   .to '/hello/Frank'    }
     it { should expand(person: 'Frank?')  .to '/hello/Frank%3F' }
+
+    it { should generate_template('/hello/{person}') }
   end
 
   pattern '/?:foo?/?:bar?' do
     it { should match('/?hello?/?world?').capturing foo: 'hello', bar: 'world' }
     it { should_not match('/hello/world/') }
     it { should expand(foo: 'hello', bar: 'world').to('/%3Fhello%3F/%3Fworld%3F') }
+    it { should generate_template('/?{foo}?/?{bar}?') }
   end
 
   pattern '/:foo_bar' do
     it { should match('/hello').capturing foo_bar: 'hello' }
     it { should expand(foo_bar: 'hello').to('/hello') }
+    it { should generate_template('/{foo_bar}') }
   end
 
   pattern '/*foo' do
@@ -115,6 +128,8 @@ describe Mustermann::Rails do
     it { should expand(foo: 'foo')      .to('/foo')     }
     it { should expand(foo: 'foo/bar')  .to('/foo/bar') }
     it { should expand(foo: 'foo.bar')  .to('/foo.bar') }
+
+    it { should generate_template('/{+foo}') }
   end
 
   pattern '/:foo/*bar' do
@@ -128,6 +143,8 @@ describe Mustermann::Rails do
     it { should expand(foo: 'foo',     bar: 'bar')     .to('/foo/bar')       }
     it { should expand(foo: 'foo',     bar: 'foo/bar') .to('/foo/foo/bar')   }
     it { should expand(foo: 'foo/bar', bar: 'bar')     .to('/foo%2Fbar/bar') }
+
+    it { should generate_template('/{foo}/{+bar}') }
   end
 
   pattern '/test$/' do
@@ -147,6 +164,8 @@ describe Mustermann::Rails do
     it { should match('/path%2Bwith%2Bspaces')     }
     it { should match('/path+with+spaces')         }
     it { should expand.to('/path%20with%20spaces') }
+
+    it { should generate_template('/path%20with%20spaces') }
   end
 
   pattern '/foo&bar' do
@@ -157,6 +176,7 @@ describe Mustermann::Rails do
     it { should match('/bar/foo/bling/baz/boom').capturing a: 'bar', foo: 'foo', b: 'bling', c: 'baz/boom'  }
     example { pattern.params('/bar/foo/bling/baz/boom').should be == { "a" => 'bar', "foo" => 'foo', "b" => 'bling', "c" => 'baz/boom' } }
     it { should expand(a: 'bar', foo: 'foo', b: 'bling', c: 'baz/boom').to('/bar/foo/bling/baz/boom') }
+    it { should generate_template('/{+a}/{foo}/{+b}/{+c}') }
   end
 
   pattern '/test.bar' do
@@ -188,6 +208,9 @@ describe Mustermann::Rails do
     it { should match('/axaxx') .capturing a: 'axax' }
     it { should expand(a: 'x').to('/xx') }
     it { should expand(a: 'a').to('/ax') }
+
+    it { should generate_template('/{a}x') }
+    it { should generate_template('/{a}')  }
   end
 
   pattern '/:user(@:host)' do
@@ -197,6 +220,9 @@ describe Mustermann::Rails do
 
     it { should expand(user: 'foo')              .to('/foo')     }
     it { should expand(user: 'foo', host: 'bar') .to('/foo@bar') }
+
+    it { should generate_template('/{user}')        }
+    it { should generate_template('/{user}@{host}') }
   end
 
   pattern '/:file(.:ext)' do
@@ -210,6 +236,9 @@ describe Mustermann::Rails do
 
     it { should expand(file: 'pony')              .to('/pony')     }
     it { should expand(file: 'pony', ext: 'jpg')  .to('/pony.jpg') }
+
+    it { should generate_template('/{file}')       }
+    it { should generate_template('/{file}.{ext}') }
   end
 
   pattern '/:id/test.bar' do
@@ -244,6 +273,10 @@ describe Mustermann::Rails do
 
     it { should expand(a: ?a, b: ?b)        .to('/a/b.')  }
     it { should expand(a: ?a, b: ?b, c: ?c) .to('/a/b.c') }
+
+    it { should generate_template('/{a}/{b}')      }
+    it { should generate_template('/{a}/{b}.')     }
+    it { should generate_template('/{a}/{b}.{c}')  }
   end
 
   pattern '/:a(foo:b)' do
@@ -254,6 +287,10 @@ describe Mustermann::Rails do
 
     it { should expand(a: ?a)        .to('/a')     }
     it { should expand(a: ?a, b: ?b) .to('/afoob') }
+
+    it { should     generate_template('/{a}foo{b}') }
+    it { should     generate_template('/{a}')       }
+    it { should_not generate_template('/{a}foo')    }
   end
 
   pattern '/fo(o)' do

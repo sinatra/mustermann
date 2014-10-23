@@ -53,6 +53,17 @@ describe Mustermann::Composite do
         example { expect { subject.expand(name: 'bar') }.to raise_error(NotImplementedError) }
       end
     end
+
+    describe :to_templates do
+      example { should respond_to(:to_templates) }
+      example { should generate_templates('/foo/{name}', '/{first}/{second}') }
+
+      context "without patterns implementing to_templates" do
+        subject(:pattern) { Mustermann.new('/foo/:name', '/:first/:second', type: :simple) }
+        example { should_not respond_to(:to_templates) }
+        example { expect { subject.to_templates }.to raise_error(NotImplementedError) }
+      end
+    end
   end
 
   context :& do
@@ -72,9 +83,9 @@ describe Mustermann::Composite do
     end
 
     describe :params do
-      example { subject.params("/foo/bar") .should be == { "name"  => "bar" }                    }
-      example { subject.params("/fox/bar") .should be_nil                                        }
-      example { subject.params("/foo")     .should be_nil                                        }
+      example { subject.params("/foo/bar") .should be == { "name"  => "bar" } }
+      example { subject.params("/fox/bar") .should be_nil                     }
+      example { subject.params("/foo")     .should be_nil                     }
     end
 
     describe :match do

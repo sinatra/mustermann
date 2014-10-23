@@ -7,6 +7,11 @@ describe Mustermann::Sinatra do
   pattern '' do
     it { should     match('')  }
     it { should_not match('/') }
+
+    it { should generate_template('') }
+
+    it { should respond_to(:expand)       }
+    it { should respond_to(:to_templates) }
   end
 
   pattern '/' do
@@ -43,6 +48,8 @@ describe Mustermann::Sinatra do
     it { should_not match('/foo/bar') }
     it { should_not match('/')        }
     it { should_not match('/foo/')    }
+
+    it { should generate_template('/{foo}') }
   end
 
   pattern '/föö' do
@@ -61,10 +68,13 @@ describe Mustermann::Sinatra do
 
     example { pattern.params('/bar/foo').should be == {"foo" => "bar", "bar" => "foo"} }
     example { pattern.params('').should be_nil }
+
+    it { should generate_template('/{foo}/{bar}') }
   end
 
   pattern '/hello/:person' do
     it { should match('/hello/Frank').capturing person: 'Frank' }
+    it { should generate_template('/hello/{person}') }
   end
 
   pattern '/?:foo?/?:bar?' do
@@ -73,23 +83,26 @@ describe Mustermann::Sinatra do
     it { should match('/')            .capturing foo: nil,     bar: nil     }
     it { should match('')             .capturing foo: nil,     bar: nil     }
 
-    it { should_not match('/hello/world/') }
+    it { should expand(foo: 'hello')               .to('/hello/')      }
+    it { should expand(foo: 'hello', bar: 'world') .to('/hello/world') }
+    it { should expand(bar: 'world')               .to('//world')      }
+    it { should expand                             .to('//')           }
+    it { should_not expand(baz: '') }
 
-    # it { should expand(foo: 'hello')               .to('/hello')       }
-    # it { should expand(foo: 'hello', bar: 'world') .to('/hello/world') }
-    # it { should expand(bar: 'world')               .to('//world')      }
-    # it { should expand                             .to('')             }
-    # it { should_not expand(baz: '') }
+    it { should_not match('/hello/world/') }
+    it { should generate_templates("", "/", "//", "//{bar}", "/{bar}", "/{foo}", "/{foo}/", "/{foo}/{bar}", "/{foo}{bar}", "{bar}", "{foo}", "{foo}/", "{foo}/{bar}", "{foo}{bar}") }
   end
 
   pattern '/:foo_bar' do
     it { should match('/hello').capturing foo_bar: 'hello' }
+    it { should generate_template('/{foo_bar}') }
   end
 
   pattern '/*' do
     it { should match('/')        .capturing splat: '' }
     it { should match('/foo')     .capturing splat: 'foo' }
     it { should match('/foo/bar') .capturing splat: 'foo/bar' }
+    it { should generate_template('/{+splat}') }
 
     example { pattern.params('/foo').should be == {"splat" => ["foo"]} }
   end
@@ -98,6 +111,7 @@ describe Mustermann::Sinatra do
     it { should match('/')        .capturing foo: ''        }
     it { should match('/foo')     .capturing foo: 'foo'     }
     it { should match('/foo/bar') .capturing foo: 'foo/bar' }
+    it { should generate_template('/{+foo}') }
 
     example { pattern.params('/foo')     .should be == {"foo" => "foo"     } }
     example { pattern.params('/foo/bar') .should be == {"foo" => "foo/bar" } }
@@ -105,6 +119,7 @@ describe Mustermann::Sinatra do
 
   pattern '/*foo/*bar' do
     it { should match('/foo/bar') .capturing foo: 'foo', bar: 'bar' }
+    it { should generate_template('/{+foo}/{+bar}') }
   end
 
   pattern '/:foo/*' do
@@ -112,6 +127,7 @@ describe Mustermann::Sinatra do
     it { should match("/foo/")            .capturing foo: 'foo',   splat: ''          }
     it { should match('/h%20w/h%20a%20y') .capturing foo: 'h%20w', splat: 'h%20a%20y' }
     it { should_not match('/foo') }
+    it { should generate_template('/{foo}/{+splat}') }
 
     example { pattern.params('/bar/foo').should be == {"splat" => ["foo"], "foo" => "bar"} }
     example { pattern.params('/bar/foo/f%20o').should be == {"splat" => ["foo/f o"], "foo" => "bar"} }
@@ -131,6 +147,8 @@ describe Mustermann::Sinatra do
     it { should match('/path%20with%20spaces') }
     it { should match('/path%2Bwith%2Bspaces') }
     it { should match('/path+with+spaces')     }
+
+    it { should generate_template('/path%20with%20spaces') }
   end
 
   pattern '/foo&bar' do
@@ -179,12 +197,18 @@ describe Mustermann::Sinatra do
     it { should match('/ax')    .capturing a: 'a'   }
     it { should match('/axax')  .capturing a: 'axa' }
     it { should match('/axaxx') .capturing a: 'axax' }
+
+    it { should generate_template('/{a}x') }
+    it { should generate_template('/{a}')  }
   end
 
   pattern '/:user(@:host)?' do
     it { should match('/foo@bar')     .capturing user: 'foo',     host: 'bar'     }
     it { should match('/foo.foo@bar') .capturing user: 'foo.foo', host: 'bar'     }
     it { should match('/foo@bar.bar') .capturing user: 'foo',     host: 'bar.bar' }
+
+    it { should generate_template('/{user}')        }
+    it { should generate_template('/{user}@{host}') }
   end
 
   pattern '/:file(.:ext)?' do
@@ -195,6 +219,10 @@ describe Mustermann::Sinatra do
     it { should match('/pony.png.jpg')   .capturing file: 'pony.png', ext: 'jpg' }
     it { should match('/pony.')          .capturing file: 'pony.' }
     it { should_not match('/.jpg')  }
+
+    it { should     generate_template('/{file}')       }
+    it { should     generate_template('/{file}.{ext}') }
+    it { should_not generate_template('/{file}.')      }
   end
 
   pattern '/:id/test.bar' do

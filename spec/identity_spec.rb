@@ -7,6 +7,11 @@ describe Mustermann::Identity do
   pattern '' do
     it { should     match('')  }
     it { should_not match('/') }
+
+    it { should generate_template('') }
+
+    it { should_not respond_to(:expand)       }
+    it { should     respond_to(:to_templates) }
   end
 
   pattern '/' do
@@ -15,6 +20,8 @@ describe Mustermann::Identity do
 
     example { pattern.params('/').should be == {} }
     example { pattern.params('').should be_nil }
+
+    it { should generate_template('/') }
   end
 
   pattern '/foo' do
@@ -37,6 +44,8 @@ describe Mustermann::Identity do
     it { should_not match('/foo/bar') }
     it { should_not match('/')        }
     it { should_not match('/foo/')    }
+
+    it { should generate_template('/:foo') }
   end
 
   pattern '/föö' do
@@ -57,6 +66,7 @@ describe Mustermann::Identity do
     it { should     match('/path%20with%20spaces') }
     it { should_not match('/path%2Bwith%2Bspaces') }
     it { should_not match('/path+with+spaces')     }
+    it { should generate_template('/path%20with%20spaces') }
   end
 
   pattern '/foo&bar' do

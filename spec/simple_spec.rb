@@ -7,6 +7,9 @@ describe Mustermann::Simple do
   pattern '' do
     it { should     match('')  }
     it { should_not match('/') }
+
+    it { should_not respond_to(:expand)       }
+    it { should_not respond_to(:to_templates) }
   end
 
   pattern '/' do
