@@ -105,4 +105,5 @@ module Mustermann
   register :flask
   register :express
   register :pyramid
+  register :cake
 end
