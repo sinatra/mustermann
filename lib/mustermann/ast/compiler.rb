@@ -61,7 +61,7 @@ module Mustermann
         private
           def qualified(string, options = {})
              greedy = options.fetch(:greedy, true)
-            "#{string}+#{?? unless greedy}"
+            "#{string}#{qualifier || "+#{?? unless greedy}"}"
           end
 
           def with_lookahead(string, options = {})

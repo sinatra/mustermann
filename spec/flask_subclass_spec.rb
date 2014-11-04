@@ -1,7 +1,10 @@
 require 'support'
 require 'mustermann/flask'
 
-describe Mustermann::Flask do
+FlaskSubclass ||= Class.new(Mustermann::Flask)
+FlaskSubclass.register_converter(:foo) {} 
+
+describe FlaskSubclass do
   extend Support::Pattern
 
   pattern '' do
@@ -321,40 +324,44 @@ describe Mustermann::Flask do
     it { should generate_template('/{+foo}') }
   end
 
-  converter = Struct.new(:convert).new(:upcase.to_proc)
-  pattern '/<foo:bar>', converters: { foo: converter } do
+  pattern '/<foo:bar>' do
     it { should match('/foo').capturing bar: 'foo' }
-    example { pattern.params('/foo').should be == {"bar" => "FOO"} }
+    it { should generate_template('/{bar}') }
+
+    example do
+      expect { Mustermann::Flask.new('/<foo:bar>') }.to \
+        raise_error(Mustermann::ParseError, 'unexpected converter "foo" while parsing "/<foo:bar>"')
+    end
   end
 
   context 'invalid syntax' do
     example 'unexpected end of capture' do
-      expect { Mustermann::Flask.new('foo>bar') }.
+      expect { FlaskSubclass.new('foo>bar') }.
         to raise_error(Mustermann::ParseError, 'unexpected > while parsing "foo>bar"')
     end
 
     example 'missing end of capture' do
-      expect { Mustermann::Flask.new('foo<bar') }.
+      expect { FlaskSubclass.new('foo<bar') }.
         to raise_error(Mustermann::ParseError, 'unexpected end of string while parsing "foo<bar"')
     end
 
     example 'unknown converter' do
-      expect { Mustermann::Flask.new('foo<bar:name>') }.
+      expect { FlaskSubclass.new('foo<bar:name>') }.
         to raise_error(Mustermann::ParseError, 'unexpected converter "bar" while parsing "foo<bar:name>"')
     end
 
     example 'broken argument synax' do
-      expect { Mustermann::Flask.new('<string(length=3=2):foo>') }.
+      expect { FlaskSubclass.new('<string(length=3=2):foo>') }.
         to raise_error(Mustermann::ParseError, 'unexpected = while parsing "<string(length=3=2):foo>"')
     end
 
     example 'missing )' do
-      expect { Mustermann::Flask.new('<string(foo') }.
+      expect { FlaskSubclass.new('<string(foo') }.
         to raise_error(Mustermann::ParseError, 'unexpected end of string while parsing "<string(foo"')
     end
 
     example 'missing ""' do
-      expect { Mustermann::Flask.new('<string("foo') }.
+      expect { FlaskSubclass.new('<string("foo') }.
         to raise_error(Mustermann::ParseError, 'unexpected end of string while parsing "<string(\\"foo"')
     end
   end

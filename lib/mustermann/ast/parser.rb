@@ -11,8 +11,8 @@ module Mustermann
       # @param [String] string to be parsed
       # @return [Mustermann::AST::Node] parse tree for string
       # @!visibility private
-      def self.parse(string)
-        new.parse(string)
+      def self.parse(string, options = {})
+        new(options).parse(string)
       end
 
       # Defines another grammar rule for first character.
@@ -39,10 +39,16 @@ module Mustermann
       end
 
       # @!visibility private
-      attr_reader :buffer, :string
+      attr_reader :buffer, :string, :pattern
 
       extend Forwardable
       def_delegators :buffer, :eos?, :getch
+
+      # @!visibility private
+      def initialize(options = {})
+        pattern = options.delete(:pattern)
+        @pattern = pattern
+      end
 
       # @param [String] string to be parsed
       # @return [Mustermann::AST::Node] parse tree for string
@@ -148,7 +154,8 @@ module Mustermann
       # @!visibility private
       def read_brackets(open, close, options = {})
         char = options.delete(:char) || nil
-        escape = options.delete(:escape) || ?\\
+        escape = options.delete(:escape) || '\\'
+        quote = options.delete(:quote) || false
         result = ""
         escape = false if escape.nil?
         while current = getch
@@ -160,6 +167,71 @@ module Mustermann
           end
         end
         unexpected(char, options)
+      end
+
+
+      # Reads an argument string of the format arg1,args2,key:value
+      #
+      # @!visibility private
+      def read_args(key_separator, close, options = {})
+        separator = options.delete(:separator) || ?,
+        symbol_keys = options.fetch(:symbol_keys, true)
+        options.delete(:symbol_keys)
+        list, map = [], {}
+        while buffer.peek(1) != close
+          scan(separator)
+          entries = read_list(close, separator, options.merge(separator: key_separator))
+          case entries.size
+          when 1 then list += entries
+          when 2 then map[symbol_keys ? entries.first.to_sym : entries.first] = entries.last
+          else        unexpected(key_separator)
+          end
+          buffer.pos -= 1
+        end
+        expect(close)
+        [list, map]
+      end
+
+      # Reads a separated list with the ability to quote, escape and add spaces.
+      #
+      # @!visibility private
+      #def read_list(*close, separator: ?,, escape: ?\\, quotes: [?", ?'], ignore: " ", options)
+      def read_list(*close)
+        options = close.last.kind_of?(Hash) ? close.pop : {}
+        separator = options.delete(:separator) || ?,
+        escape    = options.delete(:escape) || '\\'
+        quotes    = options.delete(:quotes) || [?", ?']
+        ignore    = options.delete(:ignore) || " "
+        result = []
+        while current = getch
+          element = result.empty? ? result : result.last
+          case current
+          when *close    then return result
+          when ignore    then nil # do nothing
+          when separator then result  << ""
+          when escape    then element << getch
+          when *quotes   then element << read_escaped(current, escape: escape)
+          else element << current
+          end
+        end
+        unexpected(current, options)
+      end
+
+      # Read a string until a terminating character, ignoring escaped versions of said character.
+      #
+      # @!visibility private
+      #def read_escaped(close, escape: ?\\, **options)
+      def read_escaped(close, options = {})
+        escape = options.delete(:escape) || '\\'
+        result = ""
+        while current = getch
+          case current
+          when close  then return result
+          when escape then result << getch
+          else result << current
+          end
+        end
+        unexpected(current, options)
       end
 
       # Helper for raising an exception for an unexpected character.
