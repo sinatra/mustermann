@@ -79,7 +79,7 @@ module Mustermann
       # @!visibility private
       def to_ast
         @ast_cache ||= Tool::EqualityMap.new
-        @ast_cache.fetch(@string) { validate(transform(parse(@string))) }
+        @ast_cache.fetch(@string) { validate(transform(parse(@string, pattern: self))) }
       end
 
       # All AST-based pattern implementations support expanding.

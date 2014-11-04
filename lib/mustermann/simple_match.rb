@@ -26,5 +26,10 @@ module Mustermann
     def [](*args)
       captures[*args]
     end
+
+    # @return [String] string representation
+    def inspect
+      "#<%p %p>" % [self.class, @string]
+    end
   end
 end

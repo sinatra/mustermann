@@ -57,7 +57,7 @@ module Mustermann
         end
 
         private
-          def qualified(string, greedy: true, **options)         "#{string}+#{?? unless greedy}"                                     end
+          def qualified(string, greedy: true, **options)        "#{string}#{qualifier || "+#{?? unless greedy}"}"                    end
           def with_lookahead(string, lookahead: nil, **options)  lookahead ? "(?:(?!#{lookahead})#{string})" : string                end
           def from_hash(hash,     **options)                     pattern(capture: hash[name.to_sym], **options)                      end
           def from_array(array,   **options)                     Regexp.union(*array.map { |e| pattern(capture: e, **options) })     end

@@ -12,6 +12,10 @@ describe Mustermann::Identity do
 
     it { should_not respond_to(:expand)       }
     it { should     respond_to(:to_templates) }
+
+    example do
+      pattern.match('').inspect.should be == '#<Mustermann::SimpleMatch "">'
+    end
   end
 
   pattern '/' do

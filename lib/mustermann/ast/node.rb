@@ -70,6 +70,10 @@ module Mustermann
         # @!visibility private
         attr_accessor :constraint
 
+        # @see Mustermann::AST::Compiler::Capture#qualified
+        # @!visibility private
+        attr_accessor :qualifier
+
         # @see Mustermann::AST::Pattern#map_param
         # @!visibility private
         attr_accessor :convert
