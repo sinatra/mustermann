@@ -26,6 +26,13 @@ module Mustermann
       options
     end
 
+    # Registers the pattern with Mustermann.
+    # @see Mustermann.register
+    # @!visibility private
+    def self.register(*names)
+      names.each { |name| Mustermann.register(name, self) }
+    end
+
     # @param [Symbol] option The option to check.
     # @return [Boolean] Whether or not option is supported.
     def self.supported?(option, **options)
@@ -245,7 +252,7 @@ module Mustermann
     # @overload |(other)
     #   Creates a pattern that matches any string matching either one of the patterns.
     #   If a string is supplied, it is treated as an identity pattern.
-    #   
+    #
     #   @example
     #     pattern = Mustermann.new('/foo/:name') | Mustermann.new('/:first/:second')
     #     pattern === '/foo/bar' # => true
@@ -255,7 +262,7 @@ module Mustermann
     # @overload &(other)
     #   Creates a pattern that matches any string matching both of the patterns.
     #   If a string is supplied, it is treated as an identity pattern.
-    #   
+    #
     #   @example
     #     pattern = Mustermann.new('/foo/:name') & Mustermann.new('/:first/:second')
     #     pattern === '/foo/bar' # => true
@@ -265,7 +272,7 @@ module Mustermann
     # @overload ^(other)
     #   Creates a pattern that matches any string matching exactly one of the patterns.
     #   If a string is supplied, it is treated as an identity pattern.
-    #   
+    #
     #   @example
     #     pattern = Mustermann.new('/foo/:name') ^ Mustermann.new('/:first/:second')
     #     pattern === '/foo/bar' # => false

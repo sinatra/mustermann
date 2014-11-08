@@ -1,0 +1,5 @@
+-P '*/spec/**_spec.rb'
+-r bundler/setup
+--default-path .
+--color
+--tty

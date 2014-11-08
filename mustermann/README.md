@@ -1,12 +1,5 @@
 # The Amazing Mustermann
 
-[![Build Status](https://travis-ci.org/rkh/mustermann.svg?branch=master)](https://travis-ci.org/rkh/mustermann) [![Coverage Status](http://img.shields.io/coveralls/rkh/mustermann.svg?branch=master)](https://coveralls.io/r/rkh/mustermann) [![Code Climate](http://img.shields.io/codeclimate/github/rkh/mustermann.svg)](https://codeclimate.com/github/rkh/mustermann) [![Dependency Status](https://gemnasium.com/rkh/mustermann.svg)](https://gemnasium.com/rkh/mustermann) [![Gem Version](http://img.shields.io/gem/v/mustermann.svg)](https://rubygems.org/gems/mustermann)
-[![Inline docs](http://inch-ci.org/github/rkh/mustermann.svg)](http://inch-ci.org/github/rkh/mustermann)
-[![Documentation](http://img.shields.io/:yard-docs-38c800.svg)](http://rubydoc.info/gems/mustermann/frames)
-[![License](http://img.shields.io/:license-MIT-38c800.svg)](http://rkh.mit-license.org)
-[![Badges](http://img.shields.io/:badges-9/9-38c800.svg)](http://img.shields.io) 
-
-
 *Make sure you view the correct docs: [latest release](http://rubydoc.info/gems/mustermann/frames), [master](http://rubydoc.info/github/rkh/mustermann/master/frames).*
 
 Welcome to [Mustermann](http://en.wikipedia.org/wiki/List_of_placeholder_names_by_language#German). Mustermann is your personal string matching expert. As an expert in the field of strings and patterns, Mustermann keeps its runtime dependencies to a minimum and is fully covered with specs and documentation.
@@ -48,7 +41,6 @@ pattern.params('/a/b.c') # => { "prefix" => "a", splat => ["b", "c"] }
 
 These features are included in the library, but not loaded by default
 
-* **[String Scanner](#-string-scanner):** It comes with a version of Ruby's [StringScanner](http://ruby-doc.org/stdlib-2.0/libdoc/strscan/rdoc/StringScanner.html) made for pattern objects.
 * **[Mapper](#-mapper):** A simple tool for mapping one string to another based on patterns.
 * **[Routers](#-routers):** Model execution flow based on pattern matching. Comes with a simple Rack router.
 * **[Sinatra Integration](#-sinatra-integration):** Mustermann can be used as a [Sinatra](http://www.sinatrarb.com/) extension. Sinatra 2.0 and beyond will use Mustermann by default.
@@ -56,7 +48,6 @@ These features are included in the library, but not loaded by default
 ### More Infos
 
 * **[Requirements](#-requirements):** Mustermann currently requires Ruby 2.0 or later.
-* **[Release History](#-release-history):** See what's new.
 
 <a name="-pattern-types"></a>
 ## Pattern Types
@@ -79,153 +70,7 @@ require 'mustermann/shell'
 pattern = Mustermann::Shell.new('/*/**')
 ```
 
-### Available Types
-
-<table>
-  <thead>
-    <tr>
-      <th>Type</th>
-      <th>Example</th>
-      <th>Compatible with</th>
-      <th>Notes</th>
-    </tr>
-  </thead>
-  <tbody>
-
-    <tr>
-      <th><a href="#-pattern-details-cake"><tt>cake</tt></a></th>
-      <td><tt>/:prefix/**</tt></td>
-      <td><a href="http://cakephp.org/">CakePHP</a></td>
-      <td></td>
-    </tr>
-
-    <tr>
-      <th><a href="#-pattern-details-express"><tt>express</tt></a></th>
-      <td><tt>/:prefix+/:id(\d+)</tt></td>
-      <td>
-        <a href="http://expressjs.com/">Express</a>,
-        <a href="https://pillarjs.github.io/">pillar.js</a>
-      </td>
-      <td></td>
-    </tr>
-
-    <tr>
-      <th><a href="#-pattern-details-flask"><tt>flask</tt></a></th>
-      <td><tt>/&lt;prefix&gt;/&lt;int:id&gt;</tt></td>
-      <td>
-        <a href="http://flask.pocoo.org/">Flask</a>,
-        <a href="http://werkzeug.pocoo.org/">Werkzeug</a>,
-        <a href="http://bottlepy.org/docs/dev/index.html">Bottle</a>
-      </td>
-      <td></td>
-    </tr>
-
-    <tr>
-      <th><a href="#-pattern-details-identity"><tt>identity</tt></a></th>
-      <td><tt>/image.png</tt></td>
-      <td>any software using strings</td>
-      <td>
-        Exact string matching (no parameter parsing).<br>
-        Does not support expanding.
-      </td>
-    </tr>
-
-    <tr>
-      <th><a href="#-pattern-details-pyramid"><tt>pyramid</tt></a></th>
-      <td><tt>/{prefix:.*}/{id}</tt></td>
-      <td>
-        <a href="http://www.pylonsproject.org/projects/pyramid/about">Pyramid</a>,
-        <a href="http://www.pylonsproject.org/projects/pylons-framework/about">Pylons</a>
-      </td>
-      <td></td>
-    </tr>
-
-    <tr>
-      <th><a href="#-pattern-details-rails"><tt>rails</tt></a></th>
-      <td><tt>/:slug(.:ext)</tt></td>
-      <td>
-        <a href="http://rubyonrails.org/">Ruby on Rails</a>,
-        <a href="https://github.com/joshbuddy/http_router">HTTP Router</a>,
-        <a href="http://lotusrb.org/">Lotus</a>,
-        <a href="http://www.scalatra.org/">Scalatra</a> (if <a href="http://www.scalatra.org/2.3/guides/http/routes.html#toc_248">configured</a>)</td>
-      <td></td>
-    </tr>
-
-    <tr>
-      <th><a href="#-pattern-details-regexp"><tt>regexp</tt></a></th>
-      <td><tt>/(?&lt;slug&gt;[^\/]+)</tt></td>
-      <td>
-        <a href="http://www.geocities.jp/kosako3/oniguruma/">Oniguruma</a>,
-        <a href="https://github.com/k-takata/Onigmo">Onigmo<a>,
-        regular expressions
-      </td>
-      <td>
-        Created when you pass a regexp to <tt>Mustermann.new</tt>.<br>
-        Does not support expanding or generating templates.
-      </td>
-    </tr>
-
-    <tr>
-      <th><a href="#-pattern-details-shell"><tt>shell</tt></a></th>
-      <td><tt>/*.{png,jpg}</tt></td>
-      <td>Unix Shell (bash, zsh)</td>
-      <td>Does not support expanding or generating templates.</td>
-    </tr>
-
-    <tr>
-      <th><a href="#-pattern-details-simple"><tt>simple</tt></a></th>
-      <td><tt>/:slug.:ext</tt></td>
-      <td>
-        <a href="http://www.sinatrarb.com/">Sinatra</a> (1.x),
-        <a href="http://www.scalatra.org/">Scalatra</a>,
-        <a href="http://perldancer.org/">Dancer</a>
-      </td>
-      <td>
-        Implementation is a direct copy from Sinatra 1.3.<br>
-        Does not support expanding or generating templates.
-      </td>
-    </tr>
-
-    <tr>
-      <th><a href="#-pattern-details-sinatra"><tt>sinatra</tt></a></th>
-      <td><tt>/:slug(.:ext)?</tt></td>
-      <td>
-        <a href="http://www.sinatrarb.com/">Sinatra</a> (2.x),
-        <a href="http://www.padrinorb.com/">Padrino</a> (>= 0.13.0),
-        <a href="https://github.com/namusyaka/pendragon">Pendragon</a>,
-        <a href="https://github.com/kenichi/angelo">Angelo</a>
-      </td>
-      <td>
-        <u>This is the default</u> and the only type "invented here".<br>
-        It is a superset of <tt>simple</tt> and has a common subset with
-        <tt>template</tt> (and others).
-      </td>
-    </tr>
-
-    <tr>
-      <th><a href="#-pattern-details-sinatra"><tt>template</tt></a></th>
-      <td><tt>/{+pre}/{page}{?q}</tt></td>
-      <td>
-        <a href="https://tools.ietf.org/html/rfc6570">RFC 6570</a>,
-        <a href="http://jsonapi.org/">JSON API</a>,
-        <a href="http://tools.ietf.org/html/draft-nottingham-json-home-02">JSON Home Documents</a>
-        and <a href="https://code.google.com/p/uri-templates/wiki/Implementations">many more</a>
-      </td>
-      <td>Standardized URI templates, can be <a href="#-generating-templates">generated</a> from most other types.</td>
-    </tr>
-  </tbody>
-</table>
-
-Any software using Mustermann is obviously compatible with at least one of the above.
-
-### Why so many?
-
-Short answer: **Why not?**
-
-You are probably concerned about one of these issues:
-
-* **Code base complexity:** Most of these pattern implementations are very short and simple. The `cake` definition is two lines long, the `rails` implementation four lines.
-* **Memory cost:** If you don't explicitly load one of these implementations and don't create any patterns of that type, the implementation itself will not be loaded. The only memory it uses it one more entry in the list of available pattern types.
+Mustermann itself includes the [sinatra](#-sinatra-pattern), [identity](#-identity-pattern) and [regexp](#-regexp-pattern) pattern types. Other pattern types are available as separate gems.
 
 <a name="-binary-operators"></a>
 ## Binary Operators
@@ -469,11 +314,6 @@ list    = ["foo", "example@email.com", "bar"]
 pattern = Mustermann.new(":name@:domain.:tld")
 email   = list.detect(&pattern) # => "example@email.com"
 ```
-
-<a name="-string-scanner"></a>
-## String Scanner
-
-... TODO ...
 
 <a name="-mapper"></a>
 ## Mapper
@@ -847,46 +687,6 @@ Mustermann.new('a b', uri_decode: false) === 'a b'   # => true
 Mustermann.new('a b', uri_decode: false) === 'a%20b' # => false
 ```
 
-<a name="-available-options--converters"></a>
-### `converters`
-
-Supported by `flask` patterns.
-Default value: `{}`
-
-[Flask patterns](#-pattern-details-flask) support registering custom converters.
-
-A converter object may implement any of the following methods:
-
-* `convert`: Should return a block converting a string value to whatever value should end up in the `params` hash.
-* `constraint`: Should return a regular expression limiting which input string will match the capture.
-* `new`: Returns an object that may respond to `convert` and/or `constraint` as described above. Any arguments used for the converter inside the pattern will be passed to `new`.
-
-``` ruby
-require 'mustermann'
-
-SimpleConverter = Struct.new(:constraint, :convert)
-id_converter    = SimpleConverter.new(/\d/, -> s { s.to_i })
-
-class NumConverter
-  def initialize(base: 10)
-    @base = Integer(base)
-  end
-
-  def convert
-    -> s { s.to_i(@base) }
-  end
-
-  def constraint
-    @base > 10 ? /[\da-#{(@base-1).to_s(@base)}]/ : /[0-#{@base-1}]/
-  end
-end
-
-pattern = Mustermann.new('/<id:id>/<num(base=8):oct>/<num(base=16):hex>',
-  type: :flask, converters: { id: id_converter, num: NumConverter})
-
-pattern.params('/10/12/f1') # => {"id"=>10, "oct"=>10, "hex"=>241}
-```
-
 <a name="-available-options--ignore_unknown_options"></a>
 ### `ignore_unknown_options`
 
@@ -924,52 +724,7 @@ This comes with a few trade-offs:
 
 ## Details on Pattern Types
 
-<a name="-pattern-details-cake"></a>
-### `cake`
-
-**Supported options:**
-[`capture`](#-available-options--capture),
-[`except`](#-available-options--except),
-[`greedy`](#-available-options--greedy),
-[`space_matches_plus`](#-available-options--space_matches_plus),
-[`uri_decode`](#-available-options--uri_decode),
-[`ignore_unknown_options`](#-available-options--ignore_unknown_options).
-
-**External documentation:**
-[CakePHP 2.0 Routing](http://book.cakephp.org/2.0/en/development/routing.html),
-[CakePHP 3.0 Routing](http://book.cakephp.org/3.0/en/development/routing.html)
-
-<a name="-pattern-details-express"></a>
-### `express`
-
-**Supported options:**
-[`capture`](#-available-options--capture),
-[`except`](#-available-options--except),
-[`greedy`](#-available-options--greedy),
-[`space_matches_plus`](#-available-options--space_matches_plus),
-[`uri_decode`](#-available-options--uri_decode),
-[`ignore_unknown_options`](#-available-options--ignore_unknown_options).
-
-**External documentation:**
-[path-to-regexp](https://github.com/pillarjs/path-to-regexp#path-to-regexp),
-[live demo](http://forbeslindesay.github.io/express-route-tester/)
-
-<a name="-pattern-details-flask"></a>
-### `flask`
-
-**Supported options:**
-[`capture`](#-available-options--capture),
-[`except`](#-available-options--except),
-[`greedy`](#-available-options--greedy),
-[`space_matches_plus`](#-available-options--space_matches_plus),
-[`uri_decode`](#-available-options--uri_decode),
-[`converters`](#-available-options--converters),
-[`ignore_unknown_options`](#-available-options--ignore_unknown_options).
-
-**External documentation:**
-[Werkzeug: URL Routing](http://werkzeug.pocoo.org/docs/0.9/routing/)
-
-<a name="-pattern-details-identity"></a>
+<a name="-identity-pattern"></a>
 ### `identity`
 
 **Supported options:**
@@ -991,67 +746,7 @@ This comes with a few trade-offs:
   </tbody>
 </table>
 
-<a name="-pattern-details-pyramid"></a>
-### `pyramid`
-
-**Supported options:**
-[`capture`](#-available-options--capture),
-[`except`](#-available-options--except),
-[`greedy`](#-available-options--greedy),
-[`space_matches_plus`](#-available-options--space_matches_plus),
-[`uri_decode`](#-available-options--uri_decode),
-[`ignore_unknown_options`](#-available-options--ignore_unknown_options).
-
-<a name="-pattern-details-rails"></a>
-### `rails`
-
-**Supported options:**
-[`capture`](#-available-options--capture),
-[`except`](#-available-options--except),
-[`greedy`](#-available-options--greedy),
-[`space_matches_plus`](#-available-options--space_matches_plus),
-[`uri_decode`](#-available-options--uri_decode),
-[`ignore_unknown_options`](#-available-options--ignore_unknown_options).
-
-<table>
-  <thead>
-    <tr>
-      <th>Syntax Element</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><b>:</b><i>name</i></td>
-      <td>
-        Captures anything but a forward slash in a semi-greedy fashion. Capture is named <i>name</i>.
-        Capture behavior can be modified with <a href="#capture"><tt>capture</tt></a> and <a href="#greedy"><tt>greedy</tt></a> option.
-      </td>
-    </tr>
-    <tr>
-      <td><b>*</b><i>name</i></td>
-      <td>
-        Captures anything in a non-greedy fashion. Capture is named <i>name</i>.
-      </td>
-    </tr>
-    <tr>
-      <td><b>(</b><i>expression</i><b>)</b></td>
-      <td>Enclosed <i>expression</i> is optional.</td>
-    </tr>
-    <tr>
-      <td><b>/</b></td>
-      <td>
-        Matches forward slash. Does not match URI encoded version of forward slash.
-      </td>
-    </tr>
-    <tr>
-      <td><i>any other character</i></td>
-      <td>Matches exactly that character or a URI encoded version of it.</td>
-    </tr>
-  </tbody>
-</table>
-
-<a name="-pattern-details-regexp"></a>
+<a name="-regexp-pattern"></a>
 ### `regexp`
 
 **Supported options:**
@@ -1073,100 +768,7 @@ This comes with a few trade-offs:
   </tbody>
 </table>
 
-<a name="-pattern-details-shell"></a>
-### `shell`
-
-**Supported options:**
-[`uri_decode`](#-available-options--uri_decode),
-[`ignore_unknown_options`](#-available-options--ignore_unknown_options).
-
-<table>
-  <thead>
-    <tr>
-      <th>Syntax Element</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><b>*</b></td>
-      <td>Matches anything but a slash.</td>
-    </tr>
-    <tr>
-      <td><b>**</b></td>
-      <td>Matches anything.</td>
-    </tr>
-    <tr>
-      <td><b>[</b><i>set</i><b>]</b></td>
-      <td>Matches one character in <i>set</i>.</td>
-    </tr>
-    <tr>
-      <td><b>&#123;</b><i>a</i>,<i>b</i><b>&#125;</b></td>
-      <td>Matches <i>a</i> or <i>b</i>.</td>
-    </tr>
-    <tr>
-      <td><b>\</b><i>x</i></td>
-      <td>Matches <i>x</i> or URI encoded version of <i>x</i>. For instance <tt>\*</tt> matches <tt>*</tt>.</td>
-    </tr>
-    <tr>
-      <td><i>any other character</i></td>
-      <td>Matches exactly that character or a URI encoded version of it.</td>
-    </tr>
-  </tbody>
-</table>
-
-<a name="-pattern-details-simple"></a>
-### `simple`
-
-**Supported options:**
-[`greedy`](#-available-options--greedy),
-[`space_matches_plus`](#-available-options--space_matches_plus),
-[`uri_decode`](#-available-options--uri_decode),
-[`ignore_unknown_options`](#-available-options--ignore_unknown_options).
-
-<table>
-  <thead>
-    <tr>
-      <th>Syntax Element</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><b>:</b><i>name</i></td>
-      <td>
-        Captures anything but a forward slash in a greedy fashion. Capture is named <i>name</i>.
-      </td>
-    </tr>
-    <tr>
-      <td><b>*</b></td>
-      <td>
-        Captures anything in a non-greedy fashion. Capture is named splat.
-        It is always an array of captures, as you can use <tt>*</tt> more than once in a pattern.
-      </td>
-    </tr>
-    <tr>
-      <td><i>x</i><b>?</b></td>
-      <td>Makes <i>x</i> optional. For instance <tt>foo?</tt> matches <tt>foo</tt> or <tt>fo</tt>.</td>
-    </tr>
-    <tr>
-      <td><b>/</b></td>
-      <td>
-        Matches forward slash. Does not match URI encoded version of forward slash.
-      </td>
-    </tr>
-    <tr>
-      <td><i>any special character</i></td>
-      <td>Matches exactly that character or a URI encoded version of it.</td>
-    </tr>
-    <tr>
-      <td><i>any other character</i></td>
-      <td>Matches exactly that character.</td>
-    </tr>
-  </tbody>
-</table>
-
-<a name="-pattern-details-sinatra"></a>
+<a name="-sinatra-pattern"></a>
 ### `sinatra`
 
 **Supported options:**
@@ -1189,7 +791,7 @@ This comes with a few trade-offs:
       <td><b>:</b><i>name</i> <i><b>or</b></i> <b>&#123;</b><i>name</i><b>&#125;</b></td>
       <td>
         Captures anything but a forward slash in a semi-greedy fashion. Capture is named <i>name</i>.
-        Capture behavior can be modified with <a href="#capture"><tt>capture</tt></a> and <a href="#greedy"><tt>greedy</tt></a> option.
+        Capture behavior can be modified with <tt>capture</tt> and <tt>greedy</tt> option.
       </td>
     </tr>
     <tr>
@@ -1239,62 +841,6 @@ This comes with a few trade-offs:
   </tbody>
 </table>
 
-<a name="-pattern-details-template"></a>
-### `template`
-
-**Supported options:**
-[`capture`](#-available-options--capture),
-[`except`](#-available-options--except),
-[`greedy`](#-available-options--greedy),
-[`space_matches_plus`](#-available-options--space_matches_plus),
-[`uri_decode`](#-available-options--uri_decode),
-[`ignore_unknown_options`](#-available-options--ignore_unknown_options).
-
-<table>
-  <thead>
-    <tr>
-      <th>Syntax Element</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><b>&#123;</b><i>o</i> <i>var</i> <i>m</i><b>,</b> <i>var</i> <i>m</i><b>,</b> ...<b>&#125;</b></td>
-      <td>
-        Captures expansion.
-        Operator <i>o</i>: <code>+ # . / ; ? &amp;</tt> or none.
-        Modifier <i>m</i>: <code>:num *</tt> or none.
-      </td>
-    </tr>
-    <tr>
-      <td><b>/</b></td>
-      <td>
-        Matches forward slash. Does not match URI encoded version of forward slash.
-      </td>
-    </tr>
-    <tr>
-      <td><i>any other character</i></td>
-      <td>Matches exactly that character or a URI encoded version of it.</td>
-    </tr>
-  </tbody>
-</table>
-
-The operators `+` and `#` will always match non-greedy, whereas all other operators match semi-greedy by default.
-All modifiers and operators are supported. However, it does not parse lists as single values without the *explode* modifier (aka *star*).
-Parametric operators (`;`, `?` and `&`) currently only match parameters in given order.
-
-Please keep the following in mind:
-
-> "Some URI Templates can be used in reverse for the purpose of variable matching: comparing the template to a fully formed URI in order to extract the variable parts from that URI and assign them to the named variables.  Variable matching only works well if the template expressions are delimited by the beginning or end of the URI or by characters that cannot be part of the expansion, such as reserved characters surrounding a simple string expression.  In general, regular expression languages are better suited for variable matching."
-> &mdash; *RFC 6570, Sec 1.5: "Limitations"*
-
-Note that it differs from URI templates in that it takes the unescaped version of special character instead of the escaped version.
-
-If you reuse the exact same templates and expose them via an external API meant for expansion,
-you should set `uri_decode` to `false` in order to conform with the specification.
-
-If you are looking for an alternative implementation that also supports expanding, check out [addressable](http://addressable.rubyforge.org/).
-
 <a name="-requirements"></a>
 ## Requirements
 
@@ -1305,82 +851,3 @@ It is known to work on MRI 2.0 and 2.1.
 **JRuby** is not yet fully supported. It is possible to run parts of Mustermann by passing in `--2.0 -X-C`, but as of JRuby 1.7, we would recommend waiting for proper Ruby 2.0 support to land in JRuby. The same goes for **Rubinius**.
 
 If you need Ruby 1.9 support, you might be able to use the **unofficial** [mustermann19](http://rubygems.org/gems/mustermann19) gem based on [namusyaka's fork](https://github.com/namusyaka/mustermann).
-
-<a name="-release-history"></a>
-## Release History
-
-Mustermann follows [Semantic Versioning 2.0](http://semver.org/). Anything documented in the README or via YARD and not declared private is part of the public API.
-
-### Stable Releases
-
-There have been no stable releases yet. The code base is considered solid but I only know of a small number of actual production usage.
-As there has been no stable release yet, the API might still change, though I consider this unlikely.
-
-### Development Releases
-
-* **Mustermann 0.3.1** (2014-09-12)
-    * More Infos:
-      [RubyGems.org](http://rubygems.org/gems/mustermann/versions/0.3.1),
-      [RubyDoc.info](http://rubydoc.info/gems/mustermann/0.3.1/frames),
-      [GitHub.com](https://github.com/rkh/mustermann/tree/v0.3.1)
-    * Speed up pattern generation and matching (thanks [Daniel Mendler](https://github.com/minad))
-    * Small change so `Mustermann === Mustermann.new('...')` returns `true`.
-* **Mustermann 0.3.0** (2014-08-18)
-    * More Infos:
-      [RubyGems.org](http://rubygems.org/gems/mustermann/versions/0.3.0),
-      [RubyDoc.info](http://rubydoc.info/gems/mustermann/0.3.0/frames),
-      [GitHub.com](https://github.com/rkh/mustermann/tree/v0.3.0)
-    * Add `regexp` pattern.
-    * Add named splats to Sinatra patterns.
-    * Add `Mustermann::Mapper`.
-    * Improve duck typing support.
-    * Improve documentation.
-* **Mustermann 0.2.0** (2013-08-24)
-    * More Infos:
-      [RubyGems.org](http://rubygems.org/gems/mustermann/versions/0.2.0),
-      [RubyDoc.info](http://rubydoc.info/gems/mustermann/0.2.0/frames),
-      [GitHub.com](https://github.com/rkh/mustermann/tree/v0.2.0)
-    * Add first class expander objects.
-    * Add params casting for expander.
-    * Add simple router and rack router.
-    * Add weak equality map to significantly improve performance.
-    * Fix Ruby warnings.
-    * Improve documentation.
-    * Refactor pattern validation, AST transformations.
-    * Increase test coverage (from 100%+ to 100%++).
-    * Improve JRuby compatibility.
-    * Work around bug in 2.0.0-p0.
-* **Mustermann 0.1.0** (2013-05-12)
-    * More Infos:
-      [RubyGems.org](http://rubygems.org/gems/mustermann/versions/0.1.0),
-      [RubyDoc.info](http://rubydoc.info/gems/mustermann/0.1.0/frames),
-      [GitHub.com](https://github.com/rkh/mustermann/tree/v0.1.0)
-    * Add `Pattern#expand` for generating strings from patterns.
-    * Add better internal API for working with the AST.
-    * Improved documentation.
-    * Avoids parsing the path twice when used as Sinatra extension.
-    * Better exceptions for unknown pattern types.
-    * Better handling of edge cases around extend.
-    * More specs to ensure API stability.
-    * Largely rework internals of Sinatra, Rails and Template patterns.
-* **Mustermann 0.0.1** (2013-04-27)
-    * More Infos:
-      [RubyGems.org](http://rubygems.org/gems/mustermann/versions/0.0.1),
-      [RubyDoc.info](http://rubydoc.info/gems/mustermann/0.0.1/frames),
-      [GitHub.com](https://github.com/rkh/mustermann/tree/v0.0.1)
-    * Initial Release.
-
-### Upcoming Releases
-
-* **Mustermann 0.4.0** (next release with new features)
-    * Add `Pattern#to_proc`.
-    * Add `Pattern#|`, `Pattern#&` and `Pattern#^`.
-    * Add `Pattern#peek`, `Pattern#peek_size`, `Pattern#peek_match` and `Pattern#peek_params`.
-    * Add `Mustermann::StringScanner`.
-    * Add `Pattern#to_templates`.
-    * Add `|` syntax to `sinatra` templates.
-    * Add template style placeholders to `sinatra` templates.
-    * Add `cake`, `express`, `flask` and `pyramid` patterns.
-    * Allow passing in additional value behavior directly to `Pattern#expand`.
-* **Mustermann 1.0.0** (before Sinatra 2.0)
-    * First stable release.

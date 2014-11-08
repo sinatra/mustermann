@@ -1,3 +1,4 @@
+require 'mustermann'
 require 'mustermann/pattern'
 
 module Mustermann
@@ -9,6 +10,8 @@ module Mustermann
   # @see Mustermann::Pattern
   # @see file:README.md#identity Syntax description in the README
   class Identity < Pattern
+    register :identity
+
     # @param (see Mustermann::Pattern#===)
     # @return (see Mustermann::Pattern#===)
     # @see (see Mustermann::Pattern#===)
