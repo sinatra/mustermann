@@ -30,6 +30,16 @@ describe Mustermann::Expander do
     expander.expand(foo: 'pony', ext: nil).should be == '/pony'
   end
 
+  it 'supports splat' do
+    expander = Mustermann::Expander.new << Mustermann.new("/foo/*/baz")
+    expander.expand(splat: 'bar').should be == '/foo/bar/baz'
+  end
+
+  it 'supports multiple splats' do
+    expander = Mustermann::Expander.new << Mustermann.new("/foo/*/bar/*")
+    expander.expand(splat: [123, 456]).should be == '/foo/123/bar/456'
+  end
+
   describe :additional_values do
     context "illegal value" do
       example { expect { Mustermann::Expander.new(additional_values: :foo) }.to raise_error(ArgumentError) }

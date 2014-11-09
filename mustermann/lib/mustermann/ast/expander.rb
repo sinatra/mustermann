@@ -74,7 +74,7 @@ module Mustermann
       def add(ast)
         translate(ast).each do |keys, pattern, filter|
           self.keys.concat(keys).uniq!
-          mappings[keys.uniq.sort] ||= [keys, pattern, filter]
+          mappings[keys.sort] ||= [keys, pattern, filter]
         end
       end
 
@@ -87,9 +87,11 @@ module Mustermann
       # @see Mustermann::Pattern#expand
       # @!visibility private
       def expand(**values)
-        keys, pattern, filters = mappings.fetch(values.keys.sort) { error_for(values) }
+        values = values.each_with_object({}){ |(key, value), new_hash|
+          new_hash[value.instance_of?(Array) ? [key] * value.length : key] = value }
+        keys, pattern, filters = mappings.fetch(values.keys.flatten.sort) { error_for(values) }
         filters.each { |key, filter| values[key] &&= escape(values[key], also_escape: filter) }
-        pattern % values.values_at(*keys)
+        pattern % (values[keys] || values.values_at(*keys))
       end
 
       # @see Mustermann::Pattern#expandable?
