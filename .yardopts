@@ -1,1 +1,3 @@
-- README.md internals.md
+--charset utf-8
+mustermann*/{lib,app}/**/*.rb
+ext/**/*.c
