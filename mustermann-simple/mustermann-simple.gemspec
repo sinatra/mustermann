@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.version               = Mustermann::VERSION
   s.author                = "Konstantin Haase"
   s.email                 = "konstantin.mailinglists@googlemail.com"
-  s.homepage              = "https://github.com/rkh/flask"
+  s.homepage              = "https://github.com/rkh/mustermann"
   s.summary               = %q{Simple syntax for Mustermann}
   s.description           = %q{Adds Sinatra 1.x style patterns to Mustermman}
   s.license               = 'MIT'

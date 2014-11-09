@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.version               = Mustermann::VERSION
   s.author                = "Konstantin Haase"
   s.email                 = "konstantin.mailinglists@googlemail.com"
-  s.homepage              = "https://github.com/rkh/flask"
+  s.homepage              = "https://github.com/rkh/mustermann"
   s.summary               = %q{StringScanner for Mustermann}
   s.description           = %q{Implements a version of Ruby's StringScanner that works with Mustermann patterns}
   s.license               = 'MIT'
