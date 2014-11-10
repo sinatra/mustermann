@@ -9,6 +9,7 @@
 This repository contains multiple projects (each installable as separate gems).
 
 * **[mustermann](mustermann/README.md): Your personal string matching expert. This is probably what you're looking for.**
+* [mustermann-everything](mustermann-everything/README.md): A meta gem depending on all other official mustermann gems.
 * [mustermann-fileutils](mustermann-fileutils/README.md): Efficient file system operations using Mustermann patterns.
 * [mustermann-strscan](mustermann-strscan/README.md): A version of Ruby's [StringScanner](http://ruby-doc.org/stdlib-2.0/libdoc/strscan/rdoc/StringScanner.html) made for pattern objects.
 * A selection of pattern types for mustermann, each as their own little library, see [below](#-pattern-types).
