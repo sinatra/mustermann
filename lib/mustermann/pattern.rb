@@ -8,6 +8,7 @@ module Mustermann
   # @abstract
   class Pattern
     include Mustermann
+    @@uri ||= URI::Parser.new
 
     PATTERN_METHODS = %w[expand to_templates].map(&:to_sym)
     # List of supported options.
@@ -196,10 +197,11 @@ module Mustermann
     #     warn "does not support expanding"
     #   end
     #
-    # Expanding is supported by {Mustermann::Sinatra}, {Mustermann::Rails} and
-    # {Mustermann::Template} patterns. Union {Mustermann::Composite} patterns (with
-    # the | operator) support expanding if all patterns they are composed of also
-    # support expanding.
+    # Expanding is supported by almost all patterns (notable execptions are {Mustermann::Shell},
+    # {Mustermann::Regular} and {Mustermann::Simple}).
+    #
+    # Union {Mustermann::Composite} patterns (with the | operator) support expanding if all
+    # patterns they are composed of also support it.
     #
     # @param (see Mustermann::Expander#expand)
     # @return [String] expanded string
@@ -338,8 +340,7 @@ module Mustermann
     # @!visibility private
     def unescape(string, decode = @uri_decode)
       return string unless decode and string
-      @uri ||= URI::Parser.new
-      @uri.unescape(string)
+      @@uri.unescape(string)
     end
 
     # @!visibility private

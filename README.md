@@ -125,8 +125,7 @@ pattern = Mustermann::Shell.new('/*/**')
       <td><tt>/image.png</tt></td>
       <td>any software using strings</td>
       <td>
-        Exact string matching (no parameter parsing).<br>
-        Does not support expanding.
+        Exact string matching (no parameter parsing).
       </td>
     </tr>
 

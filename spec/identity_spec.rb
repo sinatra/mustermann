@@ -9,10 +9,16 @@ describe Mustermann::Identity do
     it { should     match('')  }
     it { should_not match('/') }
 
-    it { should generate_template('') }
+    it { should respond_to(:expand)       }
+    it { should respond_to(:to_templates) }
 
-    it { should_not respond_to(:expand)       }
-    it { should     respond_to(:to_templates) }
+
+    it { should     generate_template('')              }
+    it { should     expand.to('')                      }
+    it { should     expand(:ignore, a: 10).to('')      }
+    it { should     expand(:append, a: 10).to('?a=10') }
+    it { should_not expand(:raise,  a: 10)             }
+    it { should_not expand(a: 10)                      }
 
     example do
       pattern.match('').inspect.should be == '#<Mustermann::SimpleMatch "">'
@@ -27,6 +33,7 @@ describe Mustermann::Identity do
     example { pattern.params('').should be_nil }
 
     it { should generate_template('/') }
+    it { should expand.to('/')         }
   end
 
   pattern '/foo' do
@@ -51,6 +58,7 @@ describe Mustermann::Identity do
     it { should_not match('/foo/')    }
 
     it { should generate_template('/:foo') }
+    it { should expand.to('/:foo')         }
   end
 
   pattern '/föö' do
