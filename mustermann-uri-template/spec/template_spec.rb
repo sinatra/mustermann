@@ -560,6 +560,11 @@ describe Mustermann::Template do
     end
 
     context 'operator +' do
+      pattern '/{a}/{+b}' do
+        it { should match('/foo/bar/baz').capturing(a: 'foo', b: 'bar/baz') }
+        it { should expand(a: 'foo/bar', b: 'foo/bar').to('/foo%2Fbar/foo/bar') }
+      end
+
       context 'prefix' do
         pattern '{+a:3}/bar' do
           it { should match('foo/bar') .capturing a: 'foo' }

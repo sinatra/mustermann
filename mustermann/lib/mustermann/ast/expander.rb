@@ -10,21 +10,25 @@ module Mustermann
     class Expander < Translator
       raises ExpandError
 
-      translate Array do
+      translate Array do |*args|
         inject(t.pattern) do |pattern, element|
-          t.add_to(pattern, t(element))
+          t.add_to(pattern, t(element, *args))
         end
       end
 
-      translate :capture do
-        t.for_capture(node)
+      translate :capture do |**options|
+        t.for_capture(node, **options)
       end
 
       translate :named_splat, :splat do
         t.pattern + t.for_capture(node)
       end
 
-      translate :root, :group, :expression do
+      translate :expression do
+        t(payload, allow_reserved: operator.allow_reserved)
+      end
+
+      translate :root, :group do
         t(payload)
       end
 
@@ -52,9 +56,9 @@ module Mustermann
 
       # helper method for captures
       # @!visibility private
-      def for_capture(node)
+      def for_capture(node, **options)
         name = node.name.to_sym
-        pattern('%s', name, name => /(?!#{pattern_for(node)})./)
+        pattern('%s', name, name => /(?!#{pattern_for(node, **options)})./)
       end
 
       # maps sorted key list to sprintf patterns and filters

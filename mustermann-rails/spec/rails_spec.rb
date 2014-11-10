@@ -592,4 +592,49 @@ describe Mustermann::Rails do
       example { pattern.peek_params("/foo bar")       .should be_nil }
     end
   end
+
+  context 'version compatibility' do
+    context '2.3' do
+      pattern '(foo)', version: '2.3' do
+        it { should_not match("")      }
+        it { should_not match("foo")   }
+        it { should     match("(foo)") }
+      end
+
+      pattern '\\:name', version: '2.3' do
+        it { should match('%5cfoo').capturing(name: 'foo') }
+      end
+    end
+
+    context '3.0' do
+      pattern '(foo)', version: '3.0' do
+        it { should match("")      }
+        it { should match("foo")   }
+      end
+
+      pattern '\\:name', version: '3.0' do
+        it { should     match(':name') }
+        it { should_not match(':foo')  }
+      end
+    end
+
+    context '3.2' do
+      pattern '\\:name', version: '3.2' do
+        it { should match('%5cfoo').capturing(name: 'foo') }
+      end
+    end
+
+    context '4.0' do
+      pattern '\\:name', version: '4.0' do
+        it { should match('foo').capturing(name: 'foo') }
+      end
+    end
+
+    context '4.2' do
+      pattern '\\:name', version: '4.2' do
+        it { should     match(':name') }
+        it { should_not match(':foo')  }
+      end
+    end
+  end
 end

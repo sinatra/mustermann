@@ -5,7 +5,7 @@ This gem implements the `rails` pattern type for Mustermann. It is compatible wi
 ## Overview
 
 **Supported options:**
-`capture`, `except`, `greedy`, `space_matches_plus`, `uri_decode`, and `ignore_unknown_options`.
+`capture`, `except`, `greedy`, `space_matches_plus`, `uri_decode`, `version`, and `ignore_unknown_options`.
 
 **External documentation:**
 [Ruby on Rails Guides: Routing](http://guides.rubyonrails.org/routing.html).
@@ -30,6 +30,21 @@ pattern === "/foo.bar"     # => true
 pattern === "/foo/bar"     # => true
 pattern.params("/foo.bar") # => { "example" => "foo.bar" }
 pattern.params("/foo/bar") # => { "example" => "foo/bar" }
+```
+
+## Rails Compatibility
+
+Rails syntax changed over time. You can target different Ruby on Rails versions by setting the `version` option to the desired Rails version.
+
+The default is `4.2`. Versions prior to `2.3` are not supported.
+
+``` ruby
+require 'mustermann'
+Mustermann.new('/', type: :rails, version: "2.3")
+Mustermann.new('/', type: :rails, version: "3.0.0")
+
+require 'rails'
+Mustermann.new('/', type: :rails, version: Rails::VERSION::STRING)
 ```
 
 ## Syntax
@@ -57,12 +72,27 @@ pattern.params("/foo/bar") # => { "example" => "foo/bar" }
     </tr>
     <tr>
       <td><b>(</b><i>expression</i><b>)</b></td>
-      <td>Enclosed <i>expression</i> is optional.</td>
+      <td>Enclosed <i>expression</i> is optional. Not available in 2.3 compatibility mode.</td>
     </tr>
     <tr>
       <td><b>/</b></td>
       <td>
         Matches forward slash. Does not match URI encoded version of forward slash.
+      </td>
+    </tr>
+    <tr>
+      <td><b>\</b><i>x</i></td>
+      <td>
+        In 3.x compatibility mode and starting with 4.2:
+        Matches <i>x</i> or URI encoded version of <i>x</i>. For instance <tt>\*</tt> matches <tt>*</tt>.<br>
+        In 4.0 or 4.1 compatibility mode:
+        <b>\</b> is ignored, <i>x</i> is parsed normally.<br>
+      </td>
+    </tr>
+    <tr>
+      <td><b>|</b></td>
+      <td>
+        Starting with 3.2 compatibility mode, this will raise a `Mustermann::ParseError`. While Ruby on Rails happily parses this character, it will result in broken routes due to a buggy implementation.
       </td>
     </tr>
     <tr>

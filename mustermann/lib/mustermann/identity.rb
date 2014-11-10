@@ -67,7 +67,7 @@ module Mustermann
       return to_s if values.empty? or behavior == :ignore
       raise ExpandError,    "cannot expand with keys %p" % values.keys.sort if behavior == :raise
       raise ArgumentError,  "unknown behavior %p"        % behavior         if behavior != :append
-      params    = values.map { |key, value| @@uri.escape(key.to_s) + "=" + @@uri.escape(value.to_s, /[^\w\d]/) }
+      params    = values.map { |key, value| @@uri.escape(key.to_s) + "=" + @@uri.escape(value.to_s, /[^\w]/) }
       separator = @string.include?(??) ? ?& : ??
       @string + separator + params.join(?&)
     end

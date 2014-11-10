@@ -15,7 +15,7 @@ describe Mustermann do
       example { Mustermann.new('', type: :template) .should be_a(Mustermann::Template) }
 
       example { expect { Mustermann.new('', foo:  :bar) }.to raise_error(ArgumentError, "unsupported option :foo for Mustermann::Sinatra") }
-      example { expect { Mustermann.new('', type: :ast) }.to raise_error(ArgumentError, "unsupported type :ast") }
+      example { expect { Mustermann.new('', type: :ast) }.to raise_error(ArgumentError, "unsupported type :ast (cannot load such file -- mustermann/ast)") }
     end
 
     context "pattern argument" do
@@ -59,7 +59,8 @@ describe Mustermann do
     example { Mustermann[:simple]   .should be == Mustermann::Simple   }
     example { Mustermann[:template] .should be == Mustermann::Template }
 
-    example { expect { Mustermann[:ast] }.to raise_error(ArgumentError, "unsupported type :ast") }
+    example { expect { Mustermann[:ast]      }.to raise_error(ArgumentError, "unsupported type :ast (cannot load such file -- mustermann/ast)") }
+    example { expect { Mustermann[:expander] }.to raise_error(ArgumentError, "unsupported type :expander") }
   end
 
   describe :extend_object do

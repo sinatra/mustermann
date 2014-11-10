@@ -83,17 +83,20 @@ module Mustermann
     return name if name.respond_to? :new
     @types.fetch(normalized = normalized_type(name)) do
       @mutex.synchronize do
-        try_require "mustermann/#{normalized}"
-        @types.fetch(normalized) { raise ArgumentError, "unsupported type %p" % name }
+        error = try_require "mustermann/#{normalized}"
+        @types.fetch(normalized) { raise ArgumentError, "unsupported type %p#{" (#{error.message})" if error}" % name }
       end
     end
   end
 
+  # @return [LoadError, nil]
   # @!visibility private
   def self.try_require(path)
     require(path)
+    nil
   rescue LoadError => error
     raise(error) unless error.path == path
+    error
   end
 
   # @!visibility private

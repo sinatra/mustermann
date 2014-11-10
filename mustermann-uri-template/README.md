@@ -1,6 +1,6 @@
 # URI Template Syntax for Mustermann
 
-This gem implements the `uri-template` (or `template`) pattern type for Mustermann. It is compatible with [RFC 6570](https://tools.ietf.org/html/rfc6570), [JSON API](http://jsonapi.org/), [JSON Home Documents](http://tools.ietf.org/html/draft-nottingham-json-home-02) and [many more](https://code.google.com/p/uri-templates/wiki/Implementations)
+This gem implements the `uri-template` (or `template`) pattern type for Mustermann. It is compatible with [RFC 6570](https://tools.ietf.org/html/rfc6570) (level 4), [JSON API](http://jsonapi.org/), [JSON Home Documents](http://tools.ietf.org/html/draft-nottingham-json-home-02) and [many more](https://code.google.com/p/uri-templates/wiki/Implementations)
 
 ## Overview
 
