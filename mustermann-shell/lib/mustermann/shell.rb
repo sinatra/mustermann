@@ -35,5 +35,8 @@ module Mustermann
       @peek_string ||= @string + "{**,/**,/**/*}"
       super if File.fnmatch? @peek_string, unescape(string), @flags
     end
+
+    # Used by {Mustermann::FileUtils} to not use a generic glob pattern.
+    alias_method :to_glob, :to_s
   end
 end

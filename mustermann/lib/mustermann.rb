@@ -76,7 +76,7 @@ module Mustermann
   # @example
   #   Mustermann[:sinatra] # => Mustermann::Sinatra
   #
-  # @param [Symbol] key a pattern type identifier
+  # @param [Symbol] name a pattern type identifier
   # @raise [ArgumentError] if the type is not supported
   # @return [Class, #new] pattern factory
   def self.[](name)

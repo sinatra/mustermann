@@ -41,7 +41,7 @@ module Mustermann
     # @return [Mustermann::Expander] the expander
     def add(*patterns)
       patterns.each do |pattern|
-        pattern = Mustermann.new(pattern.to_str, **@options) if pattern.respond_to? :to_str
+        pattern = Mustermann.new(pattern, **@options)
         raise NotImplementedError, "expanding not supported for #{pattern.class}" unless pattern.respond_to? :to_ast
         @api_expander.add(pattern.to_ast)
         @patterns << pattern

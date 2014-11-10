@@ -1,3 +1,5 @@
 --charset utf-8
 mustermann*/{lib,app}/**/*.rb
 ext/**/*.c
+mustermann*/*.md
+*.md
