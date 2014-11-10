@@ -196,10 +196,10 @@ module Mustermann
     #     warn "does not support expanding"
     #   end
     #
-    # Expanding is supported by {Mustermann::Sinatra}, {Mustermann::Rails} and
-    # {Mustermann::Template} patterns. Union {Mustermann::Composite} patterns (with
-    # the | operator) support expanding if all patterns they are composed of also
-    # support expanding.
+    # Template generation is supported by almost all patterns (notable execptions are
+    # {Mustermann::Shell}, {Mustermann::Identity}, {Mustermann::Regular} and {Mustermann::Simple}).
+    # Union {Mustermann::Composite} patterns (with the | operator) support template generation
+    # if all patterns they are composed of also support it.
     #
     # @param (see Mustermann::Expander#expand)
     # @return [String] expanded string
@@ -232,10 +232,10 @@ module Mustermann
     #   pattern |= Mustermann.new('/example/*nested')
     #   pattern.to_templates # => ["/{name}", "/example/{+nested}"]
     #
-    # Template generation is supported by {Mustermann::Sinatra}, {Mustermann::Rails},
-    # {Mustermann::Template} and {Mustermann::Identity} patterns.  Union {Mustermann::Composite}
-    # patterns (with the | operator) support template generation if all patterns they are composed
-    # of also support it.
+    # Template generation is supported by almost all patterns (notable execptions are
+    # {Mustermann::Shell}, {Mustermann::Regular} and {Mustermann::Simple}).
+    # Union {Mustermann::Composite} patterns (with the | operator) support template generation
+    # if all patterns they are composed of also support it.
     #
     # @example Checking if a pattern supports expanding
     #   if pattern.respond_to? :to_templates
