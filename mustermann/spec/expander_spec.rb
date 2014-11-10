@@ -40,6 +40,11 @@ describe Mustermann::Expander do
     expander.expand(splat: [123, 456]).should be == '/foo/123/bar/456'
   end
 
+  it 'supports identity patterns' do
+    expander = Mustermann::Expander.new('/:foo', type: :identity)
+    expander.expand.should be == '/:foo'
+  end
+
   describe :additional_values do
     context "illegal value" do
       example { expect { Mustermann::Expander.new(additional_values: :foo) }.to raise_error(ArgumentError) }

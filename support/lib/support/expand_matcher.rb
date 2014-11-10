@@ -1,8 +1,8 @@
-RSpec::Matchers.define :expand do |values = {}|
+RSpec::Matchers.define :expand do |behavior = nil, **values|
   match do |pattern|
     @string  ||= nil
     begin
-      expanded = pattern.expand(values)
+      expanded = pattern.expand(behavior, **values)
     rescue Exception
       false
     else
@@ -15,8 +15,9 @@ RSpec::Matchers.define :expand do |values = {}|
   end
 
   failure_message do |pattern|
-    message = "expected %p to be expandable with %p" % [pattern, values]
-    expanded = pattern.expand(values)
+    message =  "expected %p to be expandable with %p" % [pattern, values]
+    message << " (%p behavior)" % behavior if behavior
+    expanded = pattern.expand(behavior, **values)
     message << " and result in %p, but got %p" % [@string, expanded] if @string
     message
   end

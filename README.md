@@ -71,8 +71,7 @@ The `identity`, `regexp` and `sinatra` types are included in the `mustermann` ge
       <td><tt>/image.png</tt></td>
       <td>any software using strings</td>
       <td>
-        Exact string matching (no parameter parsing).<br>
-        Does not support expanding.
+        Exact string matching (no parameter parsing).
       </td>
     </tr>
 

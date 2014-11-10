@@ -8,6 +8,7 @@ module Mustermann
   # @abstract
   class Pattern
     include Mustermann
+    @@uri ||= URI::Parser.new
 
     # List of supported options.
     #
@@ -196,10 +197,11 @@ module Mustermann
     #     warn "does not support expanding"
     #   end
     #
-    # Template generation is supported by almost all patterns (notable execptions are
-    # {Mustermann::Shell}, {Mustermann::Identity}, {Mustermann::Regular} and {Mustermann::Simple}).
-    # Union {Mustermann::Composite} patterns (with the | operator) support template generation
-    # if all patterns they are composed of also support it.
+    # Expanding is supported by almost all patterns (notable execptions are {Mustermann::Shell},
+    # {Mustermann::Regular} and {Mustermann::Simple}).
+    #
+    # Union {Mustermann::Composite} patterns (with the | operator) support expanding if all
+    # patterns they are composed of also support it.
     #
     # @param (see Mustermann::Expander#expand)
     # @return [String] expanded string
@@ -332,8 +334,7 @@ module Mustermann
     # @!visibility private
     def unescape(string, decode = @uri_decode)
       return string unless decode and string
-      @uri ||= URI::Parser.new
-      @uri.unescape(string)
+      @@uri.unescape(string)
     end
 
     # @!visibility private
