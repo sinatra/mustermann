@@ -132,6 +132,13 @@ describe Mustermann::Rails do
     it { should generate_template('/{+foo}') }
   end
 
+  pattern '/*splat' do
+    it { should match('/')        .capturing splat: '' }
+    it { should match('/foo')     .capturing splat: 'foo' }
+    it { should match('/foo/bar') .capturing splat: 'foo/bar' }
+    it { should generate_template('/{+splat}') }
+  end
+
   pattern '/:foo/*bar' do
     it { should match("/foo/bar/baz")     .capturing foo: 'foo',       bar: 'bar/baz'   }
     it { should match("/foo%2Fbar/baz")   .capturing foo: 'foo%2Fbar', bar: 'baz'       }
