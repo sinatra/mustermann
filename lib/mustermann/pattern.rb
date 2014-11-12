@@ -209,7 +209,6 @@ module Mustermann
     # @raise [Mustermann::ExpandError] raised if a value is missing or unknown
     # @see Mustermann::Expander
     def expand(behavior = nil, values = {})
-      values, behavior = behavior, nil if behavior.kind_of?(Hash)
       raise NotImplementedError, "expanding not supported by #{self.class}"
     end
 
