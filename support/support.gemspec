@@ -9,5 +9,16 @@ Gem::Specification.new do |s|
   s.homepage     = "https://github.com/rkh/mustermann"
   s.summary      = %q{support for mustermann development}
   s.require_path = 'lib'
+
   s.add_dependency 'tool', '~> 0.2'
+  s.add_dependency 'rspec'
+  s.add_dependency 'rspec-its'
+  s.add_dependency 'addressable'
+  s.add_dependency 'sinatra', '~> 1.4'
+  s.add_dependency 'rack-test'
+  s.add_dependency 'rake'
+  s.add_dependency 'yard'
+  s.add_dependency 'redcarpet'
+  s.add_dependency 'simplecov'
+  s.add_dependency 'coveralls'
 end
