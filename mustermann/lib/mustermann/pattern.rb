@@ -158,13 +158,13 @@ module Mustermann
       [params(captures: match), match.to_s.size] if match
     end
 
-    # @return [Array<String>] capture names.
+    # @return [Hash{String: Array<Integer>}] capture names mapped to capture index.
     # @see http://ruby-doc.org/core-2.0/Regexp.html#method-i-named_captures Regexp#named_captures
     def named_captures
       {}
     end
 
-    # @return [Hash{String: Array<Integer>}] capture names mapped to capture index.
+    # @return [Array<String>] capture names.
     # @see http://ruby-doc.org/core-2.0/Regexp.html#method-i-names Regexp#names
     def names
       []
