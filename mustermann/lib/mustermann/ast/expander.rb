@@ -86,7 +86,7 @@ module Mustermann
 
       # @see Mustermann::Pattern#expand
       # @!visibility private
-      def expand(**values)
+      def expand(values)
         values = values.each_with_object({}){ |(key, value), new_hash|
           new_hash[value.instance_of?(Array) ? [key] * value.length : key] = value }
         keys, pattern, filters = mappings.fetch(values.keys.flatten.sort) { error_for(values) }

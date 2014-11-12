@@ -137,12 +137,12 @@ module Mustermann
     # @return [String] expanded string
     # @raise [NotImplementedError] raised if expand is not supported.
     # @raise [Mustermann::ExpandError] raised if a value is missing or unknown
-    def expand(behavior = nil, **values)
+    def expand(behavior = nil, values = {})
       behavior, values = nil, behavior if behavior.is_a? Hash
       values = map_values(values)
 
       case behavior || additional_values
-      when :raise  then @api_expander.expand(**values)
+      when :raise  then @api_expander.expand(values)
       when :ignore then with_rest(values) { |uri, rest| uri }
       when :append then with_rest(values) { |uri, rest| append(uri, rest) }
       else raise ArgumentError, "unknown behavior %p" % behavior

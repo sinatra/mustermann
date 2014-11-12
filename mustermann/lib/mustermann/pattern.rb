@@ -208,7 +208,7 @@ module Mustermann
     # @raise [NotImplementedError] raised if expand is not supported.
     # @raise [Mustermann::ExpandError] raised if a value is missing or unknown
     # @see Mustermann::Expander
-    def expand(behavior = nil, **values)
+    def expand(behavior = nil, values = {})
       raise NotImplementedError, "expanding not supported by #{self.class}"
     end
 
