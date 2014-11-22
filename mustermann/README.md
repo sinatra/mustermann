@@ -283,7 +283,7 @@ It is also possible to pass this directly to the `expand` call:
 require 'mustermann'
 
 pattern = Mustermann.new('/:slug')
-pattern.expan(:append, slug: "foo", value: "bar") # => "/foo?value=bar"
+pattern.expand(:append, slug: "foo", value: "bar") # => "/foo?value=bar"
 ```
 
 <a name="-generating-templates"></a>
