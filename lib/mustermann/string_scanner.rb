@@ -130,6 +130,7 @@ module Mustermann
     # @param [String] string the string to scan
     # @param [Hash] pattern_options default options used for {#scan}
     def initialize(string = "", pattern_options = {})
+      pattern_options, string = string, {} if string.kind_of?(Hash)
       @pattern_options = pattern_options
       @string          = String(string).dup
       reset

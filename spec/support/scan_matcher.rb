@@ -32,7 +32,7 @@ module Support
       end
 
       match do |scanner|
-        scanned = scanner.public_send(method_name, pattern, options = {})
+        scanned = scanner.public_send(method_name, pattern, options)
         scanned and result_expectations.all? { |e| !e.call(scanned) }
       end
 

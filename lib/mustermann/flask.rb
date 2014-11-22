@@ -23,7 +23,7 @@ module Mustermann
       end
 
       converter   = pattern.converters.fetch(converter_name) { unexpected("converter %p" % converter_name) }
-      converter   = converter.new(*(args << opts))  if converter.respond_to? :new
+      converter   = converter.new(*args, opts)    if converter.respond_to? :new
       constraint  = converter.constraint          if converter.respond_to? :constraint
       convert     = converter.convert             if converter.respond_to? :convert
       qualifier   = converter.qualifier           if converter.respond_to? :qualifier
@@ -61,7 +61,7 @@ module Mustermann
       # @!visibility private
       def self.create(&block)
         Class.new(self) do
-          define_method(:initialize) { |*a| block[self, *a] }
+          define_method(:initialize) { |*a| o = a.last.kind_of?(Hash) ? a.pop : {}; block[self, *a, o] }
         end
       end
 
@@ -164,7 +164,8 @@ module Mustermann
     register_converter(:int) do |converter, options = {}|
       min = options.delete(:min)
       max = options.delete(:max)
-      fixed_digits = options.delete(:fixed_digits)
+      fixed_digits = options.fetch(:fixed_digits, false)
+      options.delete(:fixed_digits)
       converter.constraint = /\d/
       converter.qualifier  = "{#{fixed_digits}}" if fixed_digits
       converter.between(min, max) { |string| Integer(string) }
@@ -194,7 +195,7 @@ module Mustermann
     attr_reader :converters
 
     def initialize(input, options = {})
-      converters = options.delete(:converters) || {}
+      converters = options[:converters] || {}
       @converters = self.class.converters.dup
       converters.each { |k,v| @converters[k.to_s] = v } if converters
       super(input, options)

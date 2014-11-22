@@ -60,8 +60,8 @@ module Mustermann
     when Pattern then input
     when Regexp  then self[:regexp].new(input, options)
     when String  then self[type].new(input, options)
-    when Symbol  then self[:sinatra].new(input.inspect, options)
     when Array   then Composite.new(input, options.merge(:type => type))
+    when Symbol  then self[:sinatra].new(input.inspect, options)
     else
       pattern = input.to_pattern(options.merge(:type => type)) if input.respond_to? :to_pattern
       raise TypeError, "#{input.class} can't be coerced into Mustermann::Pattern" if pattern.nil?
