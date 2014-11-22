@@ -151,7 +151,7 @@ module Mustermann
     # @return [Array<Hash, Integer>, nil] Array with params hash and length of substing if matched, nil otherwise
     def peek_params(string)
       match = peek_match(string)
-      [params(:captures => match), match.to_s.size] if match
+      [params(nil, :captures => match), match.to_s.size] if match
     end
 
     # @return [Array<String>] capture names.
