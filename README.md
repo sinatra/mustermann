@@ -127,7 +127,8 @@ The `identity`, `regexp` and `sinatra` types are included in the `mustermann` ge
         <a href="http://www.sinatrarb.com/">Sinatra</a> (1.x),
         <a href="http://www.scalatra.org/">Scalatra</a>,
         <a href="http://perldancer.org/">Dancer</a>,
-        <a href="https://github.com/julienschmidt/httprouter">HttpRouter (go)</a>
+        <a href="https://github.com/julienschmidt/httprouter">HttpRouter (go)</a>,
+        <a href="http://finatra.info/">Finatra</a>
       </td>
       <td>
         Implementation is a direct copy from Sinatra 1.3.<br>
