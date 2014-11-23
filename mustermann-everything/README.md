@@ -1,4 +1,4 @@
-# The Amazing Superman - Everything Edition
+# The Amazing Mustermann - Everything Edition
 
 This is a meta gem that depends on all official mustermann gems.
 
