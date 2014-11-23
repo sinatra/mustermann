@@ -15,8 +15,9 @@ module Mustermann
 
     on ?{ do |char|
       variable = proc do
+        start  = pos
         match  = expect(/(?<name>\w+)(?:\:(?<prefix>\d{1,4})|(?<explode>\*))?/)
-        node(:variable, match[:name], prefix: match[:prefix], explode: match[:explode])
+        node(:variable, match[:name], prefix: match[:prefix], explode: match[:explode], start: start)
       end
 
       operator   = buffer.scan(/[\+\#\.\/;\?\&\=\,\!\@\|]/)

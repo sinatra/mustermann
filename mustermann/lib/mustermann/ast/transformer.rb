@@ -44,7 +44,7 @@ module Mustermann
           self.operator = OPERATORS.fetch(operator) { raise CompileError, "#{operator} operator not supported" }
           separator     = Node[:separator].new(operator.separator)
           prefix        = Node[:separator].new(operator.prefix)
-          self.payload  = Array(payload.inject { |list, element| Array(list) << t(separator) << t(element) })
+          self.payload  = Array(payload.inject { |list, element| Array(list) << t(separator.dup) << t(element) })
           payload.unshift(prefix) if operator.prefix
           self
         end

@@ -1,4 +1,5 @@
 require 'mustermann/ast/parser'
+require 'mustermann/ast/boundaries'
 require 'mustermann/ast/compiler'
 require 'mustermann/ast/transformer'
 require 'mustermann/ast/validation'
@@ -18,9 +19,9 @@ module Mustermann
 
       extend Forwardable, SingleForwardable
       single_delegate on: :parser, suffix: :parser
-      instance_delegate %i[parser compiler transformer validation template_generator param_scanner] => 'self.class'
+      instance_delegate %i[parser compiler transformer validation template_generator param_scanner boundaries] => 'self.class'
       instance_delegate parse: :parser, transform: :transformer, validate: :validation,
-        generate_templates: :template_generator, scan_params: :param_scanner
+        generate_templates: :template_generator, scan_params: :param_scanner, set_boundaries: :boundaries
 
       # @api private
       # @return [#parse] parser object for pattern
@@ -39,7 +40,14 @@ module Mustermann
       end
 
       # @api private
-      # @return [#transform] compiler object for pattern
+      # @return [#set_boundaries] translator making sure start and stop is set on all nodes
+      # @!visibility private
+      def self.boundaries
+        Boundaries
+      end
+
+      # @api private
+      # @return [#transform] transformer object for pattern
       # @!visibility private
       def self.transformer
         Transformer
@@ -79,7 +87,12 @@ module Mustermann
       # @!visibility private
       def to_ast
         @ast_cache ||= Tool::EqualityMap.new
-        @ast_cache.fetch(@string) { validate(transform(parse(@string, pattern: self))) }
+        @ast_cache.fetch(@string) do
+          ast   = parse(@string, pattern: self)
+          ast &&= transform(ast)
+          ast &&= set_boundaries(ast, string: @string)
+          validate(ast)
+        end
       end
 
       # All AST-based pattern implementations support expanding.
@@ -117,7 +130,7 @@ module Mustermann
         @param_converters ||= scan_params(to_ast)
       end
 
-      private :compile, :parse, :transform, :validate, :generate_templates, :param_converters, :scan_params
+      private :compile, :parse, :transform, :validate, :generate_templates, :param_converters, :scan_params, :set_boundaries
     end
   end
 end

@@ -15,15 +15,8 @@ module Mustermann
 
       translate(Object) { inspect }
       translate(Array) { map { |e| "\n" << t(e) }.join.gsub("\n", "\n  ") }
-      translate(:node) { "#{t.type(node)} #{t(payload)}" }
-      translate(:with_look_ahead) { "#{t.type(node)} #{t(head)} #{t(payload)}" }
-
-      # Turns a class name into a node identifier.
-      #
-      # @!visibility private
-      def type(node)
-        node.class.name[/[^:]+$/].split(/(?<=.)(?=[A-Z])/).map(&:downcase).join(?_)
-      end
+      translate(:node) { "#{node.type} #{t(payload)}" }
+      translate(:with_look_ahead) { "#{node.type} #{t(head)} #{t(payload)}" }
     end
   end
 end

@@ -41,7 +41,7 @@ module Mustermann
       attr_reader :buffer, :string, :pattern
 
       extend Forwardable
-      def_delegators :buffer, :eos?, :getch
+      def_delegators :buffer, :eos?, :getch, :pos
 
       # @!visibility private
       def initialize(pattern: nil, **options)
@@ -64,8 +64,10 @@ module Mustermann
       # @return [Mustermann::AST::Node]
       # @!visibility private
       def node(type, *args, &block)
-        type = Node[type] unless type.respond_to? :new
-        block ? type.parse(*args, &block) : type.new(*args)
+        type  = Node[type] unless type.respond_to? :new
+        start = pos
+        node  = block ? type.parse(*args, &block) : type.new(*args)
+        min_size(start, pos, node)
       end
 
       # Create a node for a character we don't have an explicit rule for.
@@ -81,10 +83,24 @@ module Mustermann
       # @return [Mustermann::AST::Node] next element
       # @!visibility private
       def read
-        char    = getch
-        method  = "read %p" % char
-        element = respond_to?(method) ? send(method, char) : default_node(char)
+        start  = pos
+        char   = getch
+        method = "read %p" % char
+        element= respond_to?(method) ? send(method, char) : default_node(char)
+        min_size(start, pos, element)
         read_suffix(element)
+      end
+
+      # sets start on node to start if it's not set to a lower value.
+      # sets stop on node to stop if it's not set to a higher value.
+      # @return [Mustermann::AST::Node] the node passed as third argument
+      # @!visibility private
+      def min_size(start, stop, node)
+        stop  ||= start
+        start ||= stop
+        node.start = start unless node.start and node.start < start
+        node.stop  = stop  unless node.stop  and node.stop  > stop
+        node
       end
 
       # Checks for a potential suffix on the buffer.
@@ -94,7 +110,7 @@ module Mustermann
       def read_suffix(element)
         self.class.suffix.inject(element) do |ele, (regexp, after, callback)|
           next ele unless ele.is_a?(after) and payload = scan(regexp)
-          instance_exec(payload, ele, &callback)
+          min_size(element.start, pos, instance_exec(payload, ele, &callback))
         end
       end
 
