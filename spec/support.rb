@@ -1,5 +1,4 @@
 require 'support/env'
-require 'support/coverage'
 require 'support/expand_matcher'
 require 'support/generate_template_matcher'
 require 'support/match_matcher'
