@@ -6,6 +6,10 @@ require 'thread'
 #
 # Under normal circumstances the only external API entry point you should be using is {Mustermann.new}.
 module Mustermann
+  # Type to use if no type is given.
+  # @api private
+  DEFAULT_TYPE = :sinatra
+
   # Creates a new pattern based on input.
   #
   # * From {Mustermann::Pattern}: returns given pattern.
@@ -53,8 +57,9 @@ module Mustermann
   # @raise (see Mustermann::Pattern.new)
   # @raise [TypeError] if the passed object cannot be converted to a pattern
   # @see file:README.md#Types_and_Options "Types and Options" in the README
-  def self.new(*input, type: :sinatra, **options)
-    input = input.first if input.size < 2
+  def self.new(*input, type: DEFAULT_TYPE, **options)
+    type ||= DEFAULT_TYPE
+    input  = input.first if input.size < 2
     case input
     when Pattern then input
     when Regexp  then self[:regexp].new(input, **options)
