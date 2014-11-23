@@ -110,7 +110,8 @@ module Mustermann
       def read_suffix(element)
         self.class.suffix.inject(element) do |ele, (regexp, after, callback)|
           next ele unless ele.is_a?(after) and payload = scan(regexp)
-          min_size(element.start, pos, instance_exec(payload, ele, &callback))
+          content = instance_exec(payload, ele, &callback)
+          min_size(element.start, pos, content)
         end
       end
 

@@ -74,6 +74,26 @@ module Mustermann
         end
       end
 
+      # Enables quick creation of a translator object.
+      #
+      # @example
+      #   require 'mustermann'
+      #   require 'mustermann/ast/translator'
+      #   
+      #   translator = Mustermann::AST::Translator.create do
+      #     translate(:node)  { [type, *t(payload)].flatten.compact }
+      #     translate(Array)  { map { |e| t(e) } }
+      #     translate(Object) { }
+      #   end
+      #   
+      #   ast = Mustermann.new('/:name').to_ast
+      #   translator.translate(ast) # => [:root, :separator, :capture]
+      #
+      # @!visibility private
+      def self.create(&block)
+        Class.new(self, &block).new
+      end
+
       raises Mustermann::Error
 
       # @param [Mustermann::AST::Node, Object] node to translate

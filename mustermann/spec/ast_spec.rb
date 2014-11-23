@@ -9,5 +9,6 @@ describe Mustermann::AST do
 
   describe :min_size do
     example { Mustermann::AST::Node[:char].new.min_size.should be == 1 }
+    example { Mustermann::AST::Node[:node].new.min_size.should be == 0 }
   end
 end

@@ -48,8 +48,8 @@ module Mustermann
     # Not used internally by {Mustermann::Identity}.
     # @!visibility private
     def to_ast
-      payload = @string.each_char.map { |c| AST::Node[c == ?/ ? :separator : :char].new(c) }
-      AST::Node[:root].new(payload, pattern: @string)
+      payload = @string.each_char.with_index.map { |c, i| AST::Node[c == ?/ ? :separator : :char].new(c, start: i, stop: i+1) }
+      AST::Node[:root].new(payload, pattern: @string, start: 0, stop: @string.length)
     end
 
     # Identity patterns support expanding.

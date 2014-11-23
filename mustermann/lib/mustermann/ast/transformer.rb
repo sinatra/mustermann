@@ -91,7 +91,7 @@ module Mustermann
         # @!visibility private
         def create_lookahead(elements, *args)
           return elements unless elements.size > 1
-          [Node[:with_look_ahead].new(elements, *args)]
+          [Node[:with_look_ahead].new(elements, *args, start: elements.first.start, stop: elements.last.stop)]
         end
 
         # can the given element be used in a look-ahead?

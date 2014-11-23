@@ -138,4 +138,10 @@ describe Mustermann::Shell do
       example { pattern.peek_params("/foo bar")       .should be_nil }
     end
   end
+
+  context "highlighting" do
+    let(:pattern) { Mustermann::Shell.new("/**,*/\\*/{a,b}") }
+    subject(:sexp) { Mustermann::Visualizer.highlight(pattern).to_sexp }
+    it { should be == '(root (separator /) (special *) (special *) (char ,) (special *) (separator /) (escaped "\\\\" (escaped_char *)) (separator /) (union { (root (char a)) ,(root (char b)) }))' }
+  end
 end

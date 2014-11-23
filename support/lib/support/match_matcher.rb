@@ -19,9 +19,9 @@ RSpec::Matchers.define :match do |expected|
         actual.to_s, key, value, expected, match[key], actual.regexp
       ]
 
-      if ast = actual.instance_variable_get(:@ast)
-        require 'mustermann/ast/tree_renderer'
-        tree = Mustermann::AST::TreeRenderer.render(ast)
+      if actual.respond_to? :to_ast
+        require 'mustermann/visualizer/tree_renderer'
+        tree = Mustermann::Visualizer::TreeRenderer.render(actual)
         message << "\n\nAST:\n#{tree}"
       end
 

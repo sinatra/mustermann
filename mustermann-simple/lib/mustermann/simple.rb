@@ -11,8 +11,20 @@ module Mustermann
   # @see file:README.md#simple Syntax description in the README
   class Simple < RegexpBased
     register :simple
-
     supported_options :greedy, :space_matches_plus
+    instance_delegate highlighter: 'self.class'
+
+    # @!visibility private
+    # @return [#highlight, nil]
+    #   highlighing logic for mustermann-visualizer,
+    #   nil if mustermann-visualizer hasn't been loaded
+    def self.highlighter
+      return unless defined? Mustermann::Visualizer::Highlighter
+      @highlighter ||= Mustermann::Visualizer::Highlighter.create do
+        on(/:(\w+)/) { |matched| element(:capture, ':') { element(:name, matched[1..-1]) } }
+        on("*" => :splat, "?" => :optional)
+      end
+    end
 
     def compile(greedy: true, uri_decode: true, space_matches_plus: true, **options)
       pattern = @string.gsub(/[^\?\%\\\/\:\*\w]/) { |c| encoded(c, uri_decode, space_matches_plus) }

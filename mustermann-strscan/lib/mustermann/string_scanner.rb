@@ -25,7 +25,7 @@ module Mustermann
   #   Even if it was thread-safe, scanning concurrently would probably lead to unwanted behaviour.
   class StringScanner
     # Exception raised if scan/unscan operation cannot be performed.
-    ScanError     = Class.new(::StringScanner::Error)
+    ScanError     = Class.new(::ScanError)
     PATTERN_CACHE = PatternCache.new
     private_constant :PATTERN_CACHE
 

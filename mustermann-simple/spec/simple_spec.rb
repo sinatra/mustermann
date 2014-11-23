@@ -1,5 +1,6 @@
 require 'support'
 require 'mustermann/simple'
+require 'mustermann/visualizer'
 
 describe Mustermann::Simple do
   extend Support::Pattern
@@ -257,5 +258,11 @@ describe Mustermann::Simple do
       example { pattern.peek_params("foo%20bar/blah") .should be == [{"name" => "foo bar"}, "foo%20bar".size] }
       example { pattern.peek_params("/foo bar")       .should be_nil }
     end
+  end
+
+  context "highlighting" do
+    let(:pattern) { Mustermann::Simple.new("/:name?/*") }
+    subject(:sexp) { Mustermann::Visualizer.highlight(pattern).to_sexp }
+    it { should be == "(root (separator /) (capture : (name name)) (optional ?) (separator /) (splat *))" }
   end
 end

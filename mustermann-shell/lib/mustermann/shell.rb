@@ -13,6 +13,19 @@ module Mustermann
   class Shell < Pattern
     register :shell
 
+    # @!visibility private
+    # @return [#highlight, nil]
+    #   highlighing logic for mustermann-visualizer,
+    #   nil if mustermann-visualizer hasn't been loaded
+    def highlighter
+      return unless defined? Mustermann::Visualizer::Highlighter
+      @@highlighter ||= Mustermann::Visualizer::Highlighter.create do
+        on('\\') { |matched| escaped(matched, scanner.getch) }
+        on(/[\*\[\]]/, :special)
+        on("{") { nested(:union, ?{, ?}, ?,) }
+      end
+    end
+
     # @param (see Mustermann::Pattern#initialize)
     # @return (see Mustermann::Pattern#initialize)
     # @see (see Mustermann::Pattern#initialize)
