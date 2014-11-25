@@ -193,6 +193,29 @@ As there has been no stable release yet, the API might still change, though I co
 
 ### Development Releases
 
+* **Mustermann 0.4.0** (2014-11-26)
+    * More Infos:
+      [RubyGems.org](http://rubygems.org/gems/mustermann/versions/0.4.0),
+      [RubyDoc.info](http://rubydoc.info/gems/mustermann/0.4.0/frames),
+      [GitHub.com](https://github.com/rkh/mustermann/tree/v0.4.0)
+    * Split into multiple gems.
+    * Add `Pattern#to_proc`.
+    * Add `Pattern#|`, `Pattern#&` and `Pattern#^`.
+    * Add `Pattern#peek`, `Pattern#peek_size`, `Pattern#peek_match` and `Pattern#peek_params`.
+    * Add `Mustermann::StringScanner`.
+    * Add `Pattern#to_templates`.
+    * Add `|` syntax to `sinatra` templates.
+    * Add template style placeholders to `sinatra` templates.
+    * Add `cake`, `express`, `flask` and `pyramid` patterns.
+    * Allow passing in additional value behavior directly to `Pattern#expand`.
+    * Fix expanding of multiple splats.
+    * Add expanding to `identity` patterns.
+    * Add `mustermann-fileutils`.
+    * Make expander accept hashes with string keys.
+    * Allow named splats to be named splat.
+    * Support multiple Rails versions.
+    * Type option can be set to nil to get the default type.
+    * Add `mustermann-visualizer`.
 * **Mustermann 0.3.1** (2014-09-12)
     * More Infos:
       [RubyGems.org](http://rubygems.org/gems/mustermann/versions/0.3.1),
@@ -247,24 +270,5 @@ As there has been no stable release yet, the API might still change, though I co
 
 ### Upcoming Releases
 
-* **Mustermann 0.4.0** (next release with new features)
-    * Split into multiple gems.
-    * Add `Pattern#to_proc`.
-    * Add `Pattern#|`, `Pattern#&` and `Pattern#^`.
-    * Add `Pattern#peek`, `Pattern#peek_size`, `Pattern#peek_match` and `Pattern#peek_params`.
-    * Add `Mustermann::StringScanner`.
-    * Add `Pattern#to_templates`.
-    * Add `|` syntax to `sinatra` templates.
-    * Add template style placeholders to `sinatra` templates.
-    * Add `cake`, `express`, `flask` and `pyramid` patterns.
-    * Allow passing in additional value behavior directly to `Pattern#expand`.
-    * Fix expanding of multiple splats.
-    * Add expanding to `identity` patterns.
-    * Add `mustermann-fileutils`.
-    * Make expander accept hashes with string keys.
-    * Allow named splats to be named splat.
-    * Support multiple Rails versions.
-    * Type option can be set to nil to get the default type.
-    * Add `mustermann-visualizer`.
 * **Mustermann 1.0.0** (before Sinatra 2.0)
     * First stable release.
