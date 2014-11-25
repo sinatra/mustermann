@@ -176,7 +176,7 @@ Mustermann depends on [tool](https://github.com/rkh/tool) (which has been extrac
 
 It is known to work on MRI 2.1.
 
-JRuby will hopefully be supported with the release of **JRuby 9000***.
+JRuby will hopefully be supported with the release of **JRuby 9000**.
 
 **Rubinius** is not currently supported. As of Rubinius 2.3.1, a large portion of the specs pass (3870 out of 3943), but certain parts are not working yet.
 
