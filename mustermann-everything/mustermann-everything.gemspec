@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.summary               = %q{The complete Mustermann}
   s.description           = %q{Meta gem depending on all official Mustermann gems}
   s.license               = 'MIT'
-  s.required_ruby_version = '>= 2.0.0'
+  s.required_ruby_version = '>= 2.1.0'
 
   Support::Projects.each do |project|
     next if project == s.name

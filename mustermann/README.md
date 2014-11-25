@@ -45,10 +45,6 @@ These features are included in the library, but not loaded by default
 * **[Routers](#-routers):** Model execution flow based on pattern matching. Comes with a simple Rack router.
 * **[Sinatra Integration](#-sinatra-integration):** Mustermann can be used as a [Sinatra](http://www.sinatrarb.com/) extension. Sinatra 2.0 and beyond will use Mustermann by default.
 
-### More Infos
-
-* **[Requirements](#-requirements):** Mustermann currently requires Ruby 2.0 or later.
-
 <a name="-pattern-types"></a>
 ## Pattern Types
 
@@ -840,14 +836,3 @@ This comes with a few trade-offs:
     </tr>
   </tbody>
 </table>
-
-<a name="-requirements"></a>
-## Requirements
-
-Mustermann depends on [tool](https://github.com/rkh/tool) (which has been extracted from Mustermann and Sinatra 2.0), and a Ruby 2.0 compatible Ruby implementation.
-
-It is known to work on MRI 2.0 and 2.1.
-
-**JRuby** is not yet fully supported. It is possible to run parts of Mustermann by passing in `--2.0 -X-C`, but as of JRuby 1.7, we would recommend waiting for proper Ruby 2.0 support to land in JRuby. The same goes for **Rubinius**.
-
-If you need Ruby 1.9 support, you might be able to use the **unofficial** [mustermann19](http://rubygems.org/gems/mustermann19) gem based on [namusyaka's fork](https://github.com/namusyaka/mustermann).

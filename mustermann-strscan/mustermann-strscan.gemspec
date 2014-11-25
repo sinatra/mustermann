@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.summary               = %q{StringScanner for Mustermann}
   s.description           = %q{Implements a version of Ruby's StringScanner that works with Mustermann patterns}
   s.license               = 'MIT'
-  s.required_ruby_version = '>= 2.0.0'
+  s.required_ruby_version = '>= 2.1.0'
   s.files                 = `git ls-files`.split("\n")
   s.test_files            = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables           = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
