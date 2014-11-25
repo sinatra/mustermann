@@ -178,6 +178,8 @@ It is known to work on MRI 2.1.
 
 JRuby will hopefully be supported with the release of **JRuby 9000***.
 
+**Rubinius** is not currently supported. As of Rubinius 2.3.1, a large portion of the specs pass (3870 out of 3943), but certain parts are not working yet.
+
 If you need Ruby 1.9 support, you might be able to use the **unofficial** [mustermann19](http://rubygems.org/gems/mustermann19) gem based on [namusyaka's fork](https://github.com/namusyaka/mustermann).
 
 ## Release History
