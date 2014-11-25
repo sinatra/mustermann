@@ -1,8 +1,9 @@
-if RUBY_VERSION < '2.0.0'
-  $stderr.puts "needs Ruby 2.0.0, you're running #{RUBY_VERSION}"
+if RUBY_VERSION < '2.1.0'
+  $stderr.puts "needs Ruby 2.1.0, you're running #{RUBY_VERSION}"
   exit 1
 end
 
+RUBY_ENGINE ||= 'ruby'
 ENV['RACK_ENV'] = 'test'
 
 require 'tool/warning_filter'
