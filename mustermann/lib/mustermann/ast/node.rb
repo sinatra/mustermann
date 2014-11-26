@@ -153,6 +153,10 @@ module Mustermann
       end
 
       # @!visibility private
+      class Or < Node
+      end
+
+      # @!visibility private
       class Root < Node
         # @!visibility private
         attr_accessor :pattern

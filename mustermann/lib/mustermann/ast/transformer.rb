@@ -15,10 +15,58 @@ module Mustermann
         new.translate(tree)
       end
 
-      translate(:node) { self }
-      translate(:group, :root) do
-        self.payload = t(payload)
-        self
+      # recursive descent
+      translate(:node) do
+        node.payload = t(payload)
+        node
+      end
+
+      # ignore unknown objects on the tree
+      translate(Object) { node }
+
+      # turn a group containing or nodes into a union
+      # @!visibility private
+      class GroupTransformer < NodeTranslator
+        register :group
+
+        # @!visibility private
+        def translate
+          return union if payload.any? { |e| e.is_a? :or }
+          self.payload = t(payload)
+          self
+        end
+
+        # @!visibility private
+        def union
+          groups = split_payload.map { |g| group(g) }
+          Node[:union].new(groups, start: node.start, stop: node.stop)
+        end
+
+        # @!visibility private
+        def group(elements)
+          return t(elements.first) if elements.size == 1
+          start, stop = elements.first.start, elements.last.stop if elements.any?
+          Node[:group].new(t(elements), start: start, stop: stop)
+        end
+
+        # @!visibility private
+        def split_payload
+          groups = [[]]
+          payload.each { |e| e.is_a?(:or) ? groups << [] : groups.last << e }
+          groups.map!
+        end
+      end
+
+      # inject a union node right inside the root node if it contains or nodes
+      # @!visibility private
+      class RootTransformer < GroupTransformer
+        register :root
+
+        # @!visibility private
+        def union
+          self.payload = [super]
+          self
+        end
       end
 
       # URI expression transformations depending on operator

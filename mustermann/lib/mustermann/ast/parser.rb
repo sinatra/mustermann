@@ -124,25 +124,8 @@ module Mustermann
       # @return [String, MatchData, nil]
       # @!visibility private
       def scan(regexp)
-        match_buffer(:scan, regexp)
-      end
-
-      # Wrapper around {StringScanner#check} that turns strings into escaped
-      # regular expressions and returns a MatchData if the regexp has any
-      # named captures.
-      #
-      # @param [Regexp, String] regexp
-      # @see StringScanner#check
-      # @return [String, MatchData, nil]
-      # @!visibility private
-      def check(regexp)
-        match_buffer(:check, regexp)
-      end
-
-      # @!visibility private
-      def match_buffer(method, regexp)
         regexp = Regexp.new(Regexp.escape(regexp)) unless regexp.is_a? Regexp
-        string = buffer.public_send(method, regexp)
+        string = buffer.scan(regexp)
         regexp.names.any? ? regexp.match(string) : string
       end
 
@@ -245,8 +228,6 @@ module Mustermann
         char = "space" if char == " "
         raise exception, "unexpected #{char || "end of string"} while parsing #{string.inspect}"
       end
-
-      private :match_buffer
     end
 
     private_constant :Parser

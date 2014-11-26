@@ -12,17 +12,13 @@ module Mustermann
   class Sinatra < AST::Pattern
     register :sinatra
 
-    on(nil, ??, ?), ?|) { |c| unexpected(c) }
+    on(nil, ??, ?)) { |c| unexpected(c) }
 
     on(?*)  { |c| scan(/\w+/) ? node(:named_splat, buffer.matched) : node(:splat) }
     on(?:)  { |c| node(:capture) { scan(/\w+/) } }
     on(?\\) { |c| node(:char, expect(/./)) }
-
-    on ?( do |char|
-      groups = []
-      groups << node(:group) { read unless check(?)) or scan(?|) } until scan(?))
-      groups.size == 1 ? groups.first : node(:union, groups)
-    end
+    on(?()  { |c| node(:group) { read unless scan(?)) } }
+    on(?|)  { |c| node(:or) }
 
     on ?{ do |char|
       type = scan(?+) ? :named_splat : :capture

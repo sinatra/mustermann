@@ -811,7 +811,7 @@ This comes with a few trade-offs:
       </td>
     </tr>
     <tr>
-      <td><b>(</b><i>expression</i><b>|</b><i>expression</i><b>|</b><i>...</i><b>)</b></td>
+      <td><i>expression</i><b>|</b><i>expression</i><b>|</b><i>...</i></td>
       <td>
         Will match anything matching the nested expressions. May contain any other syntax element, including captures.
       </td>

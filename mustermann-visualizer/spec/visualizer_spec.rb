@@ -54,6 +54,16 @@ describe Mustermann::Visualizer do
         its(:to_sexp) { should be == '(root (char a) (char " ") (char b))' }
       end
 
+      context 'a|b' do
+        let(:pattern) { Mustermann.new('a|b') }
+        its(:to_sexp) { should be == '(root (union (char a) | (char b)))' }
+      end
+
+      context '(a|b)' do
+        let(:pattern) { Mustermann.new('(a|b)c') }
+        its(:to_sexp) { should be == '(root (union "(" (char a) | (char b) ")") (char c))' }
+      end
+
       context '\:a' do
         let(:pattern) { Mustermann.new('\:a') }
         its(:to_sexp) { should be == '(root (escaped "\\\\" (escaped_char :)) (char a))' }
