@@ -273,5 +273,12 @@ As there has been no stable release yet, the API might still change, though I co
 
 ### Upcoming Releases
 
+* **Mustermann 0.5.0** (next release with new features)
+    * Sinatra patterns: Allow | outside of parens.
+    * Add concatenation support (`Mustermann::Pattern#+`).
+    * `Mustermann::Sinatra#|` may now generate a Sinatra pattern instead of a real composite.
+    * Add syntax highlighting support for composite patterns.
+    * Remove routers (they were out of scope for the main gem).
+    * Improve documentation.
 * **Mustermann 1.0.0** (before Sinatra 2.0)
     * First stable release.
