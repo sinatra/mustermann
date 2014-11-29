@@ -1,5 +1,6 @@
 require 'mustermann/visualizer/highlighter/ast'
 require 'mustermann/visualizer/highlighter/ad_hoc'
+require 'mustermann/visualizer/highlighter/composite'
 require 'mustermann/visualizer/highlighter/dummy'
 require 'mustermann/visualizer/highlighter/regular'
 

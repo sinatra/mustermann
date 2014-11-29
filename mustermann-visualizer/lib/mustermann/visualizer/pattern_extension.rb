@@ -2,13 +2,14 @@ module Mustermann
   module Visualizer
     # Mixin that will be added to {Mustermann::Pattern}.
     module PatternExtension
+      prepend_features Composite
       prepend_features Pattern
 
       # @example
       #   puts Mustermann.new("/:page").to_ansi
       #
       # @return [String] ANSI colorized version of the pattern.
-      def to_ansi(inspect: false, **theme)
+      def to_ansi(inspect: nil, **theme)
         Visualizer.highlight(self, **theme).to_ansi(inspect: inspect)
       end
 
@@ -16,7 +17,7 @@ module Mustermann
       #   puts Mustermann.new("/:page").to_html
       #
       # @return [String] HTML version of the pattern.
-      def to_html(inspect: false, tag: :span, class_prefix: "mustermann_", css: :inline, **theme)
+      def to_html(inspect: nil, tag: :span, class_prefix: "mustermann_", css: :inline, **theme)
         Visualizer.highlight(self, **theme).to_html(inspect: inspect, tag: tag, class_prefix: class_prefix, css: css)
       end
 
@@ -50,7 +51,8 @@ module Mustermann
       # @return [String] ANSI colorized version of {Mustermann::Pattern#inspect}
       def color_inspect(base_color = nil, **theme)
         base_color ||= Highlight::DEFAULT_THEME[:base01]
-        Hansi.render("*#<%p:*%s*>*", self.class, to_ansi(inspect: true, **theme), "*" => base_color)
+        template = is_a?(Composite) ? "*#<%p:(*%s*)>*" : "*#<%p:*%s*>*"
+        Hansi.render(template, self.class, to_ansi(inspect: true, **theme), "*" => base_color)
       end
 
       # If invoked directly by IRB, same as {#color_inspect}, otherwise same as Object#pretty_print.

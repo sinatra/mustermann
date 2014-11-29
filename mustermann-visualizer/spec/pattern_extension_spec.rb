@@ -11,6 +11,7 @@ describe Mustermann::Visualizer::PatternExtension do
   specify :to_ansi do
     pattern.to_ansi(inspect: true,  capture: :red,   default: nil).should be == "\e[0m\"\e[0m/\e[0m\e[91m:\e[0m\e[91mname\e[0m\"\e[0m"
     pattern.to_ansi(inspect: false, capture: :green, default: nil).should be == "\e[0m/\e[0m\e[32m:\e[0m\e[32mname\e[0m"
+    pattern.to_ansi(inspect: nil,   capture: :green, default: nil).should be == "\e[0m/\e[0m\e[32m:\e[0m\e[32mname\e[0m"
   end
 
   specify :to_html do

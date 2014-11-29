@@ -22,7 +22,7 @@ module Mustermann
         capture:   :orange,
         name:      :yellow,
         special:   :blue,
-        quote:     :char,
+        quote:     :red,
         illegal:   :darkred
       })
 
@@ -43,13 +43,14 @@ module Mustermann
         variable:    :capture,
         escaped:     :char,
         quote:       :special,
+        type:        :special,
         illegal:     :special
       })
 
       # @!visibility private
-      def initialize(pattern, type: nil, inspect: false, **theme)
+      def initialize(pattern, type: nil, inspect: nil, **theme)
         @pattern = Mustermann.new(pattern, type: type)
-        @inspect = inspect
+        @inspect = inspect.nil? ? pattern.is_a?(Mustermann::Composite) : inspect
         theme    = theme.any? ? Hansi::Theme.new(theme) : DEFAULT_THEME
         @theme   = BASE_THEME.merge(theme)
       end

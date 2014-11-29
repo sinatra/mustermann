@@ -154,6 +154,16 @@ describe Mustermann::Visualizer do
       let(:pattern) { Mustermann::Pattern.new("foo") }
       its(:to_sexp) { should be == "(root (unknown foo))" }
     end
+
+    context :composite do
+      let(:pattern) { Mustermann.new(":a", ":b") ^ Mustermann.new(":c") }
+      its(:to_sexp) do
+        should be == '(composite (quote "(") (composite (type sinatra:) (quote "\\"") '         \
+          '(root (capture : (name a))) (quote "\\"") (quote " | ") (type sinatra:) (quote '     \
+          '"\\"") (root (capture : (name b))) (quote "\\"")) (quote ")") (quote " ^ ") (type '  \
+          'sinatra:) (quote "\\"") (root (capture : (name c))) (quote "\\""))'
+      end
+    end
   end
 
   describe :tree do

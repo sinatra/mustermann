@@ -57,6 +57,7 @@ name         |                     | #b58900       | always inside `capture`
 char         | default             |               |
 expression   | capture             |               | only exists in URI templates
 composition  | special             |               | meta style, does not exist directly
+composite    | composition         |               | used for composite patterns (contains `root`s)
 group        | composition         |               |
 union        | composition         |               |
 optional     | special             |               |
@@ -67,7 +68,8 @@ named_splat  | splat               |               |
 variable     | capture             |               | always inside `expression`
 escaped      | char                | #93a1a1       |
 escaped_char |                     |               | always inside `escaped`
-quote        | special             |               |
+quote        | special             | #dc322f       | always outside of `root`
+type         | special             |               | always inside `composite`, outside of `root`
 illegal      | special             | #8b0000       |
 
 You can set theme any of the above elements. The default theme will only be applied if no custom theming is used.
