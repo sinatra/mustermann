@@ -636,5 +636,12 @@ describe Mustermann::Rails do
         it { should_not match(':foo')  }
       end
     end
+
+    context '5.0' do
+      pattern 'foo|bar', version: '5.0' do
+        it { should match('foo') }
+        it { should match('bar') }
+      end
+    end
   end
 end

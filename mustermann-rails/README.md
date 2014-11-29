@@ -90,9 +90,10 @@ Mustermann.new('/', type: :rails, version: Rails::VERSION::STRING)
       </td>
     </tr>
     <tr>
-      <td><b>|</b></td>
+      <td><i>expression</i> <b>|</b> <i>expression</i></td>
       <td>
-        Starting with 3.2 compatibility mode, this will raise a `Mustermann::ParseError`. While Ruby on Rails happily parses this character, it will result in broken routes due to a buggy implementation.
+        3.2+ mode: This will raise a `Mustermann::ParseError`. While Ruby on Rails happily parses this character, it will result in broken routes due to a buggy implementation.<br>
+        5.0 mode: It will match if any of the nested expressions matches.
       </td>
     </tr>
     <tr>

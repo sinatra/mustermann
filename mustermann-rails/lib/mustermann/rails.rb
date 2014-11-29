@@ -40,7 +40,7 @@ module Mustermann
     # escapes got fixed in 4.2
     version('4.2') { on(?\\) { |c| node(:char, expect(/./)) } }
 
-    # uncomment if Rails 5.0 fixes |
-    # version('5.0') { on(?|) { |c| node(:or) }}
+    # Rails 5.0 fixes |
+    version('5.0') { on(?|) { |c| node(:or) }}
   end
 end

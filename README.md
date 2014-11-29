@@ -279,6 +279,7 @@ As there has been no stable release yet, the API might still change, though I co
     * `Mustermann::Sinatra#|` may now generate a Sinatra pattern instead of a real composite.
     * Add syntax highlighting support for composite patterns.
     * Remove routers (they were out of scope for the main gem).
+    * Rails patterns: Add Rails 5.0 compatibility mode, make it default.
     * Improve documentation.
 * **Mustermann 1.0.0** (before Sinatra 2.0)
     * First stable release.
