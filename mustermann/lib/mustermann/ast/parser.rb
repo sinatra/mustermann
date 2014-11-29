@@ -229,7 +229,5 @@ module Mustermann
         raise exception, "unexpected #{char || "end of string"} while parsing #{string.inspect}"
       end
     end
-
-    private_constant :Parser
   end
 end
