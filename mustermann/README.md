@@ -285,7 +285,40 @@ pattern.expand(:append, slug: "foo", value: "bar") # => "/foo?value=bar"
 <a name="-generating-templates"></a>
 ## Generating Templates
 
-... TODO ...
+You can generate a list of URI templates that correspond to a Mustermann pattern (it is a list rather than a single template, as most pattern types are significantly more expressive than URI templates).
+
+This comes in quite handy since URI templates are not made for pattern matching. That way you can easily use a more precise template syntax and have it automatically generate hypermedia links for you.
+
+Template generation is supported by almost all patterns (notable exceptions are `shell`, `regexp` and `simple` patterns).
+
+``` ruby
+require 'mustermann'
+
+Mustermann.new("/:name").to_templates                   # => ["/{name}"]
+Mustermann.new("/:foo(@:bar)?/*baz").to_templates       # => ["/{foo}@{bar}/{+baz}", "/{foo}/{+baz}"]
+Mustermann.new("/{name}", type: :template).to_templates # => ["/{name}"
+```
+
+Union Composite patterns (with the | operator) support template generation if all patterns they are composed of also support it.
+
+``` ruby
+require 'mustermann'
+
+pattern  = Mustermann.new('/:name')
+pattern |= Mustermann.new('/{name}', type: :template)
+pattern |= Mustermann.new('/example/*nested')
+pattern.to_templates # => ["/{name}", "/example/{+nested}"]
+```
+
+If accepting arbitrary patterns, you can and should use `respond_to?` to check feature availability.
+
+``` ruby
+if pattern.respond_to? :to_templates
+  pattern.to_templates
+else
+  warn "does not support template generation"
+end
+```
 
 <a name="-proc-look-alike"></a>
 ## Proc Look Alike
