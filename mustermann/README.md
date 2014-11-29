@@ -42,7 +42,6 @@ pattern.params('/a/b.c') # => { "prefix" => "a", splat => ["b", "c"] }
 These features are included in the library, but not loaded by default
 
 * **[Mapper](#-mapper):** A simple tool for mapping one string to another based on patterns.
-* **[Routers](#-routers):** Model execution flow based on pattern matching. Comes with a simple Rack router.
 * **[Sinatra Integration](#-sinatra-integration):** Mustermann can be used as a [Sinatra](http://www.sinatrarb.com/) extension. Sinatra 2.0 and beyond will use Mustermann by default.
 
 <a name="-pattern-types"></a>
@@ -375,47 +374,6 @@ mapper['/foo.xml'] # => "/foo/view.xml"
 mapper['/foo/bar'] # => "/foo/bar"
 ```
 
-<a name="-routers"></a>
-## Routers
-
-Mustermann comes with basic router implementations that will call certain callbacks depending on the input.
-
-### Simple Router
-
-The simple router chooses callbacks based on an input string.
-
-``` ruby
-require 'mustermann/router/simple'
-
-router = Mustermann::Router::Simple.new(default: 42)
-router.on(':name', capture: :digit) { |string| string.to_i }
-router.call("23")      # => 23
-router.call("example") # => 42
-```
-
-### Rack Router
-
-This is not a full replacement for Rails, Sinatra, Cuba, etc, as it only cares about path based routing.
-
-``` ruby
-require 'mustermann/router/rack'
-
-router = Mustermann::Router::Rack.new do
-  on '/' do |env|
-    [200, {'Content-Type' => 'text/plain'}, ['Hello World!']]
-  end
-
-  on '/:name' do |env|
-    name = env['mustermann.params']['name']
-    [200, {'Content-Type' => 'text/plain'}, ["Hello #{name}!"]]
-  end
-
-  on '/something/*', call: SomeApp
-end
-
-# in a config.ru
-run router
-```
 <a name="-sinatra-integration"></a>
 ## Sinatra Integration
 
