@@ -11,6 +11,7 @@ module Mustermann
   # @see Mustermann::Pattern
   # @see file:README.md#shell Syntax description in the README
   class Shell < Pattern
+    include Concat::Native
     register :shell
 
     # @!visibility private

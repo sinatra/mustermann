@@ -10,6 +10,7 @@ module Mustermann
   # @see Mustermann::Pattern
   # @see file:README.md#flask Syntax description in the README
   class Flask < AST::Pattern
+    include Concat::Native
     register :flask
 
     on(nil, ?>, ?:) { |c| unexpected(c) }

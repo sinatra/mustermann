@@ -17,7 +17,7 @@ module Mustermann
     # @param [Array<#to_str, Mustermann::Pattern>] patterns list of patterns to expand, see {#add}.
     # @param [Symbol] additional_values behavior when encountering additional values, see {#expand}.
     # @param [Hash] options used when creating/expanding patterns, see {Mustermann.new}.
-    def initialize(*patterns, additional_values: :raise, **options)
+    def initialize(*patterns, additional_values: :raise, **options, &block)
       unless additional_values == :raise or additional_values == :ignore or additional_values == :append
         raise ArgumentError, "Illegal value %p for additional_values" % additional_values
       end
@@ -27,7 +27,7 @@ module Mustermann
       @additional_values = additional_values
       @options           = options
       @caster            = Caster.new(Caster::Nil)
-      add(*patterns)
+      add(*patterns, &block)
     end
 
     # Add patterns to expand.
@@ -42,8 +42,12 @@ module Mustermann
     def add(*patterns)
       patterns.each do |pattern|
         pattern = Mustermann.new(pattern, **@options)
-        raise NotImplementedError, "expanding not supported for #{pattern.class}" unless pattern.respond_to? :to_ast
-        @api_expander.add(pattern.to_ast)
+        if block_given?
+          @api_expander.add(yield(pattern))
+        else
+          raise NotImplementedError, "expanding not supported for #{pattern.class}" unless pattern.respond_to? :to_ast
+          @api_expander.add(pattern.to_ast)
+        end
         @patterns << pattern
       end
       self

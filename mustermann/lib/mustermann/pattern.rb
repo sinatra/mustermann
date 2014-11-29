@@ -299,6 +299,24 @@ module Mustermann
     alias_method :^, :|
 
     # @example
+    #   require 'mustermann'
+    #   prefix = Mustermann.new("/:prefix")
+    #   about  = prefix + "/about"
+    #   about.params("/main/about") # => {"prefix" => "main"}
+    #
+    # Creates a concatenated pattern by combingin self with the other pattern supplied.
+    # Patterns of different types can be mixed. The availability of `to_templates` and
+    # `expand` depends on the patterns being concatenated.
+    #
+    # String input is treated as identity pattern.
+    #
+    # @param [Mustermann::Pattern, String] other pattern to be appended
+    # @return [Mustermann::Pattern] concatenated pattern
+    def +(other)
+       Concat.new(self, other, type: :identity)
+    end
+
+    # @example
     #   pattern = Mustermann.new('/:a/:b')
     #   strings = ["foo/bar", "/foo/bar", "/foo/bar/"]
     #   strings.detect(&pattern) # => "/foo/bar"

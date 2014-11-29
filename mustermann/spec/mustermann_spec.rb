@@ -44,7 +44,7 @@ describe Mustermann do
       example { Mustermann.new(':a', ':b/:a', greedy: true)          .should be_a(Mustermann::Composite) }
 
       example { Mustermann.new('/foo', ':bar')      .should be_a(Mustermann::Sinatra) }
-      example { Mustermann.new('/foo', ':bar').to_s .should be == "/foo|:bar"         }
+      example { Mustermann.new('/foo', ':bar').to_s .should be == "/foo|{bar}"        }
     end
 
     context "invalid arguments" do

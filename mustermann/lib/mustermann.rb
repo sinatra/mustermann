@@ -1,5 +1,6 @@
 require 'mustermann/pattern'
 require 'mustermann/composite'
+require 'mustermann/concat'
 require 'thread'
 
 # Namespace and main entry point for the Mustermann library.

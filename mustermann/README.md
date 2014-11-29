@@ -27,7 +27,7 @@ pattern.params('/a/b.c') # => { "prefix" => "a", splat => ["b", "c"] }
 
 * **[Pattern Types](#-pattern-types):** Mustermann supports a wide variety of different pattern types, making it compatible with a large variety of existing software.
 * **[Fine Grained Control](#-available-options):** You can easily adjust matching behavior and add constraints to the placeholders and capture groups.
-* **[Binary Operators](#-binary-operators):** Patterns can be combined into composite patterns using binary operators.
+* **[Binary Operators](#-binary-operators) and [Concatenation](#-concatenation):** Patterns can be combined into composite patterns using binary operators.
 * **[Regexp Look Alike](#-regexp-look-alike):** Mustermann patterns can be used as a replacement for regular expressions.
 * **[Parameter Parsing](#-parameter-parsing):** Mustermann can parse matched parameters into a Sinatra-style "params" hash, including type casting.
 * **[Peeking](#-peeking):** Lets you check if the beginning of a string matches a pattern.
@@ -94,6 +94,22 @@ first ^ second === "/foo/bar" # => false
 ```
 
 These resulting objects are fully functional pattern objects, allowing you to call methods like `params` or `to_proc` on them. Moreover, *or* patterns created solely from expandable patterns will also be expandable. The same logic also applies to generating templates from *or* patterns.
+
+<a name="-concatenation"></a>
+## Concatenation
+
+Similar to [Binary Operators](#-binary-operators), two patterns can be concatenated using `+`.
+
+``` ruby
+require 'mustermann'
+
+prefix = Mustermann.new("/:prefix")
+about  = prefix + "/about"
+
+about.params("/main/about") # => {"prefix" => "main"}
+```
+
+Patterns of different types can be mixed. The availability of `to_templates` and `expand` depends on the patterns being concatenated.
 
 <a name="-regexp-look-alike"></a>
 ## Regexp Look Alike

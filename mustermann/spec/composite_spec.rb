@@ -144,12 +144,12 @@ describe Mustermann::Composite do
 
   describe :inspect do
     let(:sinatra)  { Mustermann.new('x')                  }
-    let(:rails)    { Mustermann.new('x', type: :rails)    }
+    let(:shell)    { Mustermann.new('x', type: :shell)    }
     let(:identity) { Mustermann.new('x', type: :identity) }
 
-    example { (sinatra | rails)            .inspect.should include('(sinatra:"x" | rails:"x")')                  }
-    example { (sinatra ^ rails)            .inspect.should include('(sinatra:"x" ^ rails:"x")')                  }
-    example { (sinatra | rails | identity) .inspect.should include('(sinatra:"x" | rails:"x" | identity:"x")')   }
-    example { (sinatra | rails & identity) .inspect.should include('(sinatra:"x" | (rails:"x" & identity:"x"))') }
+    example { (sinatra | shell)            .inspect.should include('(sinatra:"x" | shell:"x")')                  }
+    example { (sinatra ^ shell)            .inspect.should include('(sinatra:"x" ^ shell:"x")')                  }
+    example { (sinatra | shell | identity) .inspect.should include('(sinatra:"x" | shell:"x" | identity:"x")')   }
+    example { (sinatra | shell & identity) .inspect.should include('(sinatra:"x" | (shell:"x" & identity:"x"))') }
   end
 end

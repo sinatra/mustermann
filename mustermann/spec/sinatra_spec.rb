@@ -766,13 +766,13 @@ describe Mustermann::Sinatra do
     context "only first has captures" do
       let(:first) { Mustermann.new(":a") }
       its(:class) { should be == Mustermann::Sinatra }
-      its(:to_s)  { should be == ":a|b"              }
+      its(:to_s)  { should be == "{a}|b"             }
     end
 
     context "only second has captures" do
       let(:second) { Mustermann.new(":b") }
       its(:class)  { should be == Mustermann::Sinatra }
-      its(:to_s)   { should be == "a|:b"              }
+      its(:to_s)   { should be == "a|{b}"             }
     end
 
     context "both have captures" do

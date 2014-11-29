@@ -11,6 +11,7 @@ module Mustermann
   # @see Mustermann::Pattern
   # @see file:README.md#identity Syntax description in the README
   class Identity < Pattern
+    include Concat::Native
     register :identity
 
     # @param (see Mustermann::Pattern#===)

@@ -61,7 +61,7 @@ module Mustermann
       @expander.expand(behavior, values)
     end
 
-    # (see Mustermann::Pattern#expand)
+    # (see Mustermann::Pattern#to_templates)
     def to_templates
       raise NotImplementedError, 'template generation not supported' unless respond_to? :to_templates
       patterns.flat_map(&:to_templates).uniq

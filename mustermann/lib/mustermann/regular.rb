@@ -10,6 +10,7 @@ module Mustermann
   # @see Mustermann::Pattern
   # @see file:README.md#simple Syntax description in the README
   class Regular < RegexpBased
+    include Concat::Native
     register :regexp, :regular
 
     # @param (see Mustermann::Pattern#initialize)
