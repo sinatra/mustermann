@@ -752,4 +752,55 @@ describe Mustermann::Sinatra do
       example { pattern.peek_params("/foo bar")       .should be_nil }
     end
   end
+
+  describe :| do
+    let(:first)  { Mustermann.new("a") }
+    let(:second) { Mustermann.new("b") }
+    subject(:composite) { first | second }
+
+    context "with no capture names" do
+      its(:class) { should be == Mustermann::Sinatra }
+      its(:to_s)  { should be == "a|b"               }
+    end
+
+    context "only first has captures" do
+      let(:first) { Mustermann.new(":a") }
+      its(:class) { should be == Mustermann::Sinatra }
+      its(:to_s)  { should be == ":a|b"              }
+    end
+
+    context "only second has captures" do
+      let(:second) { Mustermann.new(":b") }
+      its(:class)  { should be == Mustermann::Sinatra }
+      its(:to_s)   { should be == "a|:b"              }
+    end
+
+    context "both have captures" do
+      let(:first)  { Mustermann.new(":a") }
+      let(:second) { Mustermann.new(":b") }
+      its(:class)  { should be == Mustermann::Composite }
+    end
+
+    context "options mismatch" do
+      let(:second) { Mustermann.new(":b", greedy: false) }
+      its(:class)  { should be == Mustermann::Composite  }
+    end
+
+    context "argument is a string" do
+      let(:second) { ":b" }
+      its(:class)  { should be == Mustermann::Sinatra }
+      its(:to_s)   { should be == "a|\\:b"            }
+    end
+
+    context "argument is an identity pattern" do
+      let(:second) { Mustermann::Identity.new(":b")   }
+      its(:class)  { should be == Mustermann::Sinatra }
+      its(:to_s)   { should be == "a|\\:b"            }
+    end
+
+    context "argument is an identity pattern, but options mismatch" do
+      let(:second) { Mustermann::Identity.new(":b", uri_decode: false) }
+      its(:class)  { should be == Mustermann::Composite                }
+    end
+  end
 end

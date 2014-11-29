@@ -12,6 +12,14 @@ describe Mustermann::Composite do
       pattern = Mustermann.new('/foo')
       Mustermann::Composite.new(pattern).should be == pattern
     end
+
+    example 'with supported type specific arguments' do
+      Mustermann::Composite.new("/a", "/b", greedy: true)
+    end
+
+    example 'with unsupported type specific arguments' do
+      expect { Mustermann::Composite.new("/a", "/b", greedy: true, type: :identity) }.to raise_error(ArgumentError)
+    end
   end
 
   context :| do

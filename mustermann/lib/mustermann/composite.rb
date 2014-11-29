@@ -8,9 +8,9 @@ module Mustermann
     supported_options :operator, :type
 
     # @see Mustermann::Pattern.supported?
-    def self.supported?(option, **options)
+    def self.supported?(option, type: nil, **options)
       return true if super
-      options[:type] and Mustermann[options[:type]].supported?(option, **options)
+      Mustermann[type || Mustermann::DEFAULT_TYPE].supported?(option, **options)
     end
 
     # @return [Mustermann::Pattern] a new composite pattern

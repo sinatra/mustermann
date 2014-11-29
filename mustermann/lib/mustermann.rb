@@ -57,7 +57,7 @@ module Mustermann
   # @raise (see Mustermann::Pattern.new)
   # @raise [TypeError] if the passed object cannot be converted to a pattern
   # @see file:README.md#Types_and_Options "Types and Options" in the README
-  def self.new(*input, type: DEFAULT_TYPE, **options)
+  def self.new(*input, type: DEFAULT_TYPE, operator: :|, **options)
     type ||= DEFAULT_TYPE
     input  = input.first if input.size < 2
     case input
@@ -65,7 +65,7 @@ module Mustermann
     when Regexp  then self[:regexp].new(input, **options)
     when String  then self[type].new(input, **options)
     when Symbol  then self[:sinatra].new(input.inspect, **options)
-    when Array   then Composite.new(input, type: type, **options)
+    when Array   then input.map { |i| new(i, type: type, **options) }.inject(operator)
     else
       pattern = input.to_pattern(type: type, **options) if input.respond_to? :to_pattern
       raise TypeError, "#{input.class} can't be coerced into Mustermann::Pattern" if pattern.nil?

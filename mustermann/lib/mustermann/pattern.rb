@@ -47,16 +47,23 @@ module Mustermann
     # @return [Mustermann::Pattern] a new instance of Mustermann::Pattern
     # @see #initialize
     def self.new(string, ignore_unknown_options: false, **options)
-      unless ignore_unknown_options
+      if ignore_unknown_options
+        options = options.select { |key, value| supported?(key, **options) if key != :ignore_unknown_options }
+      else
         unsupported = options.keys.detect { |key| not supported?(key, **options) }
         raise ArgumentError, "unsupported option %p for %p" % [unsupported, self] if unsupported
       end
 
       @map ||= Tool::EqualityMap.new
-      @map.fetch(string, options) { super(string, options) }
+      @map.fetch(string, options) { super(string, options) { options } }
     end
 
     supported_options :uri_decode, :ignore_unknown_options
+    attr_reader :uri_decode
+
+    # options hash passed to new (with unsupported options removed)
+    # @!visibility private
+    attr_reader :options
 
     # @overload initialize(string, **options)
     # @param [String] string the string representation of the pattern
@@ -67,6 +74,7 @@ module Mustermann
     def initialize(string, uri_decode: true, **options)
       @uri_decode = uri_decode
       @string     = string.to_s.dup
+      @options    = yield.freeze if block_given?
     end
 
     # @return [String] the string representation of the pattern
@@ -234,7 +242,7 @@ module Mustermann
     #   pattern |= Mustermann.new('/example/*nested')
     #   pattern.to_templates # => ["/{name}", "/example/{+nested}"]
     #
-    # Template generation is supported by almost all patterns (notable execptions are
+    # Template generation is supported by almost all patterns (notable exceptions are
     # {Mustermann::Shell}, {Mustermann::Regular} and {Mustermann::Simple}).
     # Union {Mustermann::Composite} patterns (with the | operator) support template generation
     # if all patterns they are composed of also support it.
@@ -284,7 +292,7 @@ module Mustermann
     # @param [Mustermann::Pattern, String] other the other pattern
     # @return [Mustermann::Pattern] a composite pattern
     def |(other)
-      Mustermann.new(self, other, operator: __callee__, type: :identity)
+      Mustermann::Composite.new(self, other, operator: __callee__, type: :identity)
     end
 
     alias_method :&, :|
@@ -332,7 +340,7 @@ module Mustermann
     end
 
     # @!visibility private
-    def unescape(string, decode = @uri_decode)
+    def unescape(string, decode = uri_decode)
       return string unless decode and string
       @@uri.unescape(string)
     end

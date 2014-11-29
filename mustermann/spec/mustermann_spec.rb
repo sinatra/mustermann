@@ -37,11 +37,14 @@ describe Mustermann do
     end
 
     context "multiple arguments" do
-      example { Mustermann.new('', '')                        .should be_a(Mustermann::Composite) }
-      example { Mustermann.new('', '').patterns.first         .should be_a(Mustermann::Sinatra)   }
-      example { Mustermann.new('', '').operator               .should be == :|                    }
-      example { Mustermann.new('', '', operator: :&).operator .should be == :&                    }
-      example { Mustermann.new('', '', greedy: true)          .should be_a(Mustermann::Composite) }
+      example { Mustermann.new(':a', ':b/:a')                        .should be_a(Mustermann::Composite) }
+      example { Mustermann.new(':a', ':b/:a').patterns.first         .should be_a(Mustermann::Sinatra)   }
+      example { Mustermann.new(':a', ':b/:a').operator               .should be == :|                    }
+      example { Mustermann.new(':a', ':b/:a', operator: :&).operator .should be == :&                    }
+      example { Mustermann.new(':a', ':b/:a', greedy: true)          .should be_a(Mustermann::Composite) }
+
+      example { Mustermann.new('/foo', ':bar')      .should be_a(Mustermann::Sinatra) }
+      example { Mustermann.new('/foo', ':bar').to_s .should be == "/foo|:bar"         }
     end
 
     context "invalid arguments" do
