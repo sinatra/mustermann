@@ -102,7 +102,7 @@ The `identity`, `regexp` and `sinatra` types are included in the `mustermann` ge
     </tr>
 
     <tr>
-      <th><a href="mustermann-regexp/README.md"><tt>regexp</tt></a></th>
+      <th><a href="mustermann/README.md#-regexp-pattern"><tt>regexp</tt></a></th>
       <td><tt>/(?&lt;slug&gt;[^\/]+)</tt></td>
       <td>
         <a href="http://www.geocities.jp/kosako3/oniguruma/">Oniguruma</a>,
