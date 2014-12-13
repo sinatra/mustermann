@@ -82,13 +82,13 @@ describe Mustermann::Visualizer do
       end
 
       context '\A' do
-        let(:pattern) { Mustermann.new('\A', type: :regexp) }
+        let(:pattern) { Mustermann.new('\A', type: :regexp, check_anchors: false) }
         its(:to_sexp) { should be == '(root (illegal "\\\\A"))' }
       end
 
       context '(?<name>.)\g<name>' do
         let(:pattern) { Mustermann.new('(?<name>.)\g<name>', type: :regexp) }
-        its(:to_sexp) { should be == '(root (capture "(?<" (name) >(special .))) (special "\\\\g<name>"))' }
+        its(:to_sexp) { should be == '(root (capture "(?<" (name name) >(special .))) (special "\\\\g<name>"))' }
       end
 
       context '\p{Ll}' do
@@ -107,13 +107,13 @@ describe Mustermann::Visualizer do
       end
 
       context '^' do
-        let(:pattern) { Mustermann.new('^', type: :regexp) }
+        let(:pattern) { Mustermann.new('^', type: :regexp, check_anchors: false) }
         its(:to_sexp) { should be == '(root (illegal ^))' }
       end
 
       context '(?-mix:.)' do
         let(:pattern) { Mustermann.new('(?-mix:.)', type: :regexp) }
-        its(:to_sexp) { should be == '(root (special "(") (special .) (special ")"))' }
+        its(:to_sexp) { should be == '(root (special "(?-mix:") (special .) (special ")"))' }
       end
 
       context '[a\d]' do

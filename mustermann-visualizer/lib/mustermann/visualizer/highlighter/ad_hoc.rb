@@ -35,7 +35,7 @@ module Mustermann
           @renderer = renderer
           @output   = ""
           @rules    = self.class.rules
-          @scanner  = StringScanner.new(pattern.to_s)
+          @scanner  = ::StringScanner.new(pattern.to_s)
         end
 
         # @!visibility private

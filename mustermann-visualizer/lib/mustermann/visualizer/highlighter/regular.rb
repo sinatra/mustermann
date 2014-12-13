@@ -33,7 +33,7 @@ module Mustermann
         # @!visibility private
         def highlight(pattern)
           output << renderer.pre(:root)
-          @scanner = StringScanner.new(pattern.to_s)
+          @scanner = ::StringScanner.new(pattern.to_s)
           scan
           output << renderer.post(:root)
         end
