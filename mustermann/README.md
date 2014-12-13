@@ -760,8 +760,8 @@ The pattern string (or actual Regexp instance) should not contain anchors (`^` o
 Anchors will be injected where necessary by Mustermann.
 
 By default, Mustermann will raise a `Mustermann::CompileError` if an anchor is encountered.
+If you still want it to contain anchors at your own risk, set the `check_anchors` option to `false`.
 
-If you still want it to contain one of anchors at your own risk, set the `check_anchors` option to `false`.
 Using anchors will break [peeking](#-peeking) and [concatenation](#-concatenation).
 
 <table>
