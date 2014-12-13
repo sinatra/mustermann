@@ -754,7 +754,15 @@ This comes with a few trade-offs:
 
 **Supported options:**
 [`uri_decode`](#-available-options--uri_decode),
-[`ignore_unknown_options`](#-available-options--ignore_unknown_options).
+[`ignore_unknown_options`](#-available-options--ignore_unknown_options), `check_anchors`.
+
+The pattern string (or actual Regexp instance) should not contain anchors (`^` outside of square brackets, `$`, `\A`, `\z`, or `\Z`).
+Anchors will be injected where necessary by Mustermann.
+
+By default, Mustermann will raise a `Mustermann::CompileError` if an anchor is encountered.
+
+If you still want it to contain one of anchors at your own risk, set the `check_anchors` option to `false`.
+Using anchors will break [peeking](#-peeking) and [concatenation](#-concatenation).
 
 <table>
   <thead>

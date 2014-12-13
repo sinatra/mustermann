@@ -1,5 +1,6 @@
 require 'mustermann'
 require 'mustermann/regexp_based'
+require 'strscan'
 
 module Mustermann
   # Regexp pattern implementation.
@@ -12,19 +13,32 @@ module Mustermann
   class Regular < RegexpBased
     include Concat::Native
     register :regexp, :regular
+    supported_options :check_anchors
 
     # @param (see Mustermann::Pattern#initialize)
     # @return (see Mustermann::Pattern#initialize)
     # @see (see Mustermann::Pattern#initialize)
-    def initialize(string, **options)
+    def initialize(string, check_anchors: true, **options)
       string = $1 if string.to_s =~ /\A\(\?\-mix\:(.*)\)\Z/ && string.inspect == "/#$1/"
+      @check_anchors = check_anchors
       super(string, **options)
     end
 
     def compile(**options)
+      if @check_anchors
+        scanner = ::StringScanner.new(@string)
+        check_anchors(scanner) until scanner.eos?
+      end
+
       /#{@string}/
     end
 
-    private :compile
+    def check_anchors(scanner)
+      return scanner.scan_until(/\]/) if scanner.scan(/\[/)
+      return scanner.scan(/\\?./) unless illegal = scanner.scan(/\\[AzZ]|[\^\$]/)
+      raise CompileError, "regular expression should not contain %s: %p" % [illegal.to_s, @string]
+    end
+
+    private :compile, :check_anchors
   end
 end

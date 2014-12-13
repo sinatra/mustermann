@@ -37,6 +37,46 @@ describe Mustermann::Regular do
     it { should match('/foo%2Fbar') .capturing foo: 'foo%2Fbar' }
   end
 
+  describe :check_achnors do
+    context 'raises on anchors' do
+      example { expect { Mustermann::Regular.new('^foo')        }.to     raise_error(Mustermann::CompileError) }
+      example { expect { Mustermann::Regular.new('foo$')        }.to     raise_error(Mustermann::CompileError) }
+      example { expect { Mustermann::Regular.new('\Afoo')       }.to     raise_error(Mustermann::CompileError) }
+      example { expect { Mustermann::Regular.new('foo\Z')       }.to     raise_error(Mustermann::CompileError) }
+      example { expect { Mustermann::Regular.new('foo\z')       }.to     raise_error(Mustermann::CompileError) }
+      example { expect { Mustermann::Regular.new(/^foo/)        }.to     raise_error(Mustermann::CompileError) }
+      example { expect { Mustermann::Regular.new(/foo$/)        }.to     raise_error(Mustermann::CompileError) }
+      example { expect { Mustermann::Regular.new(/\Afoo/)       }.to     raise_error(Mustermann::CompileError) }
+      example { expect { Mustermann::Regular.new(/foo\Z/)       }.to     raise_error(Mustermann::CompileError) }
+      example { expect { Mustermann::Regular.new(/foo\z/)       }.to     raise_error(Mustermann::CompileError) }
+      example { expect { Mustermann::Regular.new('[^f]')        }.not_to raise_error }
+      example { expect { Mustermann::Regular.new('\\\A')        }.not_to raise_error }
+      example { expect { Mustermann::Regular.new('[[:digit:]]') }.not_to raise_error }
+      example { expect { Mustermann::Regular.new(/[^f]/)        }.not_to raise_error }
+      example { expect { Mustermann::Regular.new(/\\A/)         }.not_to raise_error }
+      example { expect { Mustermann::Regular.new(/[[:digit:]]/) }.not_to raise_error }
+    end
+
+    context 'with check_anchors disabled' do
+      example { expect { Mustermann::Regular.new('^foo',        check_anchors: false) }.not_to raise_error }
+      example { expect { Mustermann::Regular.new('foo$',        check_anchors: false) }.not_to raise_error }
+      example { expect { Mustermann::Regular.new('\Afoo',       check_anchors: false) }.not_to raise_error }
+      example { expect { Mustermann::Regular.new('foo\Z',       check_anchors: false) }.not_to raise_error }
+      example { expect { Mustermann::Regular.new('foo\z',       check_anchors: false) }.not_to raise_error }
+      example { expect { Mustermann::Regular.new(/^foo/,        check_anchors: false) }.not_to raise_error }
+      example { expect { Mustermann::Regular.new(/foo$/,        check_anchors: false) }.not_to raise_error }
+      example { expect { Mustermann::Regular.new(/\Afoo/,       check_anchors: false) }.not_to raise_error }
+      example { expect { Mustermann::Regular.new(/foo\Z/,       check_anchors: false) }.not_to raise_error }
+      example { expect { Mustermann::Regular.new(/foo\z/,       check_anchors: false) }.not_to raise_error }
+      example { expect { Mustermann::Regular.new('[^f]',        check_anchors: false) }.not_to raise_error }
+      example { expect { Mustermann::Regular.new('\\\A',        check_anchors: false) }.not_to raise_error }
+      example { expect { Mustermann::Regular.new('[[:digit:]]', check_anchors: false) }.not_to raise_error }
+      example { expect { Mustermann::Regular.new(/[^f]/,        check_anchors: false) }.not_to raise_error }
+      example { expect { Mustermann::Regular.new(/\\A/,         check_anchors: false) }.not_to raise_error }
+      example { expect { Mustermann::Regular.new(/[[:digit:]]/, check_anchors: false) }.not_to raise_error }
+    end
+  end
+
   context "peeking" do
     subject(:pattern) { Mustermann::Regular.new("(?<name>[^/]+)") }
 

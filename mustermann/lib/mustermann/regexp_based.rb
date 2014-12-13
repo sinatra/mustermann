@@ -16,7 +16,7 @@ module Mustermann
     def initialize(string, **options)
       super
       regexp       = compile(**options)
-      @peek_regexp = /\A(#{regexp})/
+      @peek_regexp = /\A#{regexp}/
       @regexp      = /\A#{regexp}\Z/
     end
 
