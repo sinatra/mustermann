@@ -106,6 +106,26 @@ module Mustermann
       raise NotImplementedError, 'subclass responsibility'
     end
 
+    # Used by Ruby internally for hashing.
+    # @return [Fixnum] same has value for patterns that are equal
+    def hash
+      self.class.hash | @string.hash | options.hash
+    end
+
+    # Two patterns are considered equal if they are of the same type, have the same pattern string
+    # and the same options.
+    # @return [true, false]
+    def ==(other)
+      other.class == self.class and other.to_s == @string and other.options == options
+    end
+
+    # Two patterns are considered equal if they are of the same type, have the same pattern string
+    # and the same options.
+    # @return [true, false]
+    def eql?(other)
+      other.class.eql?(self.class) and other.to_s.eql?(@string) and other.options.eql?(options)
+    end
+
     # Tries to match the pattern against the beginning of the string (as opposed to the full string).
     # Will return the count of the matching characters if it matches.
     #

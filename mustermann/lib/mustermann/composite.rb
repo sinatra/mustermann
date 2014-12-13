@@ -33,6 +33,16 @@ module Mustermann
       patterns == patterns_from(pattern)
     end
 
+    # @see Mustermann::Pattern#eql?
+    def eql?(pattern)
+      patterns.eql? patterns_from(pattern)
+    end
+
+    # @see Mustermann::Pattern#hash
+    def hash
+      patterns.hash | operator.hash
+    end
+
     # @see Mustermann::Pattern#===
     def ===(string)
       patterns.map { |p| p === string }.inject(operator)

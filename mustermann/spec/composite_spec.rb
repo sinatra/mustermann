@@ -72,6 +72,13 @@ describe Mustermann::Composite do
         example { expect { subject.to_templates }.to raise_error(NotImplementedError) }
       end
     end
+
+    describe :eql? do
+      example { should     be_eql(pattern)                                                       }
+      example { should     be_eql(Mustermann.new('/foo/:name', '/:first/:second', operator: :|)) }
+      example { should_not be_eql(Mustermann.new('/bar/:name', '/:first/:second', operator: :|)) }
+      example { should_not be_eql(Mustermann.new('/foo/:name', '/:first/:second', operator: :&)) }
+    end
   end
 
   context :& do
