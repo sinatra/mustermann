@@ -19,7 +19,7 @@ describe Mustermann::FileUtils do
   end
 
   after do
-    chdir(@pwd)           if @pwd
+    chdir(@pwd)     if @pwd
     rm_rf(@tmp_dir) if @tmp_dir
   end
 
