@@ -22,6 +22,7 @@ module Mustermann
     # @param [Array<Symbol, Regexp, #cast, #===>] types identifier for cast type (some need block)
     # @!visibility private
     def register(*types, &block)
+      return if types.empty? and block.nil?
       types << Any.new(&block) if types.empty?
       types.each { |type| self << caster_for(type, &block) }
     end
@@ -41,6 +42,7 @@ module Mustermann
     # @return [Hash] post-transform Hash
     # @!visibility private
     def cast(hash)
+      return hash if empty?
       merge = {}
       hash.delete_if do |key, value|
         next unless casted = lazy.map { |e| e.cast(key, value) }.detect { |e| e }

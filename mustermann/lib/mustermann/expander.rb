@@ -26,7 +26,7 @@ module Mustermann
       @api_expander      = AST::Expander.new
       @additional_values = additional_values
       @options           = options
-      @caster            = Caster.new(Caster::Nil)
+      @caster            = Caster.new
       add(*patterns, &block)
     end
 
@@ -200,7 +200,7 @@ module Mustermann
     def map_values(values)
       values = values.dup
       @api_expander.keys.each { |key| values[key] ||= values.delete(key.to_s) if values.include? key.to_s }
-      caster.cast(values)
+      caster.cast(values).delete_if { |k, v| v.nil? }
     end
 
     private :with_rest, :slice, :append, :caster, :map_values, :split_values
