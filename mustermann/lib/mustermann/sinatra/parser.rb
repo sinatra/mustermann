@@ -12,11 +12,27 @@ module Mustermann
       on(?|)  { |c| node(:or) }
 
       on ?{ do |char|
+        current_pos = buffer.pos
         type = scan(?+) ? :named_splat : :capture
         name = expect(/[\w\.]+/)
-        type = :splat if type == :named_splat and name == 'splat'
-        expect(?})
-        node(type, name)
+        if type == :capture && scan(?|)
+          buffer.pos = current_pos
+          capture = proc do
+            start = pos
+            match = expect(/(?<capture>[^\|}]+)/)
+            node(:capture, match[:capture], start: start)
+          end
+          grouped_captures = node(:group, [capture[]]) do
+            if scan(?|)
+              [min_size(pos - 1, pos, node(:or)), capture[]]
+            end
+          end
+          grouped_captures if expect(?})
+        else
+          type = :splat if type == :named_splat and name == 'splat'
+          expect(?})
+          node(type, name)
+        end
       end
 
       suffix ?? do |char, element|

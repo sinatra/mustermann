@@ -475,6 +475,28 @@ describe Mustermann::Sinatra do
     it { should_not expand(a: 'foo', b: 'bar', c: 'baz')   }
   end
 
+  pattern "/({foo}|{bar})", capture: { foo: /\d+/, bar: /\w+/ } do
+    it { should match("/a")    .capturing foo: nil,    bar: 'a' }
+    it { should match("/1234") .capturing foo: "1234", bar: nil }
+
+    it { should_not match("/a/b") }
+  end
+
+  pattern "/{foo|bar}", capture: { foo: /\d+/, bar: /\w+/ } do
+    it { should match("/a")    .capturing foo: nil,    bar: 'a' }
+    it { should match("/1234") .capturing foo: "1234", bar: nil }
+
+    it { should_not match("/a/b") }
+  end
+
+  pattern "/{foo|bar|baz}", capture: { foo: /\d+/, bar: /[ab]+/, baz: /[cde]+/ } do
+    it { should match("/ab")     .capturing foo: nil,    bar: 'ab', baz: nil }
+    it { should match("/1234")   .capturing foo: "1234", bar: nil, baz: nil }
+    it { should match("/ccddee") .capturing foo: nil,    bar: nil, baz: "ccddee" }
+
+    it { should_not match("/a/b") }
+  end
+
   pattern '/:foo', capture: /\d+/ do
     it { should match('/1')   .capturing foo: '1'   }
     it { should match('/123') .capturing foo: '123' }
