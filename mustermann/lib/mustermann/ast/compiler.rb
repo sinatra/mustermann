@@ -84,6 +84,8 @@ module Mustermann
         # @!visibility private
         def translate(**options)
           return super(**options) if explode or not options[:parametric]
+          # Remove this line after fixing broken compatibility between 2.1 and 2.2
+          options.delete(:parametric) if options.has_key?(:parametric)
           parametric super(parametric: false, **options)
         end
 
