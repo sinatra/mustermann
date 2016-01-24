@@ -1,8 +1,8 @@
 # The Amazing Mustermann
 
-[![Build Status](https://travis-ci.org/rkh/mustermann.svg?branch=master)](https://travis-ci.org/rkh/mustermann) [![Coverage Status](http://img.shields.io/coveralls/rkh/mustermann.svg?branch=master)](https://coveralls.io/r/rkh/mustermann) [![Code Climate](http://img.shields.io/codeclimate/github/rkh/mustermann.svg)](https://codeclimate.com/github/rkh/mustermann) [![Dependency Status](https://gemnasium.com/rkh/mustermann.svg)](https://gemnasium.com/rkh/mustermann) [![Gem Version](http://img.shields.io/gem/v/mustermann.svg)](https://rubygems.org/gems/mustermann)
+[![Build Status](https://travis-ci.org/rkh/mustermann.svg?branch=master)](https://travis-ci.org/rkh/mustermann) [![Coverage Status](http://shields.io/coveralls/rkh/mustermann.svg?branch=master)](https://coveralls.io/r/rkh/mustermann) [![Code Climate](https://img.shields.io/codeclimate/github/rkh/mustermann.svg)](https://codeclimate.com/github/rkh/mustermann) [![Dependency Status](https://gemnasium.com/rkh/mustermann.svg)](https://gemnasium.com/rkh/mustermann) [![Gem Version](https://img.shields.io/gem/v/mustermann.svg)](https://rubygems.org/gems/mustermann)
 [![Inline docs](http://inch-ci.org/github/rkh/mustermann.svg)](http://inch-ci.org/github/rkh/mustermann)
-[![Documentation](http://img.shields.io/:yard-docs-38c800.svg)](http://rubydoc.info/gems/mustermann/frames)
+[![Documentation](http://img.shields.io/:yard-docs-38c800.svg)](http://www.rubydoc.info/gems/mustermann/frames)
 [![License](http://img.shields.io/:license-MIT-38c800.svg)](http://rkh.mit-license.org)
 [![Badges](http://img.shields.io/:badges-9/9-38c800.svg)](http://img.shields.io)
 
@@ -129,8 +129,8 @@ The `identity`, `regexp` and `sinatra` types are included in the `mustermann` ge
         <a href="http://www.sinatrarb.com/">Sinatra</a> (1.x),
         <a href="http://www.scalatra.org/">Scalatra</a>,
         <a href="http://perldancer.org/">Dancer</a>,
-        <a href="http://finatra.info/">Finatra</a>,
-        <a href="http://www.sparkjava.com/">Spark</a>,
+        <a href="http://twitter.github.io/finatra/">Finatra</a>,
+        <a href="http://sparkjava.com/">Spark</a>,
         <a href="https://github.com/rc1/RCRouter">RCRouter</a>,
         <a href="https://github.com/kissjs/kick.js">kick.js</a>
       </td>
@@ -146,7 +146,7 @@ The `identity`, `regexp` and `sinatra` types are included in the `mustermann` ge
       <td><tt>/:slug(.:ext)?</tt></td>
       <td>
         <a href="http://www.sinatrarb.com/">Sinatra</a> (2.x),
-        <a href="http://www.padrinorb.com/">Padrino</a> (>= 0.13.0),
+        <a href="http://padrinorb.com/">Padrino</a> (>= 0.13.0),
         <a href="https://github.com/namusyaka/pendragon">Pendragon</a>,
         <a href="https://github.com/kenichi/angelo">Angelo</a>
       </td>
@@ -183,7 +183,7 @@ JRuby will hopefully be supported with the release of **JRuby 9000**.
 
 **Rubinius** is not currently supported. As of Rubinius 2.3.1, a large portion of the specs pass (3870 out of 3943), but certain parts are not working yet.
 
-If you need Ruby 1.9 support, you might be able to use the **unofficial** [mustermann19](http://rubygems.org/gems/mustermann19) gem based on [namusyaka's fork](https://github.com/namusyaka/mustermann).
+If you need Ruby 1.9 support, you might be able to use the **unofficial** [mustermann19](https://rubygems.org/gems/mustermann19) gem based on [namusyaka's fork](https://github.com/namusyaka/mustermann19).
 
 ## Release History
 
@@ -198,8 +198,8 @@ As there has been no stable release yet, the API might still change, though I co
 
 * **Mustermann 0.4.0** (2014-11-26)
     * More Infos:
-      [RubyGems.org](http://rubygems.org/gems/mustermann/versions/0.4.0),
-      [RubyDoc.info](http://rubydoc.info/gems/mustermann/0.4.0/frames),
+      [RubyGems.org](https://rubygems.org/gems/mustermann/versions/0.4.0),
+      [RubyDoc.info](http://www.rubydoc.info/gems/mustermann/0.4.0/frames),
       [GitHub.com](https://github.com/rkh/mustermann/tree/v0.4.0)
     * Split into multiple gems.
     * Add `Pattern#to_proc`.
@@ -221,15 +221,15 @@ As there has been no stable release yet, the API might still change, though I co
     * Add `mustermann-visualizer`.
 * **Mustermann 0.3.1** (2014-09-12)
     * More Infos:
-      [RubyGems.org](http://rubygems.org/gems/mustermann/versions/0.3.1),
-      [RubyDoc.info](http://rubydoc.info/gems/mustermann/0.3.1/frames),
+      [RubyGems.org](https://rubygems.org/gems/mustermann/versions/0.3.1),
+      [RubyDoc.info](http://www.rubydoc.info/gems/mustermann/0.3.1/frames),
       [GitHub.com](https://github.com/rkh/mustermann/tree/v0.3.1)
     * Speed up pattern generation and matching (thanks [Daniel Mendler](https://github.com/minad))
     * Small change so `Mustermann === Mustermann.new('...')` returns `true`.
 * **Mustermann 0.3.0** (2014-08-18)
     * More Infos:
-      [RubyGems.org](http://rubygems.org/gems/mustermann/versions/0.3.0),
-      [RubyDoc.info](http://rubydoc.info/gems/mustermann/0.3.0/frames),
+      [RubyGems.org](https://rubygems.org/gems/mustermann/versions/0.3.0),
+      [RubyDoc.info](http://www.rubydoc.info/gems/mustermann/0.3.0/frames),
       [GitHub.com](https://github.com/rkh/mustermann/tree/v0.3.0)
     * Add `regexp` pattern.
     * Add named splats to Sinatra patterns.
@@ -238,8 +238,8 @@ As there has been no stable release yet, the API might still change, though I co
     * Improve documentation.
 * **Mustermann 0.2.0** (2013-08-24)
     * More Infos:
-      [RubyGems.org](http://rubygems.org/gems/mustermann/versions/0.2.0),
-      [RubyDoc.info](http://rubydoc.info/gems/mustermann/0.2.0/frames),
+      [RubyGems.org](https://rubygems.org/gems/mustermann/versions/0.2.0),
+      [RubyDoc.info](http://www.rubydoc.info/gems/mustermann/0.2.0/frames),
       [GitHub.com](https://github.com/rkh/mustermann/tree/v0.2.0)
     * Add first class expander objects.
     * Add params casting for expander.
@@ -253,8 +253,8 @@ As there has been no stable release yet, the API might still change, though I co
     * Work around bug in 2.0.0-p0.
 * **Mustermann 0.1.0** (2013-05-12)
     * More Infos:
-      [RubyGems.org](http://rubygems.org/gems/mustermann/versions/0.1.0),
-      [RubyDoc.info](http://rubydoc.info/gems/mustermann/0.1.0/frames),
+      [RubyGems.org](https://rubygems.org/gems/mustermann/versions/0.1.0),
+      [RubyDoc.info](http://www.rubydoc.info/gems/mustermann/0.1.0/frames),
       [GitHub.com](https://github.com/rkh/mustermann/tree/v0.1.0)
     * Add `Pattern#expand` for generating strings from patterns.
     * Add better internal API for working with the AST.
@@ -266,8 +266,8 @@ As there has been no stable release yet, the API might still change, though I co
     * Largely rework internals of Sinatra, Rails and Template patterns.
 * **Mustermann 0.0.1** (2013-04-27)
     * More Infos:
-      [RubyGems.org](http://rubygems.org/gems/mustermann/versions/0.0.1),
-      [RubyDoc.info](http://rubydoc.info/gems/mustermann/0.0.1/frames),
+      [RubyGems.org](https://rubygems.org/gems/mustermann/versions/0.0.1),
+      [RubyDoc.info](http://www.rubydoc.info/gems/mustermann/0.0.1/frames),
       [GitHub.com](https://github.com/rkh/mustermann/tree/v0.0.1)
     * Initial Release.
 
