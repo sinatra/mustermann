@@ -1,21 +1,24 @@
-require 'simplecov'
-require 'coveralls'
-require 'support/projects'
+begin
+  require 'simplecov'
+  require 'coveralls'
+  require 'support/projects'
 
-SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
-  SimpleCov::Formatter::HTMLFormatter,
-  Coveralls::SimpleCov::Formatter
-]
+  SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
+    SimpleCov::Formatter::HTMLFormatter,
+    Coveralls::SimpleCov::Formatter
+  ]
 
-SimpleCov.start do
-  project_name 'mustermann'
-  minimum_coverage 100
-  coverage_dir '.coverage'
+  SimpleCov.start do
+    project_name 'mustermann'
+    minimum_coverage 100
+    coverage_dir '.coverage'
 
-  add_filter "/spec/"
-  add_filter "/support/"
+    add_filter "/spec/"
+    add_filter "/support/"
 
-  Support::Projects.each do |project|
-    add_group project.sub('mustermann-', ''), "/#{project}/lib"
+    Support::Projects.each do |project|
+      add_group project.sub('mustermann-', ''), "/#{project}/lib"
+    end
   end
+rescue LoadError
 end

@@ -5,3 +5,13 @@ path '.' do
   Support::Projects.each { |name| gem(name) }
   gem 'support', group: :development
 end
+
+platform :ruby do
+  group :development do
+    gem 'rake'
+    gem 'yard'
+    gem 'redcarpet'
+    gem 'simplecov'
+    gem 'coveralls'
+  end
+end
