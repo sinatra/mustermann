@@ -41,10 +41,10 @@ describe Mustermann::Grape do
   pattern '/:foo' do
     it { should match('/foo')       .capturing foo: 'foo'       }
     it { should match('/bar')       .capturing foo: 'bar'       }
-    it { should match('/foo.bar')   .capturing foo: 'foo.bar'   }
     it { should match('/%0Afoo')    .capturing foo: '%0Afoo'    }
     it { should match('/foo%2Fbar') .capturing foo: 'foo%2Fbar' }
 
+    it { should_not match('/foo.bar') }
     it { should_not match('/foo?')    }
     it { should_not match('/foo/bar') }
     it { should_not match('/')        }
@@ -59,10 +59,10 @@ describe Mustermann::Grape do
 
   pattern "/:foo/:bar" do
     it { should match('/foo/bar')               .capturing foo: 'foo',              bar: 'bar'     }
-    it { should match('/foo.bar/bar.foo')       .capturing foo: 'foo.bar',          bar: 'bar.foo' }
-    it { should match('/user@example.com/name') .capturing foo: 'user@example.com', bar: 'name'    }
-    it { should match('/10.1/te.st')            .capturing foo: '10.1',             bar: 'te.st'   }
-    it { should match('/10.1.2/te.st')          .capturing foo: '10.1.2',           bar: 'te.st'   }
+    it { should_not match('/foo.bar/bar.foo')       }
+    it { should_not match('/user@example.com/name') }
+    it { should_not match('/10.1/te.st')            }
+    it { should_not match('/10.1.2/te.st')          }
 
     it { should_not match('/foo%2Fbar') }
     it { should_not match('/foo%2fbar') }
@@ -267,9 +267,9 @@ describe Mustermann::Grape do
     it { should match('/pony%e6%ad%a3%2ejpg') .capturing file: 'pony%e6%ad%a3', ext: 'jpg' }
     it { should match('/pony正%2Ejpg')        .capturing file: 'pony正',         ext: 'jpg' }
     it { should match('/pony正%2ejpg')        .capturing file: 'pony正',         ext: 'jpg' }
-    it { should match('/pony正..jpg')         .capturing file: 'pony正.',        ext: 'jpg' }
 
-    it { should_not match('/.jpg') }
+    it { should_not match('/pony正..jpg') }
+    it { should_not match('/.jpg')        }
   end
 
   pattern '/(:a)x?' do
@@ -283,8 +283,8 @@ describe Mustermann::Grape do
 
   pattern '/:user(@:host)?' do
     it { should match('/foo@bar')     .capturing user: 'foo',     host: 'bar'     }
-    it { should match('/foo.foo@bar') .capturing user: 'foo.foo', host: 'bar'     }
-    it { should match('/foo@bar.bar') .capturing user: 'foo',     host: 'bar.bar' }
+    it { should_not match('/foo.foo@bar') }
+    it { should_not match('/foo@bar.bar') }
 
     it { should generate_template('/{user}')        }
     it { should generate_template('/{user}@{host}') }
@@ -295,9 +295,9 @@ describe Mustermann::Grape do
     it { should match('/pony.jpg')       .capturing file: 'pony', ext: 'jpg' }
     it { should match('/pony%2Ejpg')     .capturing file: 'pony', ext: 'jpg' }
     it { should match('/pony%2ejpg')     .capturing file: 'pony', ext: 'jpg' }
-    it { should match('/pony.png.jpg')   .capturing file: 'pony.png', ext: 'jpg' }
-    it { should match('/pony.')          .capturing file: 'pony.' }
-    it { should_not match('/.jpg')  }
+    it { should_not match('/pony.png.jpg') }
+    it { should_not match('/pony.')        }
+    it { should_not match('/.jpg')         }
 
     it { should     generate_template('/{file}')       }
     it { should     generate_template('/{file}.{ext}') }
@@ -314,24 +314,24 @@ describe Mustermann::Grape do
 
   pattern '/10/:id' do
     it { should match('/10/test')  .capturing id: 'test'  }
-    it { should match('/10/te.st') .capturing id: 'te.st' }
+    it { should_not match('/10/te.st') }
   end
 
   pattern '/10.1/:id' do
     it { should match('/10.1/test')  .capturing id: 'test'  }
-    it { should match('/10.1/te.st') .capturing id: 'te.st' }
+    it { should_not match('/10.1/te.st') }
   end
 
   pattern '/:foo.:bar/:id' do
-    it { should match('/10.1/te.st')   .capturing foo: "10",   bar: "1", id: "te.st" }
-    it { should match('/10.1.2/te.st') .capturing foo: "10.1", bar: "2", id: "te.st" }
+    it { should_not match('/10.1/te.st')   }
+    it { should_not match('/10.1.2/te.st') }
   end
 
   pattern '/:a/:b.?:c?' do
     it { should match('/a/b')     .capturing a: 'a',   b: 'b', c: nil }
     it { should match('/a/b.c')   .capturing a: 'a',   b: 'b', c: 'c' }
-    it { should match('/a.b/c')   .capturing a: 'a.b', b: 'c', c: nil }
-    it { should match('/a.b/c.d') .capturing a: 'a.b', b: 'c', c: 'd' }
+    it { should_not match('/a.b/c')     }
+    it { should_not match('/a.b/c.d')   }
     it { should_not match('/a.b/c.d/e') }
   end
 
@@ -554,23 +554,23 @@ describe Mustermann::Grape do
     it { should match('/pony.png')     .capturing file: 'pony',     ext: 'png' }
     it { should match('/pony%2Epng')   .capturing file: 'pony',     ext: 'png' }
     it { should match('/pony%2epng')   .capturing file: 'pony',     ext: 'png' }
-    it { should match('/pony.png.jpg') .capturing file: 'pony.png', ext: 'jpg' }
-    it { should match('/pony.jpg.png') .capturing file: 'pony.jpg', ext: 'png' }
-    it { should match('/pony.gif')     .capturing file: 'pony.gif', ext: nil   }
-    it { should match('/pony.')        .capturing file: 'pony.',    ext: nil   }
-    it { should_not match('.jpg') }
+    it { should_not match('/pony.png.jpg') }
+    it { should_not match('/pony.jpg.png') }
+    it { should_not match('/pony.gif')     }
+    it { should_not match('/pony.')        }
+    it { should_not match('.jpg')          }
   end
 
   pattern '/:file:ext?', capture: { ext: ['.jpg', '.png', '.tar.gz'] } do
     it { should match('/pony')         .capturing file: 'pony',     ext: nil       }
     it { should match('/pony.jpg')     .capturing file: 'pony',     ext: '.jpg'    }
     it { should match('/pony.png')     .capturing file: 'pony',     ext: '.png'    }
-    it { should match('/pony.png.jpg') .capturing file: 'pony.png', ext: '.jpg'    }
-    it { should match('/pony.jpg.png') .capturing file: 'pony.jpg', ext: '.png'    }
-    it { should match('/pony.tar.gz')  .capturing file: 'pony',     ext: '.tar.gz' }
-    it { should match('/pony.gif')     .capturing file: 'pony.gif', ext: nil       }
-    it { should match('/pony.')        .capturing file: 'pony.',    ext: nil       }
-    it { should_not match('/.jpg')  }
+    it { should match('/pony.tar.gz')  .capturing file: 'pony',     ext: '.tar.gz'  }
+    it { should_not match('/pony.png.jpg') }
+    it { should_not match('/pony.jpg.png') }
+    it { should_not match('/pony.gif')     }
+    it { should_not match('/pony.')        }
+    it { should_not match('/.jpg')         }
   end
 
   pattern '/:a(@:b)?', capture: { b: /\d+/ } do
@@ -587,7 +587,7 @@ describe Mustermann::Grape do
   pattern '/:file(.:ext)?', greedy: false do
     it { should match('/pony')           .capturing file: 'pony', ext: nil       }
     it { should match('/pony.jpg')       .capturing file: 'pony', ext: 'jpg'     }
-    it { should match('/pony.png.jpg')   .capturing file: 'pony', ext: 'png.jpg' }
+    it { should_not match('/pony.png.jpg') }
   end
 
   pattern '/auth/*', except: '/auth/login' do

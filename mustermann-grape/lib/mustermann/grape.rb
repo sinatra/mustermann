@@ -1,6 +1,5 @@
 require 'mustermann'
 require 'mustermann/ast/pattern'
-require 'mustermann/versions'
 
 module Mustermann
   # Grape style pattern implementation.
@@ -16,7 +15,7 @@ module Mustermann
     on(nil, ??, ?)) { |c| unexpected(c) }
 
     on(?*)  { |c| scan(/\w+/) ? node(:named_splat, buffer.matched) : node(:splat) }
-    on(?:)  { |c| node(:capture) { scan(/\w+/) } }
+    on(?:)  { |c| node(:capture, constraint: "[^/\\?#\.]") { scan(/\w+/) } }
     on(?\\) { |c| node(:char, expect(/./)) }
     on(?()  { |c| node(:optional, node(:group) { read unless scan(?)) }) }
     on(?|)  { |c| node(:or) }
