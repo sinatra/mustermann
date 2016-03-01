@@ -52,16 +52,6 @@ module Mustermann
       hash.update(merge)
     end
 
-    # Specific cast for remove nil values.
-    # @!visibility private
-    module Nil
-      # @see Mustermann::Caster#cast
-      # @!visibility private
-      def self.cast(key, value)
-        {} if value.nil?
-      end
-    end
-
     # Class for block based casts that are triggered for every key/value pair.
     # @!visibility private
     class Any
