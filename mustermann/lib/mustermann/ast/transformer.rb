@@ -31,6 +31,7 @@ module Mustermann
 
         # @!visibility private
         def translate
+          payload.flatten! if payload.is_a?(Array)
           return union if payload.any? { |e| e.is_a? :or }
           self.payload = t(payload)
           self
