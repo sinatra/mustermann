@@ -95,7 +95,7 @@ The `identity`, `regexp` and `sinatra` types are included in the `mustermann` ge
         <a href="http://rubyonrails.org/">Ruby on Rails</a>,
         <a href="https://github.com/rails/journey">Journey</a>,
         <a href="https://github.com/joshbuddy/http_router">HTTP Router</a>,
-        <a href="http://lotusrb.org/">Lotus</a>,
+        <a href="http://hanamirb.org">Hanami</a>,
         <a href="http://www.scalatra.org/">Scalatra</a> (if <a href="http://www.scalatra.org/2.3/guides/http/routes.html#toc_248">configured</a>),
         <a href="https://github.com/alisnic/nyny">NYNY</a></td>
       <td></td>
