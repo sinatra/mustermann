@@ -7,7 +7,7 @@ require 'mustermann/ast/template_generator'
 require 'mustermann/ast/param_scanner'
 require 'mustermann/regexp_based'
 require 'mustermann/expander'
-require 'tool/equality_map'
+require 'mustermann/equality_map'
 
 module Mustermann
   # @see Mustermann::AST::Pattern
@@ -86,7 +86,7 @@ module Mustermann
       # Internal AST representation of pattern.
       # @!visibility private
       def to_ast
-        @ast_cache ||= Tool::EqualityMap.new
+        @ast_cache ||= EqualityMap.new
         @ast_cache.fetch(@string) do
           ast   = parse(@string, pattern: self)
           ast &&= transform(ast)

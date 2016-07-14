@@ -1,6 +1,6 @@
 require 'mustermann/error'
 require 'mustermann/simple_match'
-require 'tool/equality_map'
+require 'mustermann/equality_map'
 require 'uri'
 
 module Mustermann
@@ -54,7 +54,7 @@ module Mustermann
         raise ArgumentError, "unsupported option %p for %p" % [unsupported, self] if unsupported
       end
 
-      @map ||= Tool::EqualityMap.new
+      @map ||= EqualityMap.new
       @map.fetch(string, options) { super(string, options) { options } }
     end
 
