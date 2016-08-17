@@ -1,3 +1,3 @@
 module Mustermann
-  VERSION ||= '1.0.0.beta'
+  VERSION ||= '0.4.0'
 end
