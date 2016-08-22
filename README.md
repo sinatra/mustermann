@@ -191,8 +191,17 @@ Mustermann follows [Semantic Versioning 2.0](http://semver.org/). Anything docum
 
 ### Stable Releases
 
-There have been no stable releases yet. The code base is considered solid but I only know of a small number of actual production usage.
-As there has been no stable release yet, the API might still change, though I consider this unlikely.
+* **Mustermann 1.0.0** (2016-08-22)
+    * First stable release.
+    * Includes `mustermann`, and `mustermann-contrib` gems
+    * Sinatra patterns: Allow | outside of parens.
+    * Add concatenation support (`Mustermann::Pattern#+`).
+    * `Mustermann::Sinatra#|` may now generate a Sinatra pattern instead of a real composite.
+    * Add syntax highlighting support for composite patterns.
+    * Remove routers (they were out of scope for the main gem).
+    * Rails patterns: Add Rails 5.0 compatibility mode, make it default.
+    * Moved `tool` gem `EqualityMap` to `Mustermann::EqualityMap` in core
+    * Improve documentation.
 
 ### Development Releases
 
@@ -271,15 +280,4 @@ As there has been no stable release yet, the API might still change, though I co
       [GitHub.com](https://github.com/rkh/mustermann/tree/v0.0.1)
     * Initial Release.
 
-### Upcoming Releases
 
-* **Mustermann 0.5.0** (next release with new features)
-    * Sinatra patterns: Allow | outside of parens.
-    * Add concatenation support (`Mustermann::Pattern#+`).
-    * `Mustermann::Sinatra#|` may now generate a Sinatra pattern instead of a real composite.
-    * Add syntax highlighting support for composite patterns.
-    * Remove routers (they were out of scope for the main gem).
-    * Rails patterns: Add Rails 5.0 compatibility mode, make it default.
-    * Improve documentation.
-* **Mustermann 1.0.0** (before Sinatra 2.0)
-    * First stable release.
