@@ -1,54 +1,390 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
-    <meta charset='utf-8'>
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+    <title>Mustermann by sinatra</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width">
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <title>Mustermann by rkh</title>
   </head>
-
   <body>
-    <div id="container">
-      <div class="inner">
+    <div class="wrapper">
+      <header>
+        <h1>Mustermann</h1>
+        <p>your personal string matching expert</p>
 
-        <header>
-          <h1>Mustermann</h1>
-          <h2>your personal string matching expert</h2>
-        </header>
+        <p class="view"><a href="https://github.com/sinatra/mustermann">View the Project on GitHub <small>sinatra/mustermann</small></a></p>
 
-        <section id="downloads" class="clearfix">
-          <a href="https://github.com/rkh/mustermann/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
-          <a href="https://github.com/rkh/mustermann/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
-          <a href="https://github.com/rkh/mustermann" id="view-on-github" class="button"><span>View on GitHub</span></a>
-        </section>
 
-        <hr>
+        <ul>
+          <li><a href="https://github.com/sinatra/mustermann/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/sinatra/mustermann/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/sinatra/mustermann">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a id="the-amazing-mustermann" class="anchor" href="#the-amazing-mustermann" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The Amazing Mustermann</h1>
 
-        <section id="main_content">
-          <h1>Mustermann</h1>
+<p><a href="https://travis-ci.org/sinatra/mustermann"><img src="https://travis-ci.org/sinatra/mustermann.svg?branch=master" alt="Build Status"></a> <a href="https://coveralls.io/github/rkh/mustermann?branch=master"><img src="https://coveralls.io/repos/github/rkh/mustermann/badge.svg?branch=master" alt="Coverage Status"></a> <a href="https://codeclimate.com/github/rkh/mustermann"><img src="https://img.shields.io/codeclimate/github/rkh/mustermann.svg" alt="Code Climate"></a> <a href="https://gemnasium.com/rkh/mustermann"><img src="https://gemnasium.com/rkh/mustermann.svg" alt="Dependency Status"></a> <a href="https://rubygems.org/gems/mustermann"><img src="https://img.shields.io/gem/v/mustermann.svg" alt="Gem Version"></a>
+<a href="http://inch-ci.org/github/rkh/mustermann"><img src="http://inch-ci.org/github/rkh/mustermann.svg" alt="Inline docs"></a>
+<a href="http://www.rubydoc.info/gems/mustermann/frames"><img src="http://img.shields.io/:yard-docs-38c800.svg" alt="Documentation"></a>
+<a href="http://rkh.mit-license.org"><img src="http://img.shields.io/:license-MIT-38c800.svg" alt="License"></a>
+<a href="http://img.shields.io"><img src="http://img.shields.io/:badges-9/9-38c800.svg" alt="Badges"></a></p>
 
-<p>Welcome to <a href="http://en.wikipedia.org/wiki/List_of_placeholder_names_by_language#German">Mustermann</a>. Mustermann is your personal string matching expert. As an expert in the field of strings and patterns, Mustermann also has no runtime dependencies and is fully covered with specs and documentation.</p>
+<p>This repository contains multiple projects (each installable as separate gems).</p>
 
-<p>Given a string pattern, Mustermann will turn it into an object that behaves like a regular expression and has comparable performance characteristics.</p>
+<ul>
+<li><strong><a href="mustermann/README.md">mustermann</a>: Your personal string matching expert. This is probably what you're looking for.</strong></li>
+<li>
+<a href="mustermann-everything/README.md">mustermann-everything</a>: A meta gem depending on all other official mustermann gems.</li>
+<li>
+<a href="mustermann-fileutils/README.md">mustermann-fileutils</a>: Efficient file system operations using Mustermann patterns.</li>
+<li>
+<a href="mustermann-strscan/README.md">mustermann-strscan</a>: A version of Ruby's <a href="http://ruby-doc.org/stdlib-2.0/libdoc/strscan/rdoc/StringScanner.html">StringScanner</a> made for pattern objects.</li>
+<li>
+<a href="mustermann-visualizer/README.md">mustermann-visualizer</a>: Syntax highlighting and tree visualization for patterns.</li>
+<li>A selection of pattern types for mustermann, each as their own little library, see <a href="#-pattern-types">below</a>.</li>
+</ul>
 
-<p>It can be used as a plugin for <a href="http://www.sinatrarb.com">Sinatra 1.x</a> and will power Sinatra 2.0.</p>
+<h2>
+<a id="git-versions-with-bundler" class="anchor" href="#git-versions-with-bundler" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Git versions with Bundler</h2>
 
-<p>Check out the documentation for the <a href="http://rubydoc.info/gems/mustermann/frames">latest release</a> or current <a href="http://rubydoc.info/github/rkh/mustermann/master/frames">master</a>.</p>
-        </section>
+<p>You can easily use the latest edge version from GitHub of any of these gems via <a href="http://bundler.io/">Bundler</a>:</p>
 
-        <footer>
-          Mustermann is maintained by <a href="https://github.com/rkh">rkh</a><br>
-          This page was generated by <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="http://twitter.com/jasonlong">Jason Long</a>.
-        </footer>
+<div class="highlight highlight-source-ruby"><pre>git <span class="pl-s"><span class="pl-pds">'</span>https://github.com/rkh/mustermann.git<span class="pl-pds">'</span></span> <span class="pl-k">do</span>
+  <span class="pl-k">gem</span> <span class="pl-s"><span class="pl-pds">'</span>mustermann<span class="pl-pds">'</span></span>
+  <span class="pl-k">gem</span> <span class="pl-s"><span class="pl-pds">'</span>mustermann-rails<span class="pl-pds">'</span></span>
+<span class="pl-k">end</span></pre></div>
 
-        
-      </div>
+<p><a name="-pattern-types"></a></p>
+
+<h2>
+<a id="pattern-types" class="anchor" href="#pattern-types" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Pattern Types</h2>
+
+<p>The <code>identity</code>, <code>regexp</code> and <code>sinatra</code> types are included in the <code>mustermann</code> gem, all the other types have their own gems.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Example</th>
+      <th>Compatible with</th>
+      <th>Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    <tr>
+      <th><a href="mustermann-cake/README.md"><tt>cake</tt></a></th>
+      <td><tt>/:prefix/**</tt></td>
+      <td><a href="http://cakephp.org/">CakePHP</a></td>
+      <td></td>
+    </tr>
+
+    <tr>
+      <th><a href="mustermann-express/README.md"><tt>express</tt></a></th>
+      <td><tt>/:prefix+/:id(\d+)</tt></td>
+      <td>
+        <a href="http://expressjs.com/">Express</a>,
+        <a href="https://pillarjs.github.io/">pillar.js</a>
+      </td>
+      <td></td>
+    </tr>
+
+    <tr>
+      <th><a href="mustermann-flask/README.md"><tt>flask</tt></a></th>
+      <td><tt>/&lt;prefix&gt;/&lt;int:id&gt;</tt></td>
+      <td>
+        <a href="http://flask.pocoo.org/">Flask</a>,
+        <a href="http://werkzeug.pocoo.org/">Werkzeug</a>
+      </td>
+      <td></td>
+    </tr>
+
+    <tr>
+      <th><a href="mustermann/README.md#-identity-pattern"><tt>identity</tt></a></th>
+      <td><tt>/image.png</tt></td>
+      <td>any software using strings</td>
+      <td>
+        Exact string matching (no parameter parsing).
+      </td>
+    </tr>
+
+    <tr>
+      <th><a href="mustermann-pyramid/README.md"><tt>pyramid</tt></a></th>
+      <td><tt>/{prefix:.*}/{id}</tt></td>
+      <td>
+        <a href="http://www.pylonsproject.org/projects/pyramid/about">Pyramid</a>,
+        <a href="http://www.pylonsproject.org/projects/pylons-framework/about">Pylons</a>
+      </td>
+      <td></td>
+    </tr>
+
+    <tr>
+      <th><a href="mustermann-rails/README.md"><tt>rails</tt></a></th>
+      <td><tt>/:slug(.:ext)</tt></td>
+      <td>
+        <a href="http://rubyonrails.org/">Ruby on Rails</a>,
+        <a href="https://github.com/rails/journey">Journey</a>,
+        <a href="https://github.com/joshbuddy/http_router">HTTP Router</a>,
+        <a href="http://hanamirb.org">Hanami</a>,
+        <a href="http://www.scalatra.org/">Scalatra</a> (if <a href="http://www.scalatra.org/2.3/guides/http/routes.html#toc_248">configured</a>),
+        <a href="https://github.com/alisnic/nyny">NYNY</a>
+</td>
+      <td></td>
+    </tr>
+
+    <tr>
+      <th><a href="mustermann/README.md#-regexp-pattern"><tt>regexp</tt></a></th>
+      <td><tt>/(?&lt;slug&gt;[^\/]+)</tt></td>
+      <td>
+        <a href="http://www.geocities.jp/kosako3/oniguruma/">Oniguruma</a>,
+        <a href="https://github.com/k-takata/Onigmo">Onigmo</a>,
+        regular expressions
+      </td>
+      <td>
+        Created when you pass a regexp to <tt>Mustermann.new</tt>.<br>
+        Does not support expanding or generating templates.
+      </td>
+    </tr>
+
+    <tr>
+      <th><a href="mustermann-shell/README.md"><tt>shell</tt></a></th>
+      <td><tt>/*.{png,jpg}</tt></td>
+      <td>Unix Shell (bash, zsh)</td>
+      <td>Does not support expanding or generating templates.</td>
+    </tr>
+
+    <tr>
+      <th><a href="mustermann-simple/README.md"><tt>simple</tt></a></th>
+      <td><tt>/:slug.:ext</tt></td>
+      <td>
+        <a href="http://www.sinatrarb.com/">Sinatra</a> (1.x),
+        <a href="http://www.scalatra.org/">Scalatra</a>,
+        <a href="http://perldancer.org/">Dancer</a>,
+        <a href="http://twitter.github.io/finatra/">Finatra</a>,
+        <a href="http://sparkjava.com/">Spark</a>,
+        <a href="https://github.com/rc1/RCRouter">RCRouter</a>,
+        <a href="https://github.com/kissjs/kick.js">kick.js</a>
+      </td>
+      <td>
+        Implementation is a direct copy from Sinatra 1.3.<br>
+        It is the predecessor of <tt>sinatra</tt>.
+        Does not support expanding or generating templates.
+      </td>
+    </tr>
+
+    <tr>
+      <th><a href="mustermann/README.md#-sinatra-pattern"><tt>sinatra</tt></a></th>
+      <td><tt>/:slug(.:ext)?</tt></td>
+      <td>
+        <a href="http://www.sinatrarb.com/">Sinatra</a> (2.x),
+        <a href="http://padrinorb.com/">Padrino</a> (&gt;= 0.13.0),
+        <a href="https://github.com/namusyaka/pendragon">Pendragon</a>,
+        <a href="https://github.com/kenichi/angelo">Angelo</a>
+      </td>
+      <td>
+        This is the default and the only type "invented here".<br>
+        It is a superset of <tt>simple</tt> and has a common subset with
+        <tt>template</tt> (and others).
+      </td>
+    </tr>
+
+    <tr>
+      <th><a href="mustermann-uri-template/README.md"><tt>uri-template</tt></a></th>
+      <td><tt>/{+pre}/{page}{?q}</tt></td>
+      <td>
+        <a href="https://tools.ietf.org/html/rfc6570">RFC 6570</a>,
+        <a href="http://jsonapi.org/">JSON API</a>,
+        <a href="http://tools.ietf.org/html/draft-nottingham-json-home-02">JSON Home Documents</a>
+        and <a href="https://code.google.com/p/uri-templates/wiki/Implementations">many more</a>
+      </td>
+      <td>Standardized URI templates, can be <a href="mustermann/README.md#-generating-templates">generated</a> from most other types.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Any software using Mustermann is obviously compatible with at least one of the above.</p>
+
+<h2>
+<a id="requirements" class="anchor" href="#requirements" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Requirements</h2>
+
+<p>Mustermann depends on <a href="https://github.com/rkh/tool">tool</a> (which has been extracted from Mustermann and Sinatra 2.0), and a Ruby 2.1 compatible Ruby implementation.</p>
+
+<p>It is known to work on MRI 2.1.</p>
+
+<p>JRuby will hopefully be supported with the release of <strong>JRuby 9000</strong>.</p>
+
+<p><strong>Rubinius</strong> is not currently supported. As of Rubinius 2.3.1, a large portion of the specs pass (3870 out of 3943), but certain parts are not working yet.</p>
+
+<p>If you need Ruby 1.9 support, you might be able to use the <strong>unofficial</strong> <a href="https://rubygems.org/gems/mustermann19">mustermann19</a> gem based on <a href="https://github.com/namusyaka/mustermann19">namusyaka's fork</a>.</p>
+
+<h2>
+<a id="release-history" class="anchor" href="#release-history" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Release History</h2>
+
+<p>Mustermann follows <a href="http://semver.org/">Semantic Versioning 2.0</a>. Anything documented in the README or via YARD and not declared private is part of the public API.</p>
+
+<h3>
+<a id="stable-releases" class="anchor" href="#stable-releases" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Stable Releases</h3>
+
+<ul>
+<li>
+<strong>Mustermann 1.0.0</strong> (2016-08-22)
+
+<ul>
+<li>First stable release.</li>
+<li>Includes <code>mustermann</code>, and <code>mustermann-contrib</code> gems</li>
+<li>Sinatra patterns: Allow | outside of parens.</li>
+<li>Add concatenation support (<code>Mustermann::Pattern#+</code>).</li>
+<li>
+<code>Mustermann::Sinatra#|</code> may now generate a Sinatra pattern instead of a real composite.</li>
+<li>Add syntax highlighting support for composite patterns.</li>
+<li>Remove routers (they were out of scope for the main gem).</li>
+<li>Rails patterns: Add Rails 5.0 compatibility mode, make it default.</li>
+<li>Moved <code>tool</code> gem <code>EqualityMap</code> to <code>Mustermann::EqualityMap</code> in core</li>
+<li>Improve documentation.</li>
+</ul>
+</li>
+</ul>
+
+<h3>
+<a id="development-releases" class="anchor" href="#development-releases" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Development Releases</h3>
+
+<ul>
+<li>
+<strong>Mustermann 0.4.0</strong> (2014-11-26)
+
+<ul>
+<li>More Infos:
+<a href="https://rubygems.org/gems/mustermann/versions/0.4.0">RubyGems.org</a>,
+<a href="http://www.rubydoc.info/gems/mustermann/0.4.0/frames">RubyDoc.info</a>,
+<a href="https://github.com/rkh/mustermann/tree/v0.4.0">GitHub.com</a>
+</li>
+<li>Split into multiple gems.</li>
+<li>Add <code>Pattern#to_proc</code>.</li>
+<li>Add <code>Pattern#|</code>, <code>Pattern#&amp;</code> and <code>Pattern#^</code>.</li>
+<li>Add <code>Pattern#peek</code>, <code>Pattern#peek_size</code>, <code>Pattern#peek_match</code> and <code>Pattern#peek_params</code>.</li>
+<li>Add <code>Mustermann::StringScanner</code>.</li>
+<li>Add <code>Pattern#to_templates</code>.</li>
+<li>Add <code>|</code> syntax to <code>sinatra</code> templates.</li>
+<li>Add template style placeholders to <code>sinatra</code> templates.</li>
+<li>Add <code>cake</code>, <code>express</code>, <code>flask</code> and <code>pyramid</code> patterns.</li>
+<li>Allow passing in additional value behavior directly to <code>Pattern#expand</code>.</li>
+<li>Fix expanding of multiple splats.</li>
+<li>Add expanding to <code>identity</code> patterns.</li>
+<li>Add <code>mustermann-fileutils</code>.</li>
+<li>Make expander accept hashes with string keys.</li>
+<li>Allow named splats to be named splat.</li>
+<li>Support multiple Rails versions.</li>
+<li>Type option can be set to nil to get the default type.</li>
+<li>Add <code>mustermann-visualizer</code>.</li>
+</ul>
+</li>
+<li>
+<strong>Mustermann 0.3.1</strong> (2014-09-12)
+
+<ul>
+<li>More Infos:
+<a href="https://rubygems.org/gems/mustermann/versions/0.3.1">RubyGems.org</a>,
+<a href="http://www.rubydoc.info/gems/mustermann/0.3.1/frames">RubyDoc.info</a>,
+<a href="https://github.com/rkh/mustermann/tree/v0.3.1">GitHub.com</a>
+</li>
+<li>Speed up pattern generation and matching (thanks <a href="https://github.com/minad">Daniel Mendler</a>)</li>
+<li>Small change so <code>Mustermann === Mustermann.new('...')</code> returns <code>true</code>.</li>
+</ul>
+</li>
+<li>
+<strong>Mustermann 0.3.0</strong> (2014-08-18)
+
+<ul>
+<li>More Infos:
+<a href="https://rubygems.org/gems/mustermann/versions/0.3.0">RubyGems.org</a>,
+<a href="http://www.rubydoc.info/gems/mustermann/0.3.0/frames">RubyDoc.info</a>,
+<a href="https://github.com/rkh/mustermann/tree/v0.3.0">GitHub.com</a>
+</li>
+<li>Add <code>regexp</code> pattern.</li>
+<li>Add named splats to Sinatra patterns.</li>
+<li>Add <code>Mustermann::Mapper</code>.</li>
+<li>Improve duck typing support.</li>
+<li>Improve documentation.</li>
+</ul>
+</li>
+<li>
+<strong>Mustermann 0.2.0</strong> (2013-08-24)
+
+<ul>
+<li>More Infos:
+<a href="https://rubygems.org/gems/mustermann/versions/0.2.0">RubyGems.org</a>,
+<a href="http://www.rubydoc.info/gems/mustermann/0.2.0/frames">RubyDoc.info</a>,
+<a href="https://github.com/rkh/mustermann/tree/v0.2.0">GitHub.com</a>
+</li>
+<li>Add first class expander objects.</li>
+<li>Add params casting for expander.</li>
+<li>Add simple router and rack router.</li>
+<li>Add weak equality map to significantly improve performance.</li>
+<li>Fix Ruby warnings.</li>
+<li>Improve documentation.</li>
+<li>Refactor pattern validation, AST transformations.</li>
+<li>Increase test coverage (from 100%+ to 100%++).</li>
+<li>Improve JRuby compatibility.</li>
+<li>Work around bug in 2.0.0-p0.</li>
+</ul>
+</li>
+<li>
+<strong>Mustermann 0.1.0</strong> (2013-05-12)
+
+<ul>
+<li>More Infos:
+<a href="https://rubygems.org/gems/mustermann/versions/0.1.0">RubyGems.org</a>,
+<a href="http://www.rubydoc.info/gems/mustermann/0.1.0/frames">RubyDoc.info</a>,
+<a href="https://github.com/rkh/mustermann/tree/v0.1.0">GitHub.com</a>
+</li>
+<li>Add <code>Pattern#expand</code> for generating strings from patterns.</li>
+<li>Add better internal API for working with the AST.</li>
+<li>Improved documentation.</li>
+<li>Avoids parsing the path twice when used as Sinatra extension.</li>
+<li>Better exceptions for unknown pattern types.</li>
+<li>Better handling of edge cases around extend.</li>
+<li>More specs to ensure API stability.</li>
+<li>Largely rework internals of Sinatra, Rails and Template patterns.</li>
+</ul>
+</li>
+<li>
+<strong>Mustermann 0.0.1</strong> (2013-04-27)
+
+<ul>
+<li>More Infos:
+<a href="https://rubygems.org/gems/mustermann/versions/0.0.1">RubyGems.org</a>,
+<a href="http://www.rubydoc.info/gems/mustermann/0.0.1/frames">RubyDoc.info</a>,
+<a href="https://github.com/rkh/mustermann/tree/v0.0.1">GitHub.com</a>
+</li>
+<li>Initial Release.</li>
+</ul>
+</li>
+</ul>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/sinatra">sinatra</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
     </div>
+    <script src="javascripts/scale.fix.js"></script>
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-82897195-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
   </body>
 </html>
