@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'support'
 require 'mustermann/file_utils'
 

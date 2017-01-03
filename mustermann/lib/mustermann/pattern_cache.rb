@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'set'
 require 'thread'
 require 'mustermann'
@@ -8,7 +9,7 @@ module Mustermann
   # @example
   #   require 'mustermann/pattern_cache'
   #   cache = Mustermann::PatternCache.new
-  #   
+  #
   #   # use this instead of Mustermann.new
   #   pattern = cache.create_pattern("/:name", type: :rails)
   #

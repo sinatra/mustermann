@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'mustermann/visualizer/tree'
 require 'mustermann/ast/translator'
 require 'hansi'

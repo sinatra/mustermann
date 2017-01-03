@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Mustermann
   module Visualizer
     # Mixin that will be added to {Mustermann::Pattern}.

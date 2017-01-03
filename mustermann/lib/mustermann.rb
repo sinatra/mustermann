@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'mustermann/pattern'
 require 'mustermann/composite'
 require 'mustermann/concat'

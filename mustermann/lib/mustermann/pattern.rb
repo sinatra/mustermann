@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'mustermann/error'
 require 'mustermann/simple_match'
 require 'mustermann/equality_map'

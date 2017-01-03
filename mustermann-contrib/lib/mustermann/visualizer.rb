@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'mustermann'
 require 'mustermann/visualizer/highlight'
 require 'mustermann/visualizer/tree_renderer'
@@ -10,10 +11,10 @@ module Mustermann
 
     # @example creating a highlight object
     #   require 'mustermann/visualizer'
-    #   
+    #
     #   pattern   = Mustermann.new('/:name')
     #   highlight = Mustermann::Visualizer.highlight(pattern)
-    #   
+    #
     #   puts highlight.to_ansi
     #
     # @return [Mustermann::Visualizer::Highlight] highlight object for given pattern
@@ -24,10 +25,10 @@ module Mustermann
 
     # @example creating a tree object
     #   require 'mustermann/visualizer'
-    #   
+    #
     #   pattern = Mustermann.new('/:name')
     #   tree    = Mustermann::Visualizer.tree(pattern)
-    #   
+    #
     #   puts highlight.to_s
     #
     # @return [Mustermann::Visualizer::Tree] tree object for given pattern

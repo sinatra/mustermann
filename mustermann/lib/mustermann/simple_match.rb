@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Mustermann
   # Fakes MatchData for patterns that do not support capturing.
   # @see http://ruby-doc.org/core-2.0/MatchData.html MatchData

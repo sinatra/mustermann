@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'mustermann/ast/parser'
 require 'mustermann/ast/boundaries'
 require 'mustermann/ast/compiler'
@@ -79,8 +80,7 @@ module Mustermann
         options[:except] &&= parse options[:except]
         compiler.compile(to_ast, **options)
       rescue CompileError => error
-        error.message << ": %p" % @string
-        raise error
+        raise error.class, "#{error.message}: #{@string.inspect}", error.backtrace
       end
 
       # Internal AST representation of pattern.

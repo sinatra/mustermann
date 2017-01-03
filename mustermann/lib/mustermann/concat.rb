@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Mustermann
   # Class for pattern objects that are a concatenation of other patterns.
   # @see Mustermann::Pattern#+

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'strscan'
 
 module Mustermann
@@ -33,7 +34,7 @@ module Mustermann
         def initialize(pattern, renderer)
           @pattern  = pattern
           @renderer = renderer
-          @output   = ""
+          @output   = String.new
           @rules    = self.class.rules
           @scanner  = ::StringScanner.new(pattern.to_s)
         end

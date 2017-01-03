@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'mustermann'
 require 'mustermann/file_utils/glob_pattern'
 require 'mustermann/mapper'

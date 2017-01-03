@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'strscan'
 
 module Mustermann
@@ -27,7 +28,7 @@ module Mustermann
         # @!visibility private
         def initialize(renderer)
           @renderer = renderer
-          @output   = ""
+          @output   = String.new
         end
 
         # @!visibility private

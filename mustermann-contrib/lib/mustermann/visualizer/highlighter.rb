@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'mustermann/visualizer/highlighter/ast'
 require 'mustermann/visualizer/highlighter/ad_hoc'
 require 'mustermann/visualizer/highlighter/composite'

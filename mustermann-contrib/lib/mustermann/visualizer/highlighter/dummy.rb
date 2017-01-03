@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Mustermann
   module Visualizer
     # @!visibility private
@@ -7,7 +8,7 @@ module Mustermann
       module Dummy
         # @!visibility private
         def self.highlight(pattern, renderer)
-          output = ""
+          output = String.new
           output << renderer.pre(:root) << renderer.pre(:unknown)
           output << renderer.escape(pattern.to_s)
           output << renderer.post(:unknown) << renderer.post(:root)

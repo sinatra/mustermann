@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'mustermann/ast/node'
 require 'mustermann/error'
 require 'delegate'
@@ -79,13 +80,13 @@ module Mustermann
       # @example
       #   require 'mustermann'
       #   require 'mustermann/ast/translator'
-      #   
+      #
       #   translator = Mustermann::AST::Translator.create do
       #     translate(:node)  { [type, *t(payload)].flatten.compact }
       #     translate(Array)  { map { |e| t(e) } }
       #     translate(Object) { }
       #   end
-      #   
+      #
       #   ast = Mustermann.new('/:name').to_ast
       #   translator.translate(ast) # => [:root, :separator, :capture]
       #

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Mustermann
   # Mixin that adds support for multiple versions of the same type.
   # @see Mustermann::Rails
