@@ -9,10 +9,10 @@
 This repository contains multiple projects (each installable as separate gems).
 
 * **[mustermann](mustermann/README.md): Your personal string matching expert. This is probably what you're looking for.**
-* [mustermann-everything](mustermann-everything/README.md): A meta gem depending on all other official mustermann gems.
-* [mustermann-fileutils](mustermann-fileutils/README.md): Efficient file system operations using Mustermann patterns.
-* [mustermann-strscan](mustermann-strscan/README.md): A version of Ruby's [StringScanner](http://ruby-doc.org/stdlib-2.0/libdoc/strscan/rdoc/StringScanner.html) made for pattern objects.
-* [mustermann-visualizer](mustermann-visualizer/README.md): Syntax highlighting and tree visualization for patterns.
+* [mustermann-contrib](mustermann-contrib/README.md): A meta gem depending on all other official mustermann gems.
+* [mustermann-fileutils](mustermann-contrib/README.md#-mustermann-fileutils): Efficient file system operations using Mustermann patterns.
+* [mustermann-strscan](mustermann-contrib/README.md#-mustermann-strscan): A version of Ruby's [StringScanner](http://ruby-doc.org/stdlib-2.0/libdoc/strscan/rdoc/StringScanner.html) made for pattern objects.
+* [mustermann-visualizer](mustermann-contrib/README.md#-mustermann-visualizer): Syntax highlighting and tree visualization for patterns.'
 * A selection of pattern types for mustermann, each as their own little library, see [below](#-pattern-types).
 
 ## Git versions with Bundler
@@ -43,14 +43,14 @@ The `identity`, `regexp` and `sinatra` types are included in the `mustermann` ge
   <tbody>
 
     <tr>
-      <th><a href="mustermann-cake/README.md"><tt>cake</tt></a></th>
+      <th><a href="mustermann-contrib/README.md#-mustermann-cake"><tt>cake</tt></a></th>
       <td><tt>/:prefix/**</tt></td>
       <td><a href="http://cakephp.org/">CakePHP</a></td>
       <td></td>
     </tr>
 
     <tr>
-      <th><a href="mustermann-express/README.md"><tt>express</tt></a></th>
+      <th><a href="mustermann-contrib/README.md#-mustermann-express"><tt>express</tt></a></th>
       <td><tt>/:prefix+/:id(\d+)</tt></td>
       <td>
         <a href="http://expressjs.com/">Express</a>,
@@ -60,7 +60,7 @@ The `identity`, `regexp` and `sinatra` types are included in the `mustermann` ge
     </tr>
 
     <tr>
-      <th><a href="mustermann-flask/README.md"><tt>flask</tt></a></th>
+      <th><a href="mustermann-contrib/README.md#-mustermann-flask"><tt>flask</tt></a></th>
       <td><tt>/&lt;prefix&gt;/&lt;int:id&gt;</tt></td>
       <td>
         <a href="http://flask.pocoo.org/">Flask</a>,
@@ -79,7 +79,7 @@ The `identity`, `regexp` and `sinatra` types are included in the `mustermann` ge
     </tr>
 
     <tr>
-      <th><a href="mustermann-pyramid/README.md"><tt>pyramid</tt></a></th>
+      <th><a href="mustermann-contrib/README.md#-mustermann-pyramid"><tt>pyramid</tt></a></th>
       <td><tt>/{prefix:.*}/{id}</tt></td>
       <td>
         <a href="http://www.pylonsproject.org/projects/pyramid/about">Pyramid</a>,
@@ -89,7 +89,7 @@ The `identity`, `regexp` and `sinatra` types are included in the `mustermann` ge
     </tr>
 
     <tr>
-      <th><a href="mustermann-rails/README.md"><tt>rails</tt></a></th>
+      <th><a href="mustermann-contrib/README.md#-mustermann-rails"><tt>rails</tt></a></th>
       <td><tt>/:slug(.:ext)</tt></td>
       <td>
         <a href="http://rubyonrails.org/">Ruby on Rails</a>,
@@ -116,14 +116,14 @@ The `identity`, `regexp` and `sinatra` types are included in the `mustermann` ge
     </tr>
 
     <tr>
-      <th><a href="mustermann-shell/README.md"><tt>shell</tt></a></th>
+      <th><a href="mustermann-contrib/README.md#-mustermann-shell"><tt>shell</tt></a></th>
       <td><tt>/*.{png,jpg}</tt></td>
       <td>Unix Shell (bash, zsh)</td>
       <td>Does not support expanding or generating templates.</td>
     </tr>
 
     <tr>
-      <th><a href="mustermann-simple/README.md"><tt>simple</tt></a></th>
+      <th><a href="mustermann-contrib/README.md#-mustermann-simple"><tt>simple</tt></a></th>
       <td><tt>/:slug.:ext</tt></td>
       <td>
         <a href="http://www.sinatrarb.com/">Sinatra</a> (1.x),
@@ -158,7 +158,7 @@ The `identity`, `regexp` and `sinatra` types are included in the `mustermann` ge
     </tr>
 
     <tr>
-      <th><a href="mustermann-uri-template/README.md"><tt>uri-template</tt></a></th>
+      <th><a href="mustermann-contrib/README.md#-mustermann-uri-template"><tt>uri-template</tt></a></th>
       <td><tt>/{+pre}/{page}{?q}</tt></td>
       <td>
         <a href="https://tools.ietf.org/html/rfc6570">RFC 6570</a>,
