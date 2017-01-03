@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Mustermann
   class Sinatra < AST::Pattern
     # Sinatra syntax definition.

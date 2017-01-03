@@ -1,8 +1,9 @@
+# frozen_string_literal: true
 require 'support'
 require 'mustermann/flask'
 
 FlaskSubclass ||= Class.new(Mustermann::Flask)
-FlaskSubclass.register_converter(:foo) {} 
+FlaskSubclass.register_converter(:foo) {}
 
 describe FlaskSubclass do
   extend Support::Pattern

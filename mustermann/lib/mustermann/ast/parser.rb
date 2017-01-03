@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'mustermann/ast/node'
 require 'forwardable'
 require 'strscan'
@@ -150,7 +151,7 @@ module Mustermann
       #
       # @!visibility private
       def read_brackets(open, close, char: nil, escape: ?\\, quote: false, **options)
-        result = ""
+        result = String.new
         escape = false if escape.nil?
         while current = getch
           case current
@@ -193,7 +194,7 @@ module Mustermann
           case current
           when *close    then return result
           when ignore    then nil # do nothing
-          when separator then result  << ""
+          when separator then result  << String.new
           when escape    then element << getch
           when *quotes   then element << read_escaped(current, escape: escape)
           else element << current
@@ -206,7 +207,7 @@ module Mustermann
       #
       # @!visibility private
       def read_escaped(close, escape: ?\\, **options)
-        result = ""
+        result = String.new
         while current = getch
           case current
           when close  then return result

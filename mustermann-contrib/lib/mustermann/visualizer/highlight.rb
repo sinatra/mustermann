@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'hansi'
 require 'mustermann'
 require 'mustermann/visualizer/highlighter'
@@ -57,10 +58,10 @@ module Mustermann
 
       # @example
       #   require 'mustermann/visualizer'
-      #   
+      #
       #   pattern   = Mustermann.new('/:name')
       #   highlight = Mustermann::Visualizer.highlight(pattern)
-      #   
+      #
       #   puts highlight.to_hansi_template
       #
       # @return [String] Hansi template representation of the pattern
@@ -70,10 +71,10 @@ module Mustermann
 
       # @example
       #   require 'mustermann/visualizer'
-      #   
+      #
       #   pattern   = Mustermann.new('/:name')
       #   highlight = Mustermann::Visualizer.highlight(pattern)
-      #   
+      #
       #   puts highlight.to_ansi
       #
       # @return [String] ANSI colorized version of the pattern
@@ -83,10 +84,10 @@ module Mustermann
 
       # @example
       #   require 'mustermann/visualizer'
-      #   
+      #
       #   pattern   = Mustermann.new('/:name')
       #   highlight = Mustermann::Visualizer.highlight(pattern)
-      #   
+      #
       #   puts highlight.to_html
       #
       # @return [String] HTML rendering of the pattern
@@ -96,10 +97,10 @@ module Mustermann
 
       # @example
       #   require 'mustermann/visualizer'
-      #   
+      #
       #   pattern   = Mustermann.new('/:name')
       #   highlight = Mustermann::Visualizer.highlight(pattern)
-      #   
+      #
       #   puts highlight.to_sexp
       #
       # @return [String] s-expression like representation of the pattern

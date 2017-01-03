@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'mustermann'
 require 'mustermann/pattern'
 require 'mustermann/ast/node'

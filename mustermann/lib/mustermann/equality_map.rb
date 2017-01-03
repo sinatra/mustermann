@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Mustermann
   # A simple wrapper around ObjectSpace::WeakMap that allows matching keys by equality rather than identity.
   # Used for caching. Note that `fetch` is not guaranteed to return the object, even if it has not been
@@ -42,6 +43,7 @@ module Mustermann
     # @param [Object] object to be stored
     # @return [Object] same as the second parameter
     def track(key, object)
+      object = object.dup if object.frozen?
       ObjectSpace.define_finalizer(object, finalizer(key.hash))
       @keys[key.hash] = key
       object

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'mustermann/ast/translator'
 require 'mustermann/ast/compiler'
 

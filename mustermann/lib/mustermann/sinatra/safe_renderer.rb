@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Mustermann
   class Sinatra < AST::Pattern
     # Generates a string that can safely be concatenated with other strings

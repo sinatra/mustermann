@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'mustermann/ast/expander'
 require 'mustermann/caster'
 require 'mustermann'
