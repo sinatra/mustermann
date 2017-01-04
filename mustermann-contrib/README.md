@@ -24,20 +24,7 @@ github 'sinatra/mustermann' do
 end
 ```
 
-Below is the documentation for all extensions, including:
-
-* mustermann-cake
-* mustermann-express
-* mustermann-fileutils
-* mustermann-flask
-* mustermann-pyramid
-* mustermann-rails
-* mustermann-shell
-* mustermann-simple
-* mustermann-strscan
-* mustermann-uri-template
-* mustermann-visualizer
-
+<a name="-mustermann-cake"></a>
 # CakePHP Syntax for Mustermann
 
 This gem implements the `cake` pattern type for Mustermann. It is compatible with [CakePHP](http://cakephp.org/) 2.x and 3.x.
@@ -114,6 +101,7 @@ pattern.to_templates              # => ['/{name}']
 </table>
 
 
+<a name="-mustermann-express"></a>
 # Express Syntax for Mustermann
 
 This gem implements the `express` pattern type for Mustermann. It is compatible with [Express](http://expressjs.com/) and [pillar.js](https://pillarjs.github.io/).
@@ -211,6 +199,7 @@ pattern.to_templates              # => ['/{name}']
   </tbody>
 </table>
 
+<a name="-mustermann-fileutils"></a>
 # FileUtils for Mustermann
 
 This gem implements efficient file system operations for Mustermann patterns.
@@ -269,6 +258,7 @@ Mustermann::FileUtils.cp_r(':base.:ext' => ':base.bak.:ext')
 Mustermann::FileUtils.ln_s('lib/:name.rb' => 'bin/:name')
 ```
 
+<a name="-mustermann-flask"></a>
 # Flask Syntax for Mustermann
 
 This gem implements the `flask` pattern type for Mustermann. It is compatible with [Flask](http://flask.pocoo.org/) and [Werkzeug](http://werkzeug.pocoo.org/).
@@ -516,6 +506,7 @@ pattern = Mustermann.new('/<id:id>/<num(base=8):oct>/<num(base=16):hex>', type: 
 pattern.params('/10/12/f1') # => {"id"=>10, "oct"=>10, "hex"=>241}
 ```
 
+<a name="-mustermann-pyramid"></a>
 # Pyramid Syntax for Mustermann
 
 This gem implements the `pyramid` pattern type for Mustermann. It is compatible with [Pyramid](http://www.pylonsproject.org/projects/pyramid/about) and [Pylons](http://www.pylonsproject.org/projects/pylons-framework/about).
@@ -585,7 +576,7 @@ pattern.to_templates              # => ['/{name}']
   </tbody>
 </table>
 
-
+<a name="-mustermann-rails"></a>
 # Rails Syntax for Mustermann
 
 This gem implements the `rails` pattern type for Mustermann. It is compatible with [Ruby on Rails](http://rubyonrails.org/), [Journey](https://github.com/rails/journey), the [http_router gem](https://github.com/joshbuddy/http_router), [Lotus](http://lotusrb.org/) and [Scalatra](http://www.scalatra.org/) (if [configured](http://www.scalatra.org/2.3/guides/http/routes.html#toc_248))</td>
@@ -691,6 +682,7 @@ Mustermann.new('/', type: :rails, version: Rails::VERSION::STRING)
   </tbody>
 </table>
 
+<a name="-mustermann-shell"></a>
 # Shell Syntax for Mustermann
 
 This gem implements the `rails` pattern type for Mustermann. It is compatible with common Unix shells (like bash or zsh).
@@ -756,6 +748,7 @@ pattern === "/baz"     # => false
 </table>
 
 
+<a name="-mustermann-simple"></a>
 # Simple Syntax for Mustermann
 
 This gem implements the `simple` pattern type for Mustermann. It is compatible with [Sinatra](http://www.sinatrarb.com/) (1.x), [Scalatra](http://www.scalatra.org/) and [Dancer](http://perldancer.org/).
@@ -833,6 +826,7 @@ pattern.params("/foo/bar") # => { "splat" => ["foo/bar"] }
   </tbody>
 </table>
 
+<a name="-mustermann-strscan"></a>
 # String Scanner for Mustermann
 
 This gem implements `Mustermann::StringScanner`, a tool inspired by Ruby's [`StringScanner`]() class.
@@ -872,6 +866,7 @@ You can also pass in default options for ad hoc patterns when creating the scann
 scanner = Mustermann::StringScanner.new(input, type: :shell)
 ```
 
+<a name="-mustermann-uri-template"></a>
 # URI Template Syntax for Mustermann
 
 This gem implements the `uri-template` (or `template`) pattern type for Mustermann. It is compatible with [RFC 6570](https://tools.ietf.org/html/rfc6570) (level 4), [JSON API](http://jsonapi.org/), [JSON Home Documents](http://tools.ietf.org/html/draft-nottingham-json-home-02) and [many more](https://code.google.com/p/uri-templates/wiki/Implementations)
@@ -958,6 +953,7 @@ If you reuse the exact same templates and expose them via an external API meant 
 you should set `uri_decode` to `false` in order to conform with the specification.
 
 
+<a name="-mustermann-visualizer"></a>
 # Mustermann Pattern Visualizer
 
 With this gem, you can visualize the internal structure of a Mustermann pattern:
