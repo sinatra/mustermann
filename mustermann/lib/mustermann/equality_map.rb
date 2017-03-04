@@ -51,7 +51,7 @@ module Mustermann
 
     # Finalizer proc needs to be generated in different scope so it doesn't keep a reference to the object.
     #
-    # @param [Fixnum] hash for key
+    # @param [Integer] hash for key
     # @return [Proc] finalizer callback
     def finalizer(hash)
       proc { @keys.delete(hash) }

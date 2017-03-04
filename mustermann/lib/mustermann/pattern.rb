@@ -108,7 +108,7 @@ module Mustermann
     end
 
     # Used by Ruby internally for hashing.
-    # @return [Fixnum] same has value for patterns that are equal
+    # @return [Integer] same has value for patterns that are equal
     def hash
       self.class.hash | @string.hash | options.hash
     end
