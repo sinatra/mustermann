@@ -191,7 +191,7 @@ Mustermann follows [Semantic Versioning 2.0](http://semver.org/). Anything docum
 
 ### Stable Releases
 
-* **Mustermann 1.0.0** (2016-08-22)
+* **Mustermann 1.0.0** (2017-03-05)
     * First stable release.
     * Includes `mustermann`, and `mustermann-contrib` gems
     * Sinatra patterns: Allow | outside of parens.

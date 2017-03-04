@@ -5,7 +5,7 @@ Gem::Specification.new do |s|
   s.name                  = "mustermann-contrib"
   s.version               = Mustermann::VERSION
   s.authors               = ["Konstantin Haase", "Zachary Scott"]
-  s.email                 = "mail@zzak.io"
+  s.email                 = "sinatrarb@googlegroups.com"
   s.homepage              = "https://github.com/sinatra/mustermann"
   s.summary               = %q{Collection of extensions for Mustermann}
   s.description           = %q{Adds many plugins to Mustermman}

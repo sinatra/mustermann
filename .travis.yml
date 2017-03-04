@@ -1,5 +1,15 @@
 before_install:
+  - rvm get head
   - gem update bundler
+
 rvm:
-  - 2.2.2
-  - 2.3.0
+  - 2.2.6
+  - 2.3.3
+  - 2.4.0
+
+script: bundle exec rspec **/spec/*_spec.rb
+
+notifications:
+  recipients:
+    - mail@zzak.io
+  slack: sinatrarb:LQGhUfGYcqRgRzwKea0bqUhY
