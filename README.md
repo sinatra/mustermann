@@ -175,9 +175,9 @@ Any software using Mustermann is obviously compatible with at least one of the a
 
 ## Requirements
 
-Mustermann depends on [tool](https://github.com/rkh/tool) (which has been extracted from Mustermann and Sinatra 2.0), and a Ruby 2.1 compatible Ruby implementation.
+Mustermann depends on [tool](https://github.com/rkh/tool) (which has been extracted from Mustermann and Sinatra 2.0), and a Ruby 2.2 compatible Ruby implementation.
 
-It is known to work on MRI 2.1.
+It is known to work on MRI 2.2.
 
 JRuby will hopefully be supported with the release of **JRuby 9000**.
 
@@ -279,5 +279,3 @@ Mustermann follows [Semantic Versioning 2.0](http://semver.org/). Anything docum
       [RubyDoc.info](http://www.rubydoc.info/gems/mustermann/0.0.1/frames),
       [GitHub.com](https://github.com/rkh/mustermann/tree/v0.0.1)
     * Initial Release.
-
-
