@@ -41,14 +41,12 @@ The `identity`, `regexp` and `sinatra` types are included in the `mustermann` ge
     </tr>
   </thead>
   <tbody>
-
     <tr>
       <th><a href="mustermann-contrib/README.md#-mustermann-cake"><tt>cake</tt></a></th>
       <td><tt>/:prefix/**</tt></td>
       <td><a href="http://cakephp.org/">CakePHP</a></td>
       <td></td>
     </tr>
-
     <tr>
       <th><a href="mustermann-contrib/README.md#-mustermann-express"><tt>express</tt></a></th>
       <td><tt>/:prefix+/:id(\d+)</tt></td>
@@ -58,7 +56,6 @@ The `identity`, `regexp` and `sinatra` types are included in the `mustermann` ge
       </td>
       <td></td>
     </tr>
-
     <tr>
       <th><a href="mustermann-contrib/README.md#-mustermann-flask"><tt>flask</tt></a></th>
       <td><tt>/&lt;prefix&gt;/&lt;int:id&gt;</tt></td>
@@ -68,7 +65,6 @@ The `identity`, `regexp` and `sinatra` types are included in the `mustermann` ge
       </td>
       <td></td>
     </tr>
-
     <tr>
       <th><a href="mustermann/README.md#-identity-pattern"><tt>identity</tt></a></th>
       <td><tt>/image.png</tt></td>
@@ -77,7 +73,6 @@ The `identity`, `regexp` and `sinatra` types are included in the `mustermann` ge
         Exact string matching (no parameter parsing).
       </td>
     </tr>
-
     <tr>
       <th><a href="mustermann-contrib/README.md#-mustermann-pyramid"><tt>pyramid</tt></a></th>
       <td><tt>/{prefix:.*}/{id}</tt></td>
@@ -87,7 +82,6 @@ The `identity`, `regexp` and `sinatra` types are included in the `mustermann` ge
       </td>
       <td></td>
     </tr>
-
     <tr>
       <th><a href="mustermann-contrib/README.md#-mustermann-rails"><tt>rails</tt></a></th>
       <td><tt>/:slug(.:ext)</tt></td>
@@ -100,7 +94,6 @@ The `identity`, `regexp` and `sinatra` types are included in the `mustermann` ge
         <a href="https://github.com/alisnic/nyny">NYNY</a></td>
       <td></td>
     </tr>
-
     <tr>
       <th><a href="mustermann/README.md#-regexp-pattern"><tt>regexp</tt></a></th>
       <td><tt>/(?&lt;slug&gt;[^\/]+)</tt></td>
@@ -114,14 +107,12 @@ The `identity`, `regexp` and `sinatra` types are included in the `mustermann` ge
         Does not support expanding or generating templates.
       </td>
     </tr>
-
     <tr>
       <th><a href="mustermann-contrib/README.md#-mustermann-shell"><tt>shell</tt></a></th>
       <td><tt>/*.{png,jpg}</tt></td>
       <td>Unix Shell (bash, zsh)</td>
       <td>Does not support expanding or generating templates.</td>
     </tr>
-
     <tr>
       <th><a href="mustermann-contrib/README.md#-mustermann-simple"><tt>simple</tt></a></th>
       <td><tt>/:slug.:ext</tt></td>
@@ -140,7 +131,6 @@ The `identity`, `regexp` and `sinatra` types are included in the `mustermann` ge
         Does not support expanding or generating templates.
       </td>
     </tr>
-
     <tr>
       <th><a href="mustermann/README.md#-sinatra-pattern"><tt>sinatra</tt></a></th>
       <td><tt>/:slug(.:ext)?</tt></td>
@@ -156,7 +146,6 @@ The `identity`, `regexp` and `sinatra` types are included in the `mustermann` ge
         <tt>template</tt> (and others).
       </td>
     </tr>
-
     <tr>
       <th><a href="mustermann-contrib/README.md#-mustermann-uri-template"><tt>uri-template</tt></a></th>
       <td><tt>/{+pre}/{page}{?q}</tt></td>
