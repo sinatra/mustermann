@@ -1,13 +1,23 @@
+language: ruby
+
+sudo: false
+
+cache: bundler
+
 before_install:
   - rvm get head
   - gem update bundler
 
 rvm:
-  - 2.2.6
-  - 2.3.3
-  - 2.4.0
+  - 2.2.7
+  - 2.3.4
+  - 2.4.1
+  - ruby-head
 
-script: bundle exec rspec **/spec/*_spec.rb
+matrix:
+  allow_failures:
+    - rvm: ruby-head
+  fast_finish: true
 
 notifications:
   recipients:
