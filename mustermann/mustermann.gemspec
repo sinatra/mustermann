@@ -7,8 +7,8 @@ Gem::Specification.new do |s|
   s.authors               = ["Konstantin Haase", "Zachary Scott"]
   s.email                 = "sinatrarb@googlegroups.com"
   s.homepage              = "https://github.com/sinatra/mustermann"
-  s.summary               = %q{use patterns like regular expressions}
-  s.description           = %q{library implementing patterns that behave like regular expressions}
+  s.summary               = %q{Your personal string matching expert.}
+  s.description           = %q{A library implementing patterns that behave like regular expressions.}
   s.license               = 'MIT'
   s.required_ruby_version = '>= 2.2.0'
   s.files                 = `git ls-files`.split("\n")
