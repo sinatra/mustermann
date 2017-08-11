@@ -21,6 +21,7 @@ module Mustermann
     # @see (see Mustermann::Pattern#initialize)
     def initialize(string, check_anchors: true, **options)
       string = $1 if string.to_s =~ /\A\(\?\-mix\:(.*)\)\Z/ && string.inspect == "/#$1/"
+      string = string.inspect.gsub!(/(?<!\\)(?:\s|#.*(?:$|\/[mix]))/, '') if extended_regexp?(string)
       @check_anchors = check_anchors
       super(string, **options)
     end
@@ -40,6 +41,10 @@ module Mustermann
       raise CompileError, "regular expression should not contain %s: %p" % [illegal.to_s, @string]
     end
 
-    private :compile, :check_anchors
+    def extended_regexp?(string)
+      not (Regexp.new(string).options & Regexp::EXTENDED).zero?
+    end
+
+    private :compile, :check_anchors, :extended_regexp?
   end
 end

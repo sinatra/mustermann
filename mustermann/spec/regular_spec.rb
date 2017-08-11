@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 require 'support'
+require 'timeout'
 require 'mustermann/regular'
 
 describe Mustermann::Regular do
@@ -36,6 +37,21 @@ describe Mustermann::Regular do
     it { should match('/foo.bar')   .capturing foo: 'foo.bar'   }
     it { should match('/%0Afoo')    .capturing foo: '%0Afoo'    }
     it { should match('/foo%2Fbar') .capturing foo: 'foo%2Fbar' }
+  end
+
+
+  context 'with Regexp::EXTENDED' do
+    let(:pattern) {
+      %r{
+        \/compare\/ # match any URL beginning with \/compare\/
+        (.+)      # extract the full path (including any directories)
+        \/         # match the final slash
+        ([^.]+)   # match the first SHA1
+        \.{2,3}   # match .. or ...
+        (.+)      # match the second SHA1
+      }x
+    }
+    example { expect { Timeout.timeout(1){ Mustermann::Regular.new(pattern) }}.not_to raise_error(Timeout::Error) }
   end
 
   describe :check_achnors do
