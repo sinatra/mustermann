@@ -21,7 +21,7 @@ module Mustermann
     # @see (see Mustermann::Pattern#initialize)
     def initialize(string, check_anchors: true, **options)
       string = $1 if string.to_s =~ /\A\(\?\-mix\:(.*)\)\Z/ && string.inspect == "/#$1/"
-      string = string.inspect.gsub!(/(?<!\\)(?:\s|#.*(?:$|\/[mix]))/, '') if extended_regexp?(string)
+      string = string.source.gsub!(/(?<!\\)(?:\s|#.*$)/, '') if extended_regexp?(string)
       @check_anchors = check_anchors
       super(string, **options)
     end
