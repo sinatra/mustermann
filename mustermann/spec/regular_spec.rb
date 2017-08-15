@@ -52,6 +52,7 @@ describe Mustermann::Regular do
       }x
     }
     example { expect { Timeout.timeout(1){ Mustermann::Regular.new(pattern) }}.not_to raise_error(Timeout::Error) }
+    it { expect(Mustermann::Regular.new(pattern)).to match('/compare/foo/bar..baz') }
   end
 
   describe :check_achnors do
