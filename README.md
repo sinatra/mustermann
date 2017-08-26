@@ -180,6 +180,16 @@ Mustermann follows [Semantic Versioning 2.0](http://semver.org/). Anything docum
 
 ### Stable Releases
 
+* **Mustermann 1.0.1** (2017-08-26)
+    #### Docs
+    * Updating readme to list Ruby 2.2 as minimum https://github.com/sinatra/mustermann/commit/7c65d9637ed81c194e3d05f0ccf3cfe76f0cf53e (@cassidycodes)
+    * Fix rendering of HTML table  https://github.com/sinatra/mustermann/commit/119a61f0e589cb9e917d8c901800a202bb66ff3b (@stevenwilkin)
+    * Update summary and description in gemspec file.  https://github.com/sinatra/mustermann/commit/04de221a809527c2be8c3f08c40a4fcd53f2bd53 (@junaruga)
+    #### Fixes
+    * avoid infinite loop by removing comments when receiving extended regexp  https://github.com/sinatra/mustermann/commit/fa20301167e1b22882415f1181c5e4e2d76b6ac6 (@namusyaka)
+    * avoid unintended conflict of namespace https://github.com/sinatra/mustermann/commit/d3c9531d372522d693fa5f768f13dbaa1d881d88 (@namusyaka)
+    * use Regexp#source instead of Regexp#inspect https://github.com/sinatra/mustermann/pull/73/commits/e9213748bda1773b1ad9838ef57a296f92c471e7 (@namusyaka)
+
 * **Mustermann 1.0.0** (2017-03-05)
     * First stable release.
     * Includes `mustermann`, and `mustermann-contrib` gems
