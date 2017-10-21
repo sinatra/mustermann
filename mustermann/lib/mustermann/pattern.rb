@@ -226,7 +226,7 @@ module Mustermann
     #     warn "does not support expanding"
     #   end
     #
-    # Expanding is supported by almost all patterns (notable execptions are {Mustermann::Shell},
+    # Expanding is supported by almost all patterns (notable exceptions are {Mustermann::Shell},
     # {Mustermann::Regular} and {Mustermann::Simple}).
     #
     # Union {Mustermann::Composite} patterns (with the | operator) support expanding if all
