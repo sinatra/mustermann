@@ -42,7 +42,7 @@ module Mustermann
     # If a string is supplied, it is treated as a fully escaped Sinatra pattern.
     #
     # If the other pattern is also a Sintara pattern, it might join the two to a third
-    # sinatra pattern instead of generating a composite for efficency reasons.
+    # sinatra pattern instead of generating a composite for efficiency reasons.
     #
     # This only happens if the sinatra pattern behaves exactly the same as a composite
     # would in regards to matching, parsing, expanding and template generation.
