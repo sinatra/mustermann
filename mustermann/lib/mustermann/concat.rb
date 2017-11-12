@@ -10,8 +10,19 @@ module Mustermann
       # @!visibility private
       def +(other)
         other &&= Mustermann.new(other, type: :identity, **options)
-        return super unless native = native_concat(other)
-        self.class.new(native, **options)
+        if (patterns = look_ahead(other)) && !patterns.empty?
+          concat = (self + patterns.inject(:+))
+          concat + other.patterns.slice(patterns.length..-1).inject(:+)
+        else
+          return super unless native = native_concat(other)
+          self.class.new(native, **options)
+        end
+      end
+
+      # @!visibility private
+      def look_ahead(other)
+        return unless other.is_a?(Concat)
+        other.patterns.take_while(&method(:native_concat?))
       end
 
       # @!visibility private
