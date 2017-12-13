@@ -8,11 +8,11 @@
 
 This repository contains multiple projects (each installable as separate gems).
 
-* **[mustermann](mustermann/README.md): Your personal string matching expert. This is probably what you're looking for.**
-* [mustermann-contrib](mustermann-contrib/README.md): A meta gem depending on all other official mustermann gems.
-* [mustermann-fileutils](mustermann-contrib/README.md#-mustermann-fileutils): Efficient file system operations using Mustermann patterns.
-* [mustermann-strscan](mustermann-contrib/README.md#-mustermann-strscan): A version of Ruby's [StringScanner](http://ruby-doc.org/stdlib-2.0/libdoc/strscan/rdoc/StringScanner.html) made for pattern objects.
-* [mustermann-visualizer](mustermann-contrib/README.md#-mustermann-visualizer): Syntax highlighting and tree visualization for patterns.'
+* **[mustermann](https://github.com/sinatra/mustermann/blob/master/mustermann/README.md): Your personal string matching expert. This is probably what you're looking for.**
+* [mustermann-contrib](https://github.com/sinatra/mustermann/blob/master/mustermann-contrib/README.md): A meta gem depending on all other official mustermann gems.
+* [mustermann-fileutils](https://github.com/sinatra/mustermann/blob/master/mustermann-contrib/README.md#-mustermann-fileutils): Efficient file system operations using Mustermann patterns.
+* [mustermann-strscan](https://github.com/sinatra/mustermann/blob/master/mustermann-contrib/README.md#-mustermann-strscan): A version of Ruby's [StringScanner](http://ruby-doc.org/stdlib-2.0/libdoc/strscan/rdoc/StringScanner.html) made for pattern objects.
+* [mustermann-visualizer](https://github.com/sinatra/mustermann/blob/master/mustermann-contrib/README.md#-mustermann-visualizer): Syntax highlighting and tree visualization for patterns.'
 * A selection of pattern types for mustermann, each as their own little library, see [below](#-pattern-types).
 
 ## Git versions with Bundler
