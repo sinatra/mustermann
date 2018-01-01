@@ -57,6 +57,18 @@ describe Mustermann::Concat do
       its(:class) { should be == Mustermann::Concat }
       its(:to_s)  { should be == '(sinatra:"/:foo" + rails:"/:bar" + sinatra:"/:baz")' }
     end
+
+    context "sinatra + (sinatra + regular)" do
+      subject(:pattern) { Mustermann.new("/foo") + (Mustermann.new("/bar") + Mustermann.new(/baz/)) }
+      its(:class) { should be == Mustermann::Concat }
+      its(:to_s)  { should be == '(sinatra:"/foo/bar" + regular:"baz")' }
+    end
+
+    context "sinatra + (sinatra + rails (different options) + sinatra)" do
+      subject(:pattern) { Mustermann.new("/foo") + (Mustermann.new("/bar") + Mustermann.new("/baz", type: :rails, uri_decode: false) + Mustermann.new("/boo")) }
+      its(:class) { should be == Mustermann::Concat }
+      its(:to_s)  { should be == '(sinatra:"/foo/bar" + rails:"/baz" + sinatra:"/boo")' }
+    end
   end
 
   subject(:pattern) { Mustermann::Concat.new("/:foo", "/:bar") }
