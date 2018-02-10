@@ -685,7 +685,7 @@ Mustermann.new('/', type: :rails, version: Rails::VERSION::STRING)
 <a name="-mustermann-shell"></a>
 # Shell Syntax for Mustermann
 
-This gem implements the `rails` pattern type for Mustermann. It is compatible with common Unix shells (like bash or zsh).
+This gem implements the `shell` pattern type for Mustermann. It is compatible with common Unix shells (like bash or zsh).
 
 ## Overview
 
