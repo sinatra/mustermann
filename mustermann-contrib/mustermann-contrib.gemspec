@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.email                 = "sinatrarb@googlegroups.com"
   s.homepage              = "https://github.com/sinatra/mustermann"
   s.summary               = %q{Collection of extensions for Mustermann}
-  s.description           = %q{Adds many plugins to Mustermman}
+  s.description           = %q{Adds many plugins to Mustermann}
   s.license               = 'MIT'
   s.required_ruby_version = '>= 2.2.0'
   s.files                 = `git ls-files`.split("\n")
