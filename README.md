@@ -180,7 +180,7 @@ Mustermann follows [Semantic Versioning 2.0](http://semver.org/). Anything docum
 
 ### Stable Releases
 
-* **Mustermann 1.0.2** (2017-02-17)
+* **Mustermann 1.0.2** (2018-02-17)
     * Look ahead same patterns as its own when concatenation. Fixes [sinatra/sinatra#1361](https://github.com/sinatra/sinatra/issues/1361) [@namusyaka](https://github.com/namusyaka)
     * Improve development support and documentation. [@EdwardBetts](https://github.com/EdwardBetts), [@284km](https://github.com/284km), [@yb66](https://github.com/yb66) and [@garybernhardt](https://github.com/garybernhardt)
 
