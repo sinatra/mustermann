@@ -70,6 +70,9 @@ describe Mustermann::Expander do
       subject(:expander) { Mustermann::Expander.new('/:a', additional_values: :append) }
       example { expander.expand(a: ?a).should be == '/a' }
       example { expander.expand(a: ?a, b: ?b).should be == '/a?b=b' }
+      example { expander.expand(a: ?a, b: [?b]).should be == '/a?b[]=b' }
+      example { expander.expand(a: ?a, b: {c: ?c}).should be == '/a?b[c]=c' }
+      example { expander.expand(a: ?a, b: {c: [1, 2]}).should be == '/a?b[c][]=1&b[c][]=2' }
       example { expect { expander.expand(b: ?b) }.to raise_error(Mustermann::ExpandError) }
     end
   end

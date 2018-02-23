@@ -194,8 +194,7 @@ module Mustermann
 
     def append(uri, values)
       return uri unless values and values.any?
-      entries = values.map { |pair| pair.map { |e| @api_expander.escape(e, also_escape: /[\/\?#\&\=%]/) }.join(?=) }
-      "#{ uri }#{ uri[??]??&:?? }#{ entries.join(?&) }"
+      [uri, QueryStringBuilder.new(values).build].join('?')
     end
 
     def map_values(values)
@@ -205,5 +204,45 @@ module Mustermann
     end
 
     private :with_rest, :slice, :append, :caster, :map_values, :split_values
+
+    class QueryStringBuilder # :nodoc:
+      attr_reader :query
+
+      def initialize(query = {})
+        @query = query
+      end
+
+      def build
+        query.map { |key, value|
+          if value.is_a?(Array)
+            build_array_query(key, value)
+          elsif value.is_a?(Hash)
+            build_hash_query(key, value)
+          else
+            "#{key}=#{value}"
+          end
+        }.join('&')
+      end
+
+      private
+
+      def build_array_query(key, values)
+        query_key = "#{key}[]"
+        values.map { |v| [query_key, v].join('=') }.join('&')
+      end
+
+      def build_hash_query(key, values)
+        values.map { |h_key, h_value|
+          query_key = "#{key}[#{h_key}]"
+          if h_value.is_a?(Hash)
+            build_hash_query(query_key, h_value)
+          elsif h_value.is_a?(Array)
+            build_array_query(query_key, h_value)
+          else
+            [query_key, h_value].join('=')
+          end
+        }.join('&')
+      end
+    end
   end
 end
