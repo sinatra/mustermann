@@ -51,7 +51,7 @@ describe Mustermann::Regular do
         (.+)      # match the second SHA1
       }x
     }
-    example { expect { Timeout.timeout(1){ Mustermann::Regular.new(pattern) }}.not_to raise_error(Timeout::Error) }
+    example { expect { Timeout.timeout(1){ Mustermann::Regular.new(pattern) }}.not_to raise_error }
     it { expect(Mustermann::Regular.new(pattern)).to match('/compare/foo/bar..baz') }
   end
 
