@@ -826,4 +826,11 @@ describe Mustermann::Sinatra do
       its(:class)  { should be == Mustermann::Composite                }
     end
   end
+
+  describe "native concatination" do
+    subject { Mustermann.new(prefix) + Mustermann.new(pattern) }
+    let(:prefix)  { "/a" }
+    let(:pattern) { "/:b(.:c)?" }
+    it { should match("/a/b.json") }
+  end
 end

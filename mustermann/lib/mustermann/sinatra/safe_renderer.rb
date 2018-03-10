@@ -12,6 +12,7 @@ module Mustermann
       translate(:group)               { "(#{t(payload)})"                      }
       translate(:union)               { "(#{t(payload, join: ?|)})"            }
       translate(:optional)            { "#{t(payload)}?"                       }
+      translate(:with_look_ahead)     { t([head, payload])                     }
       translate(Array)                { |join: ""| map { |e| t(e) }.join(join) }
 
       translate(:capture) do
