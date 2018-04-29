@@ -2,6 +2,7 @@
 require 'mustermann/ast/expander'
 require 'mustermann/caster'
 require 'mustermann'
+require 'addressable/uri'
 
 module Mustermann
   # Allows fine-grained control over pattern expansion.
@@ -194,7 +195,7 @@ module Mustermann
 
     def append(uri, values)
       return uri unless values and values.any?
-      [uri, QueryStringBuilder.new(values).build].join('?')
+      Addressable::URI.encode([uri, QueryStringBuilder.new(values).build].join('?'))
     end
 
     def map_values(values)
