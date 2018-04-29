@@ -195,7 +195,9 @@ module Mustermann
 
     def append(uri, values)
       return uri unless values and values.any?
-      Addressable::URI.encode([uri, QueryStringBuilder.new(values).build].join('?'))
+      Addressable::URI.encode(
+        [uri, uri.include?('?') ? '&' : '?', QueryStringBuilder.new(values).build].join
+      )
     end
 
     def map_values(values)
