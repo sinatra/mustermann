@@ -10,7 +10,7 @@ module Mustermann
   #     @map = Mustermann::EqualityMap.new
   #
   #     def self.new(*args)
-  #       @map.fetch(*args) { super }
+  #       @map.fetch(args) { super }
   #     end
   #   end
   #
@@ -27,12 +27,16 @@ module Mustermann
       @map  = ObjectSpace::WeakMap.new
     end
 
-    # @param [Array<#hash>] key for caching
+    # @param [#hash] key for caching
     # @yield block that will be called to populate entry if missing (has to be idempotent)
     # @return value stored in map or result of block
-    def fetch(*key)
+    def fetch(key)
       identity = @keys[key.hash]
-      key      = identity == key ? identity : key
+      if identity == key
+        key = identity
+      elsif key.frozen?
+        key = key.dup
+      end
 
       # it is ok that this is not thread-safe, worst case it has double cost in
       # generating, object equality is not guaranteed anyways

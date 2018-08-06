@@ -22,5 +22,21 @@ RSpec.describe Mustermann::EqualityMap do
       result = subject.fetch(String.new('foo')) { "bar" }
       expect(result).to be == "bar"
     end
+
+    specify 'allows a frozen key and value' do
+      next if subject.is_a? Hash
+      key = "foo".freeze
+      value = "bar".freeze
+      subject.fetch(key) { value }
+      result = subject.fetch("foo".dup) { raise "not executed" }
+      expect(result).to be == value
+      expect(result).not_to equal value
+    end
+
+    specify 'allows only a single argument to be compatible with Hash#fetch' do
+      expect {
+        subject.fetch("foo", "bar", "baz") { "value" }
+      }.to raise_error(ArgumentError)
+    end
   end
 end
