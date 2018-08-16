@@ -182,7 +182,7 @@ Mustermann follows [Semantic Versioning 2.0](http://semver.org/). Anything docum
 
 * **Mustermann 1.0.3** (2018-08-17)
     * Handle `with_look_ahead` on SafeRenderer. Fixes [sinatra/sinatra#1409](https://github.com/sinatra/sinatra/issues/1409) [@namusyaka](https://github.com/namusyaka)
-    * Fix `EqualityMap#fetch` to be compatible with the fallback `Hash#fetch`. Fixes #89 [@eregon](https://github.com/eregon)
+    * Fix `EqualityMap#fetch` to be compatible with the fallback `Hash#fetch`. Fixes [#89](https://github.com/sinatra/mustermann/issues/89) [@eregon](https://github.com/eregon)
     * Improve code base and documentation. [@sonots](https://github.com/sonots), [@iguchi1124](https://github.com/iguchi1124)
 
 * **Mustermann 1.0.2** (2018-02-17)
