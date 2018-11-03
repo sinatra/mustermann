@@ -64,6 +64,8 @@ describe Mustermann::Expander do
       example { expander.expand(a: ?a).should be == '/a' }
       example { expander.expand(a: ?a, b: ?b).should be == '/a' }
       example { expect { expander.expand(b: ?b) }.to raise_error(Mustermann::ExpandError) }
+      example { expect { expander.expand(b: ?b, c: []) }.to raise_error(Mustermann::ExpandError) }
+      example { expect { expander.expand(b: ?b, c: [], d: ?d) }.to raise_error(Mustermann::ExpandError) }
     end
 
     context :append do
