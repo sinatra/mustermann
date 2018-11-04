@@ -92,11 +92,11 @@ module Mustermann
       # @see Mustermann::Pattern#expand
       # @!visibility private
       def expand(values)
-        values = values.each_with_object({}){ |(key, value), new_hash|
+        adjusted = values.each_with_object({}){ |(key, value), new_hash|
           new_hash[value.instance_of?(Array) ? [key] * value.length : key] = value }
-        keys, pattern, filters = mappings.fetch(values.keys.flatten.sort) { error_for(values) }
-        filters.each { |key, filter| values[key] &&= escape(values[key], also_escape: filter) }
-        pattern % (values[keys] || values.values_at(*keys))
+        keys, pattern, filters = mappings.fetch(adjusted.keys.flatten.sort) { error_for(values) }
+        filters.each { |key, filter| adjusted[key] &&= escape(adjusted[key], also_escape: filter) }
+        pattern % (adjusted[keys] || adjusted.values_at(*keys))
       end
 
       # @see Mustermann::Pattern#expandable?
