@@ -19,7 +19,7 @@ describe Mustermann::Mapper do
     end
 
     context 'accepts mappings followed by options' do
-      subject(:mapper) { Mustermann::Mapper.new("/foo" => "/bar", additional_values: :raise) }
+      subject(:mapper) { Mustermann::Mapper.new({"/foo" => "/bar"}, additional_values: :raise) }
       its(:to_h) { should be == { Mustermann.new("/foo") => Mustermann::Expander.new("/bar") } }
       example { mapper['/foo'].should be == '/bar' }
       example { mapper['/fox'].should be == '/fox' }
