@@ -5,7 +5,6 @@ sudo: false
 cache: bundler
 
 before_install:
-  - rvm get head
   - gem update bundler
 
 rvm:
