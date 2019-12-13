@@ -102,9 +102,9 @@ module Mustermann
     end
 
     # @!visibility private
-    def patterns_from(pattern, options = nil)
+    def patterns_from(pattern, **options)
       return pattern.patterns if pattern.is_a? Composite and pattern.operator == self.operator
-      [options ? Mustermann.new(pattern, **options) : pattern]
+      [options.empty? && pattern.is_a?(Pattern) ? pattern : Mustermann.new(pattern, **options)]
     end
 
     private :with_matching, :patterns_from
