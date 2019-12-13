@@ -137,7 +137,7 @@ module Mustermann
       # @!visibility private
       def add_to(list, result)
         list << [[], ""] if list.empty?
-        list.inject([]) { |l, (k1, p1, f1)| l + result.map { |k2, p2, f2| [k1+k2, p1+p2, **f1, **f2] } }
+        list.inject([]) { |l, (k1, p1, f1)| l + result.map { |k2, p2, f2| [k1+k2, p1+p2, f1.merge(f2)] } }
       end
     end
   end
