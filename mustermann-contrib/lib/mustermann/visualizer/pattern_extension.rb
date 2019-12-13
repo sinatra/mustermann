@@ -53,7 +53,7 @@ module Mustermann
       def color_inspect(base_color = nil, **theme)
         base_color ||= Highlight::DEFAULT_THEME[:base01]
         template = is_a?(Composite) ? "*#<%p:(*%s*)>*" : "*#<%p:*%s*>*"
-        Hansi.render(template, self.class, to_ansi(inspect: true, **theme), "*" => base_color)
+        Hansi.render(template, self.class, to_ansi(inspect: true, **theme), {"*" => base_color})
       end
 
       # If invoked directly by IRB, same as {#color_inspect}, otherwise same as Object#pretty_print.
