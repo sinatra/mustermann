@@ -56,7 +56,7 @@ module Mustermann
       end
 
       @map ||= EqualityMap.new
-      @map.fetch([string, options]) { super(string, options) { options } }
+      @map.fetch([string, options]) { super(string, **options) { options } }
     end
 
     supported_options :uri_decode, :ignore_unknown_options

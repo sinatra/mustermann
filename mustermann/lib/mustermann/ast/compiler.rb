@@ -40,7 +40,7 @@ module Mustermann
 
         # @!visibility private
         def translate(**options)
-          return pattern(options) if options[:no_captures]
+          return pattern(**options) if options[:no_captures]
           "(?<#{name}>#{translate(no_captures: true, **options)})"
         end
 
