@@ -90,7 +90,7 @@ The `identity`, `regexp` and `sinatra` types are included in the `mustermann` ge
         <a href="https://github.com/rails/journey">Journey</a>,
         <a href="https://github.com/joshbuddy/http_router">HTTP Router</a>,
         <a href="http://hanamirb.org">Hanami</a>,
-        <a href="http://www.scalatra.org/">Scalatra</a> (if <a href="http://www.scalatra.org/2.3/guides/http/routes.html#toc_248">configured</a>),
+        <a href="http://scalatra.org/">Scalatra</a> (if <a href="http://scalatra.org/2.3/guides/http/routes.html#toc_248">configured</a>),
         <a href="https://github.com/alisnic/nyny">NYNY</a></td>
       <td></td>
     </tr>
@@ -118,7 +118,7 @@ The `identity`, `regexp` and `sinatra` types are included in the `mustermann` ge
       <td><tt>/:slug.:ext</tt></td>
       <td>
         <a href="http://www.sinatrarb.com/">Sinatra</a> (1.x),
-        <a href="http://www.scalatra.org/">Scalatra</a>,
+        <a href="http://scalatra.org/">Scalatra</a>,
         <a href="http://perldancer.org/">Dancer</a>,
         <a href="http://twitter.github.io/finatra/">Finatra</a>,
         <a href="http://sparkjava.com/">Spark</a>,
