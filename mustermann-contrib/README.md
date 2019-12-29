@@ -579,7 +579,7 @@ pattern.to_templates              # => ['/{name}']
 <a name="-mustermann-rails"></a>
 # Rails Syntax for Mustermann
 
-This gem implements the `rails` pattern type for Mustermann. It is compatible with [Ruby on Rails](http://rubyonrails.org/), [Journey](https://github.com/rails/journey), the [http_router gem](https://github.com/joshbuddy/http_router), [Lotus](http://lotusrb.org/) and [Scalatra](http://www.scalatra.org/) (if [configured](http://www.scalatra.org/2.3/guides/http/routes.html#toc_248))</td>
+This gem implements the `rails` pattern type for Mustermann. It is compatible with [Ruby on Rails](http://rubyonrails.org/), [Journey](https://github.com/rails/journey), the [http_router gem](https://github.com/joshbuddy/http_router), [Lotus](http://lotusrb.org/) and [Scalatra](http://scalatra.org/) (if [configured](http://scalatra.org/2.3/guides/http/routes.html#toc_248))</td>
 
 ## Overview
 
@@ -751,7 +751,7 @@ pattern === "/baz"     # => false
 <a name="-mustermann-simple"></a>
 # Simple Syntax for Mustermann
 
-This gem implements the `simple` pattern type for Mustermann. It is compatible with [Sinatra](http://www.sinatrarb.com/) (1.x), [Scalatra](http://www.scalatra.org/) and [Dancer](http://perldancer.org/).
+This gem implements the `simple` pattern type for Mustermann. It is compatible with [Sinatra](http://www.sinatrarb.com/) (1.x), [Scalatra](http://scalatra.org/) and [Dancer](http://perldancer.org/).
 
 ## Overview
 
