@@ -98,7 +98,7 @@ The `identity`, `regexp` and `sinatra` types are included in the `mustermann` ge
       <th><a href="mustermann/README.md#-regexp-pattern"><tt>regexp</tt></a></th>
       <td><tt>/(?&lt;slug&gt;[^\/]+)</tt></td>
       <td>
-        <a href="http://www.geocities.jp/kosako3/oniguruma/">Oniguruma</a>,
+        <a href="https://github.com/kkos/oniguruma">Oniguruma</a>,
         <a href="https://github.com/k-takata/Onigmo">Onigmo<a>,
         regular expressions
       </td>
