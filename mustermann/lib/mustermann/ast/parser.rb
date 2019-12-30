@@ -153,7 +153,7 @@ module Mustermann
       def read_brackets(open, close, char: nil, escape: ?\\, quote: false, **options)
         result = String.new
         escape = false if escape.nil?
-        while current = getch
+        while (current = getch)
           case current
           when close  then return result
           when open   then result << open   << read_brackets(open, close) << close
