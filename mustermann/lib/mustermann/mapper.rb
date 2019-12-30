@@ -40,11 +40,7 @@ module Mustermann
     #
     #   @example map before options
     #     require 'mustermann/mapper'
-    #     Mustermann::Mapper.new("/:foo" => "/:foo.html", type: :rails)
-    #
-    #   @example map after options
-    #     require 'mustermann/mapper'
-    #     Mustermann::Mapper.new(type: :rails, "/:foo" => "/:foo.html")
+    #     Mustermann::Mapper.new({"/:foo" => "/:foo.html"}, type: :rails)
     def initialize(map = {}, additional_values: :ignore, **options, &block)
       @map               = []
       @options           = options
