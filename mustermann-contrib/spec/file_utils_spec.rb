@@ -53,7 +53,7 @@ describe Mustermann::FileUtils do
 
   describe :glob_map do
     example do
-      utils.glob_map(':name.rb' => ':name/init.rb').should be == {
+      utils.glob_map({':name.rb' => ':name/init.rb'}).should be == {
         "bar.rb" => "bar/init.rb",
         "foo.rb" => "foo/init.rb"
       }
@@ -61,7 +61,7 @@ describe Mustermann::FileUtils do
 
     example do
       result   = {}
-      returned = utils.glob_map(':name.rb' => ':name/init.rb') { |k, v| result[v] = k.upcase }
+      returned = utils.glob_map({':name.rb' => ':name/init.rb'}) { |k, v| result[v] = k.upcase }
       returned.sort         .should be == ["BAR.RB", "FOO.RB"]
       result["bar/init.rb"] .should be == "BAR.RB"
     end
@@ -69,7 +69,7 @@ describe Mustermann::FileUtils do
 
   describe :cp do
     example do
-      utils.cp(':name.rb' => ':name.ruby', ':name.txt' => ':name.md')
+      utils.cp({':name.rb' => ':name.ruby', ':name.txt' => ':name.md'})
       File.should be_exist('foo.ruby')
       File.should be_exist('bar.md')
       File.should be_exist('bar.txt')
@@ -79,14 +79,14 @@ describe Mustermann::FileUtils do
   describe :cp_r do
     example do
       mkdir_p "foo/bar"
-      utils.cp_r('foo/:name' => :name)
+      utils.cp_r({'foo/:name' => :name})
       File.should be_directory('bar')
     end
   end
 
   describe :mv do
     example do
-      utils.mv(':name.rb' => ':name.ruby', ':name.txt' => ':name.md')
+      utils.mv({':name.rb' => ':name.ruby', ':name.txt' => ':name.md'})
       File.should     be_exist('foo.ruby')
       File.should     be_exist('bar.md')
       File.should_not be_exist('bar.txt')
@@ -95,7 +95,7 @@ describe Mustermann::FileUtils do
 
   describe :ln do
     example do
-      utils.ln(':name.rb' => ':name.ruby', ':name.txt' => ':name.md')
+      utils.ln({':name.rb' => ':name.ruby', ':name.txt' => ':name.md'})
       File.should be_exist('foo.ruby')
       File.should be_exist('bar.md')
       File.should be_exist('bar.txt')
@@ -104,7 +104,7 @@ describe Mustermann::FileUtils do
 
   describe :ln_s do
     example do
-      utils.ln_s(':name.rb' => ':name.ruby', ':name.txt' => ':name.md')
+      utils.ln_s({':name.rb' => ':name.ruby', ':name.txt' => ':name.md'})
       File.should be_symlink('foo.ruby')
       File.should be_symlink('bar.md')
       File.should be_exist('bar.txt')
@@ -113,7 +113,7 @@ describe Mustermann::FileUtils do
 
   describe :ln_sf do
     example do
-      utils.ln_sf(':name.rb' => ':name.txt')
+      utils.ln_sf({':name.rb' => ':name.txt'})
       File.should be_symlink('foo.txt')
     end
   end

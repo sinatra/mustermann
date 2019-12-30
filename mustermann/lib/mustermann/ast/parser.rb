@@ -64,7 +64,7 @@ module Mustermann
       # @param [Symbol] type node type
       # @return [Mustermann::AST::Node]
       # @!visibility private
-      def node(type, *args, &block)
+      ruby2_keywords def node(type, *args, &block)
         type  = Node[type] unless type.respond_to? :new
         start = pos
         node  = block ? type.parse(*args, &block) : type.new(*args)

@@ -122,7 +122,7 @@ module Mustermann
 
       # @see Mustermann::AST::Translator#expand
       # @!visibility private
-      def escape(string, *args)
+      ruby2_keywords def escape(string, *args)
         # URI::Parser is pretty slow, let's not send every string to it, even if it's unnecessary
         string =~ /\A\w*\Z/ ? string : super
       end
@@ -137,7 +137,7 @@ module Mustermann
       # @!visibility private
       def add_to(list, result)
         list << [[], ""] if list.empty?
-        list.inject([]) { |l, (k1, p1, f1)| l + result.map { |k2, p2, f2| [k1+k2, p1+p2, **f1, **f2] } }
+        list.inject([]) { |l, (k1, p1, f1)| l + result.map { |k2, p2, f2| [k1+k2, p1+p2, f1.merge(f2)] } }
       end
     end
   end

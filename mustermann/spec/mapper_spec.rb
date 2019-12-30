@@ -19,21 +19,14 @@ describe Mustermann::Mapper do
     end
 
     context 'accepts mappings followed by options' do
-      subject(:mapper) { Mustermann::Mapper.new("/foo" => "/bar", additional_values: :raise) }
-      its(:to_h) { should be == { Mustermann.new("/foo") => Mustermann::Expander.new("/bar") } }
-      example { mapper['/foo'].should be == '/bar' }
-      example { mapper['/fox'].should be == '/fox' }
-    end
-
-    context 'accepts options followed by mappings' do
-      subject(:mapper) { Mustermann::Mapper.new(additional_values: :raise, "/foo" => "/bar") }
+      subject(:mapper) { Mustermann::Mapper.new({ "/foo" => "/bar" }, additional_values: :raise) }
       its(:to_h) { should be == { Mustermann.new("/foo") => Mustermann::Expander.new("/bar") } }
       example { mapper['/foo'].should be == '/bar' }
       example { mapper['/fox'].should be == '/fox' }
     end
 
     context 'allows specifying type' do
-      subject(:mapper) { Mustermann::Mapper.new(additional_values: :raise, type: :rails, "/foo" => "/bar") }
+      subject(:mapper) { Mustermann::Mapper.new({ "/foo" => "/bar" }, additional_values: :raise, type: :rails) }
       its(:to_h) { should be == { Mustermann.new("/foo", type: :rails) => Mustermann::Expander.new("/bar", type: :rails) } }
       example { mapper['/foo'].should be == '/bar' }
       example { mapper['/fox'].should be == '/fox' }

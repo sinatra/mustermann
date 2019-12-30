@@ -10,7 +10,7 @@ module Mustermann
       # @!visibility private
       class HansiTemplate < Generic
         # @!visibility private
-        def initialize(*)
+        def initialize(*, **)
           @hansi = Hansi::StringRenderer.new(tags: true)
           super
         end

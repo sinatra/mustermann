@@ -40,7 +40,7 @@ module Mustermann
 
     # Should not be used directly.
     # @!visibility private
-    def initialize(*)
+    def initialize(*, **)
       super
       AST::Validation.validate(combined_ast) if respond_to? :expand
     end

@@ -9,7 +9,7 @@ module Support
 
       if options
         description << " with options %p" % [options]
-        instance = subject_for(pattern, options)
+        instance = subject_for(pattern, **options)
       else
         instance = subject_for(pattern)
       end
@@ -30,8 +30,8 @@ module Support
       end
     end
 
-    def subject_for(pattern, *args)
-      instance = Timeout.timeout(1) { described_class.new(pattern, *args) }
+    def subject_for(pattern, *args, **options)
+      instance = Timeout.timeout(1) { described_class.new(pattern, *args, **options) }
       proc { instance }
     rescue Timeout::Error => error
       proc { raise Timeout::Error, "could not compile #{pattern.inspect} in time", error.backtrace }

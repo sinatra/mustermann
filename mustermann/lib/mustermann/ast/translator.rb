@@ -36,7 +36,7 @@ module Mustermann
 
         # shorthand for translating a nested object
         # @!visibility private
-        def t(*args, &block)
+        ruby2_keywords def t(*args, &block)
           return translator unless args.any?
           translator.translate(*args, &block)
         end
@@ -109,7 +109,7 @@ module Mustermann
 
       # Start the translation dance for a (sub)tree.
       # @!visibility private
-      def translate(node, *args, &block)
+      ruby2_keywords def translate(node, *args, &block)
         result = decorator_for(node).translate(*args, &block)
         result = result.node while result.is_a? NodeTranslator
         result

@@ -16,7 +16,7 @@ module Mustermann
       attr_reader :pattern, :theme
 
       # @!visibility private
-      DEFAULT_THEME = Hansi::Theme.new(:solarized, {
+      DEFAULT_THEME = Hansi::Theme.new(:solarized,
         default:   :base0,
         separator: :base1,
         escaped:   :base1,
@@ -25,10 +25,10 @@ module Mustermann
         special:   :blue,
         quote:     :red,
         illegal:   :darkred
-      })
+      )
 
       # @!visibility private
-      BASE_THEME = Hansi::Theme.new({
+      BASE_THEME = Hansi::Theme.new(
         special:     :default,
         capture:     :special,
         char:        :default,
@@ -46,13 +46,13 @@ module Mustermann
         quote:       :special,
         type:        :special,
         illegal:     :special
-      })
+      )
 
       # @!visibility private
       def initialize(pattern, type: nil, inspect: nil, **theme)
         @pattern = Mustermann.new(pattern, type: type)
         @inspect = inspect.nil? ? pattern.is_a?(Mustermann::Composite) : inspect
-        theme    = theme.any? ? Hansi::Theme.new(theme) : DEFAULT_THEME
+        theme    = theme.any? ? Hansi::Theme.new(**theme) : DEFAULT_THEME
         @theme   = BASE_THEME.merge(theme)
       end
 
