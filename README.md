@@ -180,6 +180,12 @@ Mustermann follows [Semantic Versioning 2.0](http://semver.org/). Anything docum
 
 ### Stable Releases
 
+* **Mustermann 1.1.0** (2018-12-30)
+    * Proper handling of `Mustermann::ExpandError`. Fixes [#88](https://github.com/sinatra/mustermann/issues/88) [@namusyaka](https://github.com/namusyaka)
+    * Support Ruby 3 keyword arguments. [@mame](https://github.com/mame)
+      * At the same time, we dropped a support that accepts options followed by mappings on `Mustermann::Mapper`. [Reference commit](https://github.com/sinatra/mustermann/pull/97/commits/4e134f5b46d8e5886b0f1590f5ff3f6ea4d2e81a)
+    * Improve documentation and development. [@horaciob](https://github.com/horaciob), [@epistrephein](https://github.com/epistrephein), [@jbampton](https://github.com/jbampton), [@jkowens](https://github.com/jkowens)
+
 * **Mustermann 1.0.3** (2018-08-17)
     * Handle `with_look_ahead` on SafeRenderer. Fixes [sinatra/sinatra#1409](https://github.com/sinatra/sinatra/issues/1409) [@namusyaka](https://github.com/namusyaka)
     * Fix `EqualityMap#fetch` to be compatible with the fallback `Hash#fetch`. Fixes [#89](https://github.com/sinatra/mustermann/issues/89) [@eregon](https://github.com/eregon)
