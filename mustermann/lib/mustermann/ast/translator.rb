@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 require 'mustermann/ast/node'
 require 'mustermann/error'
+require 'ruby2_keywords'
 require 'delegate'
 
 module Mustermann

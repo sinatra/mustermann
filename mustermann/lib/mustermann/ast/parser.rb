@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 require 'mustermann/ast/node'
 require 'forwardable'
+require 'ruby2_keywords'
 require 'strscan'
 
 module Mustermann
