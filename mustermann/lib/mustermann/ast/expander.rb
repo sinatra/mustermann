@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 require 'mustermann/ast/translator'
 require 'mustermann/ast/compiler'
+require 'ruby2_keywords'
 
 module Mustermann
   module AST

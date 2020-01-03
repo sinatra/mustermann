@@ -3,7 +3,6 @@ require 'mustermann/pattern'
 require 'mustermann/composite'
 require 'mustermann/concat'
 require 'thread'
-require 'ruby2_keywords'
 
 # Namespace and main entry point for the Mustermann library.
 #
