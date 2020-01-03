@@ -180,6 +180,9 @@ Mustermann follows [Semantic Versioning 2.0](http://semver.org/). Anything docum
 
 ### Stable Releases
 
+* **Mustermann 1.1.1** (2020-01-04)
+    * Make sure that `require`ing ruby2_keywords when needed. Fixes [#102](https://github.com/sinatra/mustermann/issues/103) [@Annih](https://github.com/Annih)
+
 * **Mustermann 1.1.0** (2019-12-30)
     * Proper handling of `Mustermann::ExpandError`. Fixes [#88](https://github.com/sinatra/mustermann/issues/88) [@namusyaka](https://github.com/namusyaka)
     * Support Ruby 3 keyword arguments. [@mame](https://github.com/mame)
