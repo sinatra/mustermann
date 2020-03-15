@@ -27,8 +27,8 @@ module Mustermann
       end
 
       # Used to generate highlighting rules on the fly.
-      # @see {Mustermann::Shell#highlighter}
-      # @see {Mustermann::Simple#highlighter}
+      # @see Mustermann::Shell#highlighter
+      # @see Mustermann::Simple#highlighter
       # @!visibility private
       def create(&block)
         Class.new(AdHoc, &block)

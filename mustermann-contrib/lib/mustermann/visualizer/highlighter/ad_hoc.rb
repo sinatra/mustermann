@@ -6,8 +6,8 @@ module Mustermann
     # @!visibility private
     module Highlighter
       # Used to generate highlighting rules on the fly.
-      # @see {Mustermann::Shell#highlighter}
-      # @see {Mustermann::Simple#highlighter}
+      # @see Mustermann::Shell#highlighter
+      # @see Mustermann::Simple#highlighter}
       # @!visibility private
       class AdHoc
         # @!visibility private
