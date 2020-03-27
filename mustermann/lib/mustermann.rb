@@ -75,8 +75,8 @@ module Mustermann
     end
   end
 
-  @mutex ||= Mutex.new
-  @types ||= {}
+  @mutex = Mutex.new
+  @types = {}
 
   # Maps a type to its factory.
   #
