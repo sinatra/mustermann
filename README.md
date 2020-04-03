@@ -1,6 +1,6 @@
 # The Amazing Mustermann
 
-[![Build Status](https://travis-ci.org/sinatra/mustermann.svg?branch=master)](https://travis-ci.org/sinatra/mustermann) [![Coverage Status](https://coveralls.io/repos/github/rkh/mustermann/badge.svg?branch=master)](https://coveralls.io/github/rkh/mustermann?branch=master) [![Code Climate](https://img.shields.io/codeclimate/github/rkh/mustermann.svg)](https://codeclimate.com/github/rkh/mustermann) [![Dependency Status](https://gemnasium.com/rkh/mustermann.svg)](https://gemnasium.com/rkh/mustermann) [![Gem Version](https://img.shields.io/gem/v/mustermann.svg)](https://rubygems.org/gems/mustermann)
+[![Build Status](https://travis-ci.org/sinatra/mustermann.svg?branch=master)](https://travis-ci.org/sinatra/mustermann) [![Coverage Status](https://coveralls.io/repos/github/rkh/mustermann/badge.svg?branch=master)](https://coveralls.io/github/rkh/mustermann?branch=master) [![Code Climate](https://img.shields.io/codeclimate/github/rkh/mustermann.svg)](https://codeclimate.com/github/rkh/mustermann) [![Gem Version](https://img.shields.io/gem/v/mustermann.svg)](https://rubygems.org/gems/mustermann)
 [![Inline docs](http://inch-ci.org/github/rkh/mustermann.svg)](http://inch-ci.org/github/rkh/mustermann)
 [![Documentation](http://img.shields.io/:yard-docs-38c800.svg)](http://www.rubydoc.info/gems/mustermann/frames)
 [![License](http://img.shields.io/:license-MIT-38c800.svg)](http://rkh.mit-license.org)
