@@ -164,13 +164,9 @@ Any software using Mustermann is obviously compatible with at least one of the a
 
 ## Requirements
 
-Mustermann depends on [tool](https://github.com/rkh/tool) (which has been extracted from Mustermann and Sinatra 2.0), and a Ruby 2.2 compatible Ruby implementation.
+Mustermann depends on [tool](https://github.com/rkh/tool) (which has been extracted from Mustermann and Sinatra 2.0), and a Ruby 2.2+ compatible Ruby implementation.
 
-It is known to work on MRI 2.2.
-
-JRuby will hopefully be supported with the release of **JRuby 9000**.
-
-**Rubinius** is not currently supported. As of Rubinius 2.3.1, a large portion of the specs pass (3870 out of 3943), but certain parts are not working yet.
+It is known to work on MRI 2.2 through 2.7. JRuby and Rubinius support is unknown.
 
 If you need Ruby 1.9 support, you might be able to use the **unofficial** [mustermann19](https://rubygems.org/gems/mustermann19) gem based on [namusyaka's fork](https://github.com/namusyaka/mustermann19).
 
