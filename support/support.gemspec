@@ -21,7 +21,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'rack-test'
   s.add_dependency 'rake'
   s.add_dependency 'yard'
-  s.add_dependency 'redcarpet'
   s.add_dependency 'simplecov'
   s.add_dependency 'coveralls'
 end
