@@ -120,7 +120,7 @@ module Mustermann
       # @!visibility private
       def escape(char, parser: URI::DEFAULT_PARSER, escape: parser.regexp[:UNSAFE], also_escape: nil)
         escape = Regexp.union(also_escape, escape) if also_escape
-        char =~ escape ? parser.escape(char, Regexp.union(*escape)) : char
+        char.to_s =~ escape ? parser.escape(char, Regexp.union(*escape)) : char
       end
     end
   end
