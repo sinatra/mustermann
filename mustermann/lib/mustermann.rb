@@ -120,7 +120,6 @@ module Mustermann
   def self.extend_object(object)
     return super unless defined? ::Sinatra::Base and object.is_a? Class and object < ::Sinatra::Base
     require 'mustermann/extension'
-    object.register Extension
   end
 end
 
