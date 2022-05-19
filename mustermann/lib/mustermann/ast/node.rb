@@ -108,7 +108,7 @@ module Mustermann
         # @see Mustermann::AST::Node#parse
         # @!visibility private
         def parse
-          self.payload ||= ""
+          self.payload ||= String.new
           super
         end
 
