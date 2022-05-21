@@ -20,9 +20,9 @@ This repository contains multiple projects (each installable as separate gems).
 You can easily use the latest edge version from GitHub of any of these gems via [Bundler](http://bundler.io/):
 
 ``` ruby
-git 'https://github.com/rkh/mustermann.git' do
+github 'sinatra/mustermann' do
   gem 'mustermann'
-  gem 'mustermann-rails'
+  gem 'mustermann-contrib'
 end
 ```
 
