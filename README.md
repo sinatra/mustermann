@@ -176,6 +176,9 @@ Mustermann follows [Semantic Versioning 2.0](http://semver.org/). Anything docum
 
 ### Stable Releases
 
+* **Mustermann 1.1.2** (2022-07-16)
+    * Add compatibility with --enable=frozen-string-literal param. Fixes [#110](https://github.com/sinatra/mustermann/issues/110) [@michal-granec](https://github.com/michal-granec)
+
 * **Mustermann 1.1.1** (2020-01-04)
     * Make sure that `require`ing ruby2_keywords when needed. Fixes [#102](https://github.com/sinatra/mustermann/issues/103) [@Annih](https://github.com/Annih)
 
