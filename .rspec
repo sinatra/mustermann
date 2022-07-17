@@ -2,4 +2,3 @@
 -r bundler/setup
 --default-path .
 --color
---tty
