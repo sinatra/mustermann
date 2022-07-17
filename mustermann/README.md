@@ -377,30 +377,7 @@ mapper['/foo/bar'] # => "/foo/bar"
 <a name="-sinatra-integration"></a>
 ## Sinatra Integration
 
-All patterns implement `match`, which means they can be dropped into Sinatra and other Rack routers:
-
-``` ruby
-require 'sinatra'
-require 'mustermann'
-
-get Mustermann.new('/:foo') do
-  params[:foo]
-end
-```
-
-In fact, since using this with Sinatra is the main use case, it comes with a build-in extension for **Sinatra 1.x**.
-
-``` ruby
-require 'sinatra'
-require 'mustermann'
-
-register Mustermann
-
-# this will use Mustermann rather than the built-in pattern matching
-get '/:slug(.ext)?' do
-  params[:slug]
-end
-```
+Mustermann is used in Sinatra by default since version 2.0, for previous versions an [extension](https://github.com/sinatra/mustermann-sinatra-extension) is available.
 
 ### Configuration
 

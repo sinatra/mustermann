@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 require 'support'
 require 'mustermann'
-require 'mustermann/extension'
 require 'sinatra/base'
 
 describe Mustermann do
@@ -70,11 +69,9 @@ describe Mustermann do
   describe :extend_object do
     context 'special behavior for Sinatra only' do
       example { Object  .new.extend(Mustermann).should     be_a(Mustermann)            }
-      example { Object  .new.extend(Mustermann).should_not be_a(Mustermann::Extension) }
       example { Class   .new.extend(Mustermann).should     be_a(Mustermann)            }
-      example { Class   .new.extend(Mustermann).should_not be_a(Mustermann::Extension) }
-      example { Sinatra .new.extend(Mustermann).should_not be_a(Mustermann)            }
-      example { Sinatra .new.extend(Mustermann).should     be_a(Mustermann::Extension) }
+
+      example { expect { Sinatra.new.extend(Mustermann) }.to raise_error(RuntimeError, "Mustermann extension for Sinatra has been extracted into its own gem. More information at https://github.com/sinatra/mustermann-sinatra-extension") }
     end
   end
 
