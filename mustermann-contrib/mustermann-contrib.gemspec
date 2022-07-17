@@ -13,7 +13,6 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 2.2.0'
   s.files                 = `git ls-files`.split("\n")
   s.test_files            = `git ls-files -- {test,spec,features}/*`.split("\n")
-  s.executables           = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.add_dependency 'mustermann', Mustermann::VERSION
   s.add_dependency 'hansi', '~> 0.2.0'
 end
