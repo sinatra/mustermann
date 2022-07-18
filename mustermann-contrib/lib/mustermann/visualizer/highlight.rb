@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 require 'hansi'
-require 'mustermann'
 require 'mustermann/visualizer/highlighter'
 require 'mustermann/visualizer/renderer/ansi'
 require 'mustermann/visualizer/renderer/hansi_template'
