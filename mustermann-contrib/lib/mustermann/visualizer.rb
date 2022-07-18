@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-require 'mustermann'
 require 'mustermann/visualizer/highlight'
 require 'mustermann/visualizer/tree_renderer'
 require 'mustermann/visualizer/pattern_extension'
