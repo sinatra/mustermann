@@ -176,6 +176,9 @@ Mustermann follows [Semantic Versioning 2.0](http://semver.org/). Anything docum
 
 ### Stable Releases
 
+* **Mustermann 2.0.0** (2022-07-18)
+    * Improve Ruby 3 compatibility. Removed built-in Sinatra 1 support, and moved to new mustermann-sinatra-extension gem. Fixes [#114](https://github.com/sinatra/mustermann/issues/114) [@epergo](https://github.com/epergo)
+
 * **Mustermann 1.1.2** (2022-07-16)
     * Add compatibility with --enable=frozen-string-literal param. Fixes [#110](https://github.com/sinatra/mustermann/issues/110) [@michal-granec](https://github.com/michal-granec)
 
