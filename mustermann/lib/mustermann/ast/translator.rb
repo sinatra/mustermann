@@ -73,7 +73,6 @@ module Mustermann
         Class.new(const_get(:NodeTranslator)) do
           register(*types)
           define_method(:translate, &block)
-          ruby2_keywords :translate
         end
       end
 
