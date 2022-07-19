@@ -4,6 +4,10 @@ on:
   push:
   pull_request:
 
+# GitHub Actions notes
+# - outcome in step name so we can see it without having to expand logs
+# - every step must define a `uses` or `run` key
+
 jobs:
   test:
     name: Test with Ruby-${{ matrix.ruby }}
@@ -14,11 +18,21 @@ jobs:
       matrix:
         # Due to https://github.com/actions/runner/issues/849, we have to use quotes for '3.0'
         ruby: [2.6, 2.7, '3.0', 3.1, 'jruby-9.3', truffleruby]
+        include:
+          - { ruby: jruby-9.3, allow-failure: true }
     steps:
     - uses: actions/checkout@v3
     - uses: ruby/setup-ruby@v1
+      continue-on-error: ${{ matrix.allow-failure || false }}
+      id: bundle
       with:
         ruby-version: ${{ matrix.ruby }}
         bundler-cache: true
+    - name: "setup-ruby and bundle install outcome: ${{ steps.bundle.outcome }}"
+      run: echo ""
     - name: Run tests
+      continue-on-error: ${{ matrix.allow-failure || false }}
+      id: test
       run: bundle exec rake
+    - name: "bundle exec rake outcome: ${{ steps.test.outcome }}"
+      run: echo ""
