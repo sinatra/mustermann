@@ -1,5 +1,5 @@
 require 'support/env'
-require 'support/coverage'
+require 'support/coverage' if RUBY_ENGINE == 'ruby'
 require 'support/expand_matcher'
 require 'support/generate_template_matcher'
 require 'support/match_matcher'
