@@ -1,32 +1,38 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-# This workflow will download a prebuilt Ruby version, install dependencies and run tests with Rake
-# For more information see: https://github.com/marketplace/actions/setup-ruby-jruby-and-truffleruby
-
 name: Testing
 
 on:
   push:
-    branches:
-      - master
   pull_request:
+
+# GitHub Actions notes
+# - outcome in step name so we can see it without having to expand logs
+# - every step must define a `uses` or `run` key
 
 jobs:
   test:
     name: Test with Ruby-${{ matrix.ruby }}
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
         # Due to https://github.com/actions/runner/issues/849, we have to use quotes for '3.0'
-        ruby: [2.6, 2.7, '3.0', 3.1, 'jruby-9.3', truffleruby]
+        ruby: [2.2, 2.3, 2.4, 2.5, 2.6, 2.7, '3.0', 3.1, truffleruby]
+        include:
+          - { ruby: jruby-9.3, allow-failure: true }
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - uses: ruby/setup-ruby@v1
+      continue-on-error: ${{ matrix.allow-failure || false }}
+      id: bundle
       with:
         ruby-version: ${{ matrix.ruby }}
         bundler-cache: true
+    - name: "setup-ruby and bundle install outcome: ${{ steps.bundle.outcome }}"
+      run: echo ""
     - name: Run tests
+      continue-on-error: ${{ matrix.allow-failure || false }}
+      id: test
       run: bundle exec rake
+    - name: "bundle exec rake outcome: ${{ steps.test.outcome }}"
+      run: echo ""
