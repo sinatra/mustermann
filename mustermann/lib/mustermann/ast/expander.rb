@@ -12,11 +12,11 @@ module Mustermann
     class Expander < Translator
       raises ExpandError
 
-      translate Array do |*args|
+      translate(Array, &-> (*args) do
         inject(t.pattern) do |pattern, element|
           t.add_to(pattern, t(element, *args))
         end
-      end
+      end.ruby2_keywords)
 
       translate :capture do |**options|
         t.for_capture(node, **options)
