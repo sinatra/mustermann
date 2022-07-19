@@ -38,12 +38,14 @@ describe Mustermann::Visualizer::PatternExtension do
     let(:output) { StringIO.new }
 
     specify 'with color printer' do
-      ColorPrinter.new(output, 79).pp(pattern)
+      printer = ColorPrinter.new(output, 79)
+      printer.guard_inspect_key { printer.pp(pattern) }
       output.string.should be == pattern.color_inspect
     end
 
     specify 'without color printer' do
-      ::PP.new(output, 79).pp(pattern)
+      printer = ::PP.new(output, 79)
+      printer.guard_inspect_key { printer.pp(pattern) }
       output.string.should be == pattern.inspect
     end
   end
