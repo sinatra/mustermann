@@ -35,8 +35,8 @@ module Mustermann
       # Helper for creating a new instance and calling #parse on it.
       # @return [Mustermann::AST::Node]
       # @!visibility private
-      def self.parse(*args, &block)
-        new(*args).tap { |n| n.parse(&block) }
+      def self.parse(payload = nil, **options, &block)
+        new(payload, **options).tap { |n| n.parse(&block) }
       end
 
       # @!visibility private
