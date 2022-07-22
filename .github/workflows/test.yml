@@ -17,7 +17,7 @@ jobs:
       fail-fast: false
       matrix:
         # Due to https://github.com/actions/runner/issues/849, we have to use quotes for '3.0'
-        ruby: [2.2, 2.3, 2.4, 2.5, 2.6, 2.7, '3.0', 3.1, truffleruby]
+        ruby: [2.2, 2.3, 2.4, 2.5, 2.6, 2.7, '3.0', 3.1, head, truffleruby]
         include:
           - { ruby: jruby-9.3, allow-failure: true }
     steps:

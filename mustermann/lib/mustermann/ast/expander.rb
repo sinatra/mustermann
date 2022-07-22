@@ -124,6 +124,8 @@ module Mustermann
       # @see Mustermann::AST::Translator#expand
       # @!visibility private
       ruby2_keywords def escape(string, *args)
+        return super unless string.respond_to?(:=~)
+
         # URI::Parser is pretty slow, let's not send every string to it, even if it's unnecessary
         string =~ /\A\w*\Z/ ? string : super
       end
