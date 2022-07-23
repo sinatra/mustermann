@@ -176,6 +176,9 @@ Mustermann follows [Semantic Versioning 2.0](http://semver.org/). Anything docum
 
 ### Stable Releases
 
+* **Mustermann 2.0.2** (2022-07-22)
+    * Further improve Ruby 3 compatibility. [#134](https://github.com/sinatra/mustermann/pull/134). [@magni-](https://github.com/magni-) 
+
 * **Mustermann 2.0.1** (2022-07-19)
     * Properly fix Ruby 3 compatability issue, reverts [#126](https://github.com/sinatra/mustermann/pull/126).  Resolved by [#130](https://github.com/sinatra/mustermann/pull/130) [@eregon](https://github.com/eregon), [@tconst](https://github.com/tconst), [@dentarg](https://github.com/dentarg)
 
