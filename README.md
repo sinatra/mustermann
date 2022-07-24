@@ -174,7 +174,7 @@ Mustermann follows [Semantic Versioning 2.0](http://semver.org/). Anything docum
 
 ### Stable Releases
 
-* **Mustermann 3.0.0** (Unreleased)
+* **Mustermann 3.0.0** (2022-07-24)
     * Drop support for old Rubies < 2.6.
 
 * **Mustermann 2.0.2** (2022-07-22)
