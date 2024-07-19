@@ -118,7 +118,7 @@ module Mustermann
 
       # @return [String] escaped character
       # @!visibility private
-      def escape(char, parser: URI::DEFAULT_PARSER, escape: parser.regexp[:UNSAFE], also_escape: nil)
+      def escape(char, parser: URI::DEFAULT_PARSER, escape: URI::RFC2396_Parser.new.regexp[:UNSAFE], also_escape: nil)
         escape = Regexp.union(also_escape, escape) if also_escape
         char.to_s =~ escape ? parser.escape(char, Regexp.union(*escape)) : char
       end
