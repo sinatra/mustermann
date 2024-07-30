@@ -21,7 +21,7 @@ jobs:
         include:
           - { ruby: jruby, allow-failure: true }
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - uses: ruby/setup-ruby@v1
       continue-on-error: ${{ matrix.allow-failure || false }}
       id: bundle
