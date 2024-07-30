@@ -164,9 +164,9 @@ Any software using Mustermann is obviously compatible with at least one of the a
 
 ## Requirements
 
-Mustermann depends on [tool](https://github.com/rkh/tool) (which has been extracted from Mustermann and Sinatra 2.0), and a Ruby 2.6+ compatible Ruby implementation.
+Ruby 2.6+ compatible Ruby implementation.
 
-JRuby and Rubinius support is unknown.
+JRuby support is unknown, see more in [issue #72](https://github.com/sinatra/mustermann/issues/72).
 
 ## Release History
 

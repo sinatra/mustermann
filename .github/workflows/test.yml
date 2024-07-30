@@ -19,8 +19,7 @@ jobs:
         # Due to https://github.com/actions/runner/issues/849, we have to use quotes for '3.0'
         ruby: [2.6, 2.7, '3.0', 3.1, 3.2, 3.3, head, truffleruby]
         include:
-          - { ruby: jruby-9.3, allow-failure: true }
-          - { ruby: jruby-9.4, allow-failure: true }
+          - { ruby: jruby, allow-failure: true }
     steps:
     - uses: actions/checkout@v3
     - uses: ruby/setup-ruby@v1
