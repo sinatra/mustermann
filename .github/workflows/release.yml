@@ -1,0 +1,25 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - v*
+  workflow_dispatch:
+
+jobs:
+  release:
+    if: github.repository == 'sinatra/mustermann'
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write # for trusted publishing
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+          ruby-version: ruby
+      - uses: rubygems/configure-rubygems-credentials@v1.0.0
+      # build gems
+      - run: rake pkg
+      # push gems
+      - run: rake release
