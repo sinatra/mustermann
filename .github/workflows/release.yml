@@ -20,6 +20,6 @@ jobs:
           ruby-version: ruby
       - uses: rubygems/configure-rubygems-credentials@v1.0.0
       # build gems
-      - run: rake pkg
+      - run: bundle exec rake pkg
       # push gems
-      - run: rake release
+      - run: bundle exec rake release
