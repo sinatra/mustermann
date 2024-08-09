@@ -29,16 +29,28 @@ jobs:
       rack: ${{ matrix.sinatra }}
     steps:
     - uses: actions/checkout@v4
+
     - uses: ruby/setup-ruby@v1
       continue-on-error: ${{ matrix.allow-failure || false }}
-      id: bundle
+      id: setup
       with:
         ruby-version: ${{ matrix.ruby }}
-    - name: "setup-ruby and bundle install outcome: ${{ steps.bundle.outcome }}"
+
+    - name: "setup-ruby: ${{ steps.setup.outcome }}"
       run: echo ""
+
+    - name: Install gems
+      continue-on-error: ${{ matrix.allow-failure || false }}
+      id: bundle
+      run: bundle install
+
+    - name: "bundle install: ${{ steps.bundle.outcome }}"
+      run: echo ""
+
     - name: Run tests
       continue-on-error: ${{ matrix.allow-failure || false }}
       id: test
       run: bundle exec rake
+
     - name: "bundle exec rake outcome: ${{ steps.test.outcome }}"
       run: echo ""
