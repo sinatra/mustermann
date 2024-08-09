@@ -10,7 +10,7 @@ on:
 
 jobs:
   test:
-    name: ${{ matrix.ruby }}, sinatra ${{ matrix.sinatra }})
+    name: ruby ${{ matrix.ruby }}, sinatra ${{ matrix.sinatra }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
