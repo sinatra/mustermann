@@ -10,16 +10,23 @@ on:
 
 jobs:
   test:
-    name: Test with Ruby-${{ matrix.ruby }}
+    name: ${{ matrix.ruby }}, sinatra ${{ matrix.sinatra }})
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
         # Due to https://github.com/actions/runner/issues/849, we have to use quotes for '3.0'
-        ruby: [2.6, 2.7, '3.0', 3.1, 3.2, 3.3, head, truffleruby]
+        ruby: [2.6, 2.7, '3.0', 3.1, 3.2, 3.3, truffleruby]
+        sinatra:
+          - ~> 4.0.0 # current stable
         include:
-          - { ruby: jruby, allow-failure: true }
+          - { ruby: 2.6, sinatra: ~> 3.0.0 }
+          - { ruby: 3.3, sinatra: head }
+          - { ruby: head, sinatra: head }
+          - { ruby: jruby, sinatra: ~> 4.0.0, allow-failure: true }
+    env:
+      rack: ${{ matrix.sinatra }}
     steps:
     - uses: actions/checkout@v4
     - uses: ruby/setup-ruby@v1
