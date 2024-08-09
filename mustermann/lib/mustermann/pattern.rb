@@ -9,7 +9,7 @@ module Mustermann
   # @abstract
   class Pattern
     include Mustermann
-    @@uri ||= URI::Parser.new
+    @@uri ||= URI::RFC2396_Parser.new
 
     # List of supported options.
     #
