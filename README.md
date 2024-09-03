@@ -174,6 +174,9 @@ Mustermann follows [Semantic Versioning 2.0](http://semver.org/). Anything docum
 
 ### Stable Releases
 
+* **Mustermann 3.0.3** (2024-09-03)
+    * Fix performance issue for `Mustermann::AST::Translator#escape` [#142](https://github.com/sinatra/mustermann/pull/142) [@hsbt](https://github.com/hsbt), [@ericproulx](https://github.com/ericproulx)
+
 * **Mustermann 3.0.2** (2024-08-09)
     * Ruby 3.4+ compatibility: "Use rfc2396 parser instead of URI::DEFAULT_PARSER" [#139](https://github.com/sinatra/mustermann/pull/139) [@hsbt](https://github.com/hsbt)
 
