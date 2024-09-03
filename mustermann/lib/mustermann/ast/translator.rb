@@ -11,6 +11,9 @@ module Mustermann
     # @abstract
     # @!visibility private
     class Translator
+
+      URI_PARSER = defined?(URI::RFC2396_PARSER) ? URI::RFC2396_PARSER : URI::RFC2396_Parser.new
+
       # Encapsulates a single node translation
       # @!visibility private
       class NodeTranslator < DelegateClass(Node)
@@ -118,7 +121,7 @@ module Mustermann
 
       # @return [String] escaped character
       # @!visibility private
-      def escape(char, parser: URI::RFC2396_Parser.new, escape: URI::RFC2396_Parser.new.regexp[:UNSAFE], also_escape: nil)
+      def escape(char, parser: URI_PARSER, escape: URI_PARSER.regexp[:UNSAFE], also_escape: nil)
         escape = Regexp.union(also_escape, escape) if also_escape
         char.to_s =~ escape ? parser.escape(char, Regexp.union(*escape)) : char
       end
