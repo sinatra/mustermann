@@ -40,7 +40,7 @@ module Mustermann
 
     def encoded(char, uri_decode, space_matches_plus)
       return Regexp.escape(char) unless uri_decode
-      parser  = URI::Parser.new
+      parser  = URI::RFC2396_Parser.new
       encoded = Regexp.union(parser.escape(char), parser.escape(char, /./).downcase, parser.escape(char, /./).upcase)
       encoded = Regexp.union(encoded, encoded('+', true, true)) if space_matches_plus and char == " "
       encoded
