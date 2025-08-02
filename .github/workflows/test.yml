@@ -16,13 +16,18 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Due to https://github.com/actions/runner/issues/849, we have to use quotes for '3.0'
-        ruby: [2.7, '3.0', 3.1, 3.2, 3.3]
+        ruby:
+          - '2.7'
+          - '3.0'
+          - '3.1'
+          - '3.2'
+          - '3.3'
+          - '3.4'
         sinatra:
           - ~> 4.0.0 # current stable
         include:
           - { ruby: 2.6, sinatra: ~> 3.0.0 }
-          - { ruby: 3.3, sinatra: head }
+          - { ruby: 3.4, sinatra: head }
           - { ruby: head, sinatra: head }
           # https://github.com/sinatra/mustermann/issues/72
           - { ruby: jruby, sinatra: ~> 4.0.0, allow-failure: true }
