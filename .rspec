@@ -1,4 +1,3 @@
--P '*/spec/**_spec.rb'
--r bundler/setup
+--pattern '*/spec/**_spec.rb'
+--require bundler/setup
 --default-path .
---color
