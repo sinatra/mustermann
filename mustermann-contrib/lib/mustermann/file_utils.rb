@@ -187,7 +187,7 @@ module Mustermann
     # Unescape an URI escaped string.
     # @!visibility private
     def unescape(string)
-      @uri ||= URI::Parser.new
+      @uri ||= URI::RFC2396_Parser.new
       @uri.unescape(string)
     end
 
