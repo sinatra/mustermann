@@ -31,8 +31,8 @@ jobs:
           - { ruby: head, sinatra: head }
           - { ruby: jruby, sinatra: ~> 4.0.0 }
           - { ruby: jruby-head, sinatra: head }
-          # https://github.com/sinatra/mustermann/issues/143
-          - { ruby: truffleruby, sinatra: ~> 4.0.0, allow-failure: true }
+          - { ruby: truffleruby, sinatra: ~> 4.0.0 }
+          - { ruby: truffleruby-head, sinatra: head }
     env:
       sinatra: ${{ matrix.sinatra }}
     steps:
