@@ -29,8 +29,8 @@ jobs:
           - { ruby: 2.6, sinatra: ~> 3.0.0 }
           - { ruby: 3.4, sinatra: head }
           - { ruby: head, sinatra: head }
-          # https://github.com/sinatra/mustermann/issues/72
-          - { ruby: jruby, sinatra: ~> 4.0.0, allow-failure: true }
+          - { ruby: jruby, sinatra: ~> 4.0.0 }
+          - { ruby: jruby-head, sinatra: head }
           # https://github.com/sinatra/mustermann/issues/143
           - { ruby: truffleruby, sinatra: ~> 4.0.0, allow-failure: true }
     env:
