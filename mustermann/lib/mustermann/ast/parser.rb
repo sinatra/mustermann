@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 require 'mustermann/ast/node'
 require 'forwardable'
-require 'ruby2_keywords'
 require 'strscan'
 
 module Mustermann
@@ -65,10 +64,10 @@ module Mustermann
       # @param [Symbol] type node type
       # @return [Mustermann::AST::Node]
       # @!visibility private
-      ruby2_keywords def node(type, *args, &block)
+      def node(type, *args, **options, &block)
         type  = Node[type] unless type.respond_to? :new
         start = pos
-        node  = block ? type.parse(*args, &block) : type.new(*args)
+        node  = block ? type.parse(*args, **options, &block) : type.new(*args, **options)
         min_size(start, pos, node)
       end
 

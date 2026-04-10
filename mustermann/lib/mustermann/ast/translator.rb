@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 require 'mustermann/ast/node'
 require 'mustermann/error'
-require 'ruby2_keywords'
 require 'delegate'
 
 module Mustermann
@@ -40,9 +39,9 @@ module Mustermann
 
         # shorthand for translating a nested object
         # @!visibility private
-        ruby2_keywords def t(*args, &block)
+        def t(*args, **options, &block)
           return translator unless args.any?
-          translator.translate(*args, &block)
+          translator.translate(*args, **options, &block)
         end
 
         # @!visibility private
@@ -113,8 +112,8 @@ module Mustermann
 
       # Start the translation dance for a (sub)tree.
       # @!visibility private
-      ruby2_keywords def translate(node, *args, &block)
-        result = decorator_for(node).translate(*args, &block)
+      def translate(node, *args, **options, &block)
+        result = decorator_for(node).translate(*args, **options, &block)
         result = result.node while result.is_a? NodeTranslator
         result
       end
