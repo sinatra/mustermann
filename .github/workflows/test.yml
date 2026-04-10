@@ -26,7 +26,6 @@ jobs:
         sinatra:
           - ~> 4.0.0 # current stable
         include:
-          - { ruby: 2.6, sinatra: ~> 3.0.0 }
           - { ruby: 3.4, sinatra: head }
           - { ruby: head, sinatra: head }
           - { ruby: jruby, sinatra: ~> 4.0.0 }
