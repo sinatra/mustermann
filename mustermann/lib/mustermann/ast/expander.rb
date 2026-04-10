@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 require 'mustermann/ast/translator'
 require 'mustermann/ast/compiler'
-require 'ruby2_keywords'
 
 module Mustermann
   module AST
@@ -12,11 +11,11 @@ module Mustermann
     class Expander < Translator
       raises ExpandError
 
-      translate(Array, &-> (*args) do
+      translate Array do |*args, **options|
         inject(t.pattern) do |pattern, element|
-          t.add_to(pattern, t(element, *args))
+          t.add_to(pattern, t(element, *args, **options))
         end
-      end.ruby2_keywords)
+      end
 
       translate :capture do |**options|
         t.for_capture(node, **options)
@@ -123,7 +122,7 @@ module Mustermann
 
       # @see Mustermann::AST::Translator#expand
       # @!visibility private
-      ruby2_keywords def escape(string, *args)
+      def escape(string, *args, **options)
         return super unless string.respond_to?(:=~)
 
         # URI::Parser is pretty slow, let's not send every string to it, even if it's unnecessary
