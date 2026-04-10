@@ -1,19 +1,15 @@
 # The Amazing Mustermann
 
-[![Build Status](https://github.com/sinatra/mustermann/actions/workflows/test.yml/badge.svg)](https://github.com/sinatra/mustermann/actions/workflows/test.yml) [![Coverage Status](https://coveralls.io/repos/github/rkh/mustermann/badge.svg?branch=master)](https://coveralls.io/github/rkh/mustermann?branch=master) ![Code Climate maintainability](https://img.shields.io/codeclimate/maintainability-percentage/rkh/mustermann) [![Gem Version](https://img.shields.io/gem/v/mustermann.svg)](https://rubygems.org/gems/mustermann)
+[![Build Status](https://github.com/sinatra/mustermann/actions/workflows/test.yml/badge.svg)](https://github.com/sinatra/mustermann/actions/workflows/test.yml) [![Coverage Status](https://coveralls.io/repos/github/rkh/mustermann/badge.svg?branch=main)](https://coveralls.io/github/rkh/mustermann?branch=main) ![Code Climate maintainability](https://img.shields.io/codeclimate/maintainability-percentage/rkh/mustermann) [![Gem Version](https://img.shields.io/gem/v/mustermann.svg)](https://rubygems.org/gems/mustermann)
 [![Inline docs](http://inch-ci.org/github/rkh/mustermann.svg)](http://inch-ci.org/github/rkh/mustermann)
 [![Documentation](http://img.shields.io/:yard-docs-38c800.svg)](http://www.rubydoc.info/gems/mustermann/frames)
 [![License](http://img.shields.io/:license-MIT-38c800.svg)](http://rkh.mit-license.org)
 [![Badges](http://img.shields.io/:badges-9/9-38c800.svg)](http://img.shields.io)
 
-This repository contains multiple projects (each installable as separate gems).
+This repository contains two projects (each installable as separate gems):
 
-* **[mustermann](https://github.com/sinatra/mustermann/blob/master/mustermann/README.md): Your personal string matching expert. This is probably what you're looking for.**
-* [mustermann-contrib](https://github.com/sinatra/mustermann/blob/master/mustermann-contrib/README.md): A meta gem depending on all other official mustermann gems.
-* [mustermann-fileutils](https://github.com/sinatra/mustermann/blob/master/mustermann-contrib/README.md#-mustermann-fileutils): Efficient file system operations using Mustermann patterns.
-* [mustermann-strscan](https://github.com/sinatra/mustermann/blob/master/mustermann-contrib/README.md#-mustermann-strscan): A version of Ruby's [StringScanner](http://ruby-doc.org/stdlib-2.0/libdoc/strscan/rdoc/StringScanner.html) made for pattern objects.
-* [mustermann-visualizer](https://github.com/sinatra/mustermann/blob/master/mustermann-contrib/README.md#-mustermann-visualizer): Syntax highlighting and tree visualization for patterns.'
-* A selection of pattern types for mustermann, each as their own little library, see [below](#-pattern-types).
+* **[mustermann](https://github.com/sinatra/mustermann/blob/main/mustermann/README.md): Your personal string matching expert. This is probably what you're looking for.**
+* [mustermann-contrib](https://github.com/sinatra/mustermann/blob/main/mustermann-contrib/README.md): A gem with additional pattern types and extensions.
 
 ## Git versions with Bundler
 
@@ -29,7 +25,7 @@ end
 <a name="-pattern-types"></a>
 ## Pattern Types
 
-The `identity`, `regexp` and `sinatra` types are included in the `mustermann` gem, all the other types have their own gems.
+The `identity`, `regexp` `rails`, and `sinatra` types are included in the `mustermann` gem, all the other types listed here are part of the `mustermann-contrib` gem. There are also third-party gems providing additional types, like [mustermann-grape](https://github.com/ruby-grape/mustermann-grape).
 
 <table>
   <thead>
@@ -164,15 +160,18 @@ Any software using Mustermann is obviously compatible with at least one of the a
 
 ## Requirements
 
-Ruby 2.6+ compatible Ruby implementation.
-
-JRuby support is unknown, see more in [issue #72](https://github.com/sinatra/mustermann/issues/72).
+Ruby 2.7+ compatible Ruby implementation (MRI, JRuby, and TruffleRuby are tested).
 
 ## Release History
 
 Mustermann follows [Semantic Versioning 2.0](http://semver.org/). Anything documented in the README or via YARD and not declared private is part of the public API.
 
 ### Stable Releases
+
+* **Mustermann 3.1.0** (pending)
+    * Minimum Ruby version is now 2.7.0, and we dropped support for old Ruby 2.6.
+    * Removed the dependency on the `ruby2_keywords` gem.
+    * Moved the Rails pattern from `mustermann-contrib` to the core `mustermann` gem. 
 
 * **Mustermann 3.0.4** (2025-08-03)
     * Ruby 3.4+ compatibility: Use `URI::RFC2396_Parser` in mustermann-contrib [#146](https://github.com/sinatra/mustermann/pull/146) [@dentarg](https://github.com/dentarg)
