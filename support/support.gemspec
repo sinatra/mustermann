@@ -9,9 +9,7 @@ Gem::Specification.new do |s|
   s.homepage     = "https://github.com/rkh/mustermann"
   s.summary      = %q{support for mustermann development}
   s.require_path = 'lib'
-  s.files        = `git ls-files`.split("\n")
-  s.test_files   = `git ls-files -- {test,spec,features}/*`.split("\n")
-  s.executables  = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
+  s.files        = `git ls-files lib`.split("\n")
 
   s.add_dependency 'tool', '~> 0.2'
   s.add_dependency 'rspec'
