@@ -10,7 +10,8 @@ task(:rspec)     { ruby '-S rspec'      }
 desc 'Run "yard stats"'
 task(:doc_stats) { ruby '-S yard stats' }
 
-task default: [:rspec, :doc_stats]
+# YARD is having issues on TruffleRuby, so we skip it there.
+task default: RUBY_ENGINE == "truffleruby" ? :rspec : [:rspec, :doc_stats]
 
 desc 'Build the gems'
 task :pkg do

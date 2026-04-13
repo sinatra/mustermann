@@ -10,8 +10,9 @@ Gem::Specification.new do |s|
   s.summary               = %q{Collection of extensions for Mustermann}
   s.description           = %q{Adds many plugins to Mustermann}
   s.license               = 'MIT'
-  s.required_ruby_version = '>= 2.6.0'
+  s.required_ruby_version = '>= 2.7.0'
   s.files                 = `git ls-files lib`.split("\n") + ['LICENSE', 'README.md']
+
   s.add_dependency 'mustermann', Mustermann::VERSION
   s.add_dependency 'hansi', '~> 0.2.0'
 end
