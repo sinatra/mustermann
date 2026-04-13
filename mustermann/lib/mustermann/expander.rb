@@ -1,7 +1,7 @@
 # frozen_string_literal: true
+require 'mustermann'
 require 'mustermann/ast/expander'
 require 'mustermann/caster'
-require 'mustermann'
 
 module Mustermann
   # Allows fine-grained control over pattern expansion.
