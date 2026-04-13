@@ -311,7 +311,7 @@ require 'mustermann'
 
 Mustermann.new("/:name").to_templates                   # => ["/{name}"]
 Mustermann.new("/:foo(@:bar)?/*baz").to_templates       # => ["/{foo}@{bar}/{+baz}", "/{foo}/{+baz}"]
-Mustermann.new("/{name}", type: :template).to_templates # => ["/{name}"
+Mustermann.new("/{name}", type: :template).to_templates # => ["/{name}"]
 ```
 
 Union Composite patterns (with the | operator) support template generation if all patterns they are composed of also support it.
