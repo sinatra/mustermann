@@ -168,10 +168,11 @@ Mustermann follows [Semantic Versioning 2.0](http://semver.org/). Anything docum
 
 ### Stable Releases
 
-* **Mustermann 3.1.0** (pending)
+* **Mustermann 3.1.0** (2026-04-13)
     * Minimum Ruby version is now 2.7.0, and we dropped support for old Ruby 2.6.
     * Removed the dependency on the `ruby2_keywords` gem.
-    * Moved the Rails pattern from `mustermann-contrib` to the core `mustermann` gem. 
+    * Moved the Rails pattern from `mustermann-contrib` to the core `mustermann` gem.
+    * Reduce gem size. [@yuri-zubov](https://github.com/yuri-zubov)
 
 * **Mustermann 3.0.4** (2025-08-03)
     * Ruby 3.4+ compatibility: Use `URI::RFC2396_Parser` in mustermann-contrib [#146](https://github.com/sinatra/mustermann/pull/146) [@dentarg](https://github.com/dentarg)
