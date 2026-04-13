@@ -2,7 +2,7 @@
 module Mustermann
   class Sinatra < AST::Pattern
     # Generates a string that can safely be concatenated with other strings
-    # without chaning its semantics
+    # without changing its semantics
     # @see #safe_string
     # @!visibility private
     SafeRenderer = AST::Translator.create do
