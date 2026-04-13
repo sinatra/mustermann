@@ -168,6 +168,9 @@ Mustermann follows [Semantic Versioning 2.0](http://semver.org/). Anything docum
 
 ### Stable Releases
 
+* **Mustermann 3.1.1** (unreleased)
+  * Improve `Mustermann::Pattern#hash` to reduce the chance of collisions on JRuby and TruffleRuby. Fixes [#152](https://github.com/sinatra/mustermann/issues/152)
+
 * **Mustermann 3.1.0** (2026-04-13)
     * Minimum Ruby version is now 2.7.0, and we dropped support for old Ruby 2.6.
     * Removed the dependency on the `ruby2_keywords` gem.

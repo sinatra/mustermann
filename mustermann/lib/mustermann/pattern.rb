@@ -110,7 +110,7 @@ module Mustermann
     # Used by Ruby internally for hashing.
     # @return [Integer] same has value for patterns that are equal
     def hash
-      self.class.hash | @string.hash | options.hash
+      self.class.hash ^ @string.hash ^ options.hash
     end
 
     # Two patterns are considered equal if they are of the same type, have the same pattern string
