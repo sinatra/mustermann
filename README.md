@@ -25,7 +25,7 @@ end
 <a name="-pattern-types"></a>
 ## Pattern Types
 
-The `identity`, `regexp` `rails`, and `sinatra` types are included in the `mustermann` gem, all the other types listed here are part of the `mustermann-contrib` gem. There are also third-party gems providing additional types, like [mustermann-grape](https://github.com/ruby-grape/mustermann-grape).
+The `identity`, `regexp`, `rails`, and `sinatra` types are included in the `mustermann` gem, all the other types listed here are part of the `mustermann-contrib` gem. There are also third-party gems providing additional types, like [mustermann-grape](https://github.com/ruby-grape/mustermann-grape).
 
 <table>
   <thead>
@@ -172,7 +172,7 @@ Mustermann follows [Semantic Versioning 2.0](http://semver.org/). Anything docum
     * Minimum Ruby version is now 2.7.0, and we dropped support for old Ruby 2.6.
     * Removed the dependency on the `ruby2_keywords` gem.
     * Moved the Rails pattern from `mustermann-contrib` to the core `mustermann` gem.
-    * Reduce gem size. [@yuri-zubov](https://github.com/yuri-zubov)
+    * Reduce gem size. [#151](https://github.com/sinatra/mustermann/pull/151) [@yuri-zubov](https://github.com/yuri-zubov)
 
 * **Mustermann 3.0.4** (2025-08-03)
     * Ruby 3.4+ compatibility: Use `URI::RFC2396_Parser` in mustermann-contrib [#146](https://github.com/sinatra/mustermann/pull/146) [@dentarg](https://github.com/dentarg)
