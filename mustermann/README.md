@@ -899,7 +899,7 @@ Mustermann.new('/', type: :rails, version: Rails::VERSION::STRING)
       <td><b>:</b><i>name</i></td>
       <td>
         Captures anything but a forward slash in a semi-greedy fashion. Capture is named <i>name</i>.
-        Capture behavior can be modified with tt>capture</tt> and <tt>greedy</tt> option.
+        Capture behavior can be modified with <tt>capture</tt> and <tt>greedy</tt> option.
       </td>
     </tr>
     <tr>
