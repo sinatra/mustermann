@@ -44,25 +44,11 @@ module Mustermann
         caller_locations.first.label == 'puts' ? to_ansi : super
       end
 
-      # If invoked directly by IRB, same as {#color_inspect}, otherwise same as  {Mustermann::Pattern#inspect}.
-      def inspect
-        caller_locations.first.base_label == '<module:IRB>' ? color_inspect : super
-      end
-
       # @return [String] ANSI colorized version of {Mustermann::Pattern#inspect}
       def color_inspect(base_color = nil, **theme)
         base_color ||= Highlight::DEFAULT_THEME[:base01]
         template = is_a?(Composite) ? "*#<%p:(*%s*)>*" : "*#<%p:*%s*>*"
         Hansi.render(template, self.class, to_ansi(inspect: true, **theme), {"*" => base_color})
-      end
-
-      # If invoked directly by IRB, same as {#color_inspect}, otherwise same as Object#pretty_print.
-      def pretty_print(q)
-        if q.class.name.to_s[/[^:]+$/] == "ColorPrinter"
-          q.text(color_inspect, inspect.length)
-        else
-          super
-        end
       end
     end
   end

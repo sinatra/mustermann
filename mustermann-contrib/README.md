@@ -1020,15 +1020,6 @@ The **s-expression like syntax** looks as follows:
 * Full strings are Ruby strings enclosed by double quotes.
 * Spaces before or after parens are optional.
 
-### IRB/Pry integration
-
-When `mustermann` is being loaded from within an IRB or Pry session, it will automatically load `mustermann/visualizer` too, if possible.
-When displayed as result, it will be highlighted.
-
-![](irb.png)
-
-In Pry, this will even work when nested inside other objects (like as element on an array).
-
 ## Tree Rendering
 
 ![](tree.png)

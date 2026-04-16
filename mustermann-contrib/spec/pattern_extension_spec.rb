@@ -32,21 +32,4 @@ describe Mustermann::Visualizer::PatternExtension do
     object = Class.new { def puts(arg) arg.to_s end }.new
     object.puts(pattern).should be == pattern.to_ansi
   end
-
-  context :pretty_print do
-    before(:all) { ColorPrinter = Class.new(::PP) }
-    let(:output) { StringIO.new }
-
-    specify 'with color printer' do
-      printer = ColorPrinter.new(output, 79)
-      printer.guard_inspect_key { printer.pp(pattern) }
-      output.string.should be == pattern.color_inspect
-    end
-
-    specify 'without color printer' do
-      printer = ::PP.new(output, 79)
-      printer.guard_inspect_key { printer.pp(pattern) }
-      output.string.should be == pattern.inspect
-    end
-  end
 end
