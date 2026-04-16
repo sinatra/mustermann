@@ -4,7 +4,7 @@ require "mustermann/version"
 Gem::Specification.new do |s|
   s.name                  = "mustermann-contrib"
   s.version               = Mustermann::VERSION
-  s.authors               = ["Konstantin Haase", "Zachary Scott"]
+  s.authors               = ["Konstantin Haase", "Kunpei Sakai", "Patrik Ragnarsson", "Jordan Owens", "Zachary Scott"]
   s.email                 = "sinatrarb@googlegroups.com"
   s.homepage              = "https://github.com/sinatra/mustermann"
   s.summary               = %q{Collection of extensions for Mustermann}
