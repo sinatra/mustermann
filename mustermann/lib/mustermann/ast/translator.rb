@@ -104,9 +104,14 @@ module Mustermann
       # @return decorator encapsulating translation
       #
       # @!visibility private
+      def self.factory_for(node_class)
+        @factory_for ||= {}
+        @factory_for[node_class] ||= node_class.ancestors.lazy.filter_map { dispatch_table[_1.name] }.first
+      end
+
       def decorator_for(node)
-        factory = node.class.ancestors.inject(nil) { |d,a| d || self.class.dispatch_table[a.name] }
-        raise error_class, "#{self.class}: Cannot translate #{node.class}" unless factory
+        factory = self.class.factory_for(node.class) or
+          raise error_class, "#{self.class}: Cannot translate #{node.class}"
         factory.new(node, self)
       end
 

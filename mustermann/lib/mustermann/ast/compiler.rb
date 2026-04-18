@@ -121,17 +121,29 @@ module Mustermann
         end
       end
 
+      # @return [Array<String>] all raw string representations of the character (literal + URI-encoded variants)
+      # @!visibility private
+      def self.char_representations(char, uri_decode: true, space_matches_plus: true)
+        if char == " " and space_matches_plus
+          return [" ", "+"] unless uri_decode
+          @space_and_plus ||= char_representations(" ", space_matches_plus: false) +
+            char_representations("+", space_matches_plus: false)
+        elsif uri_decode
+          @char_representations ||= {}
+          @char_representations[char] ||= begin
+            escaped = URI_PARSER.escape(char, /./)
+            [char, escaped.upcase, escaped.downcase].uniq
+          end
+        else
+          [char]
+        end
+      end
+
       # @return [String] Regular expression for matching the given character in all representations
       # @!visibility private
       def encoded(char, uri_decode: true, space_matches_plus: true, **options)
         return Regexp.escape(char) unless uri_decode
-        encoded = escape(char, escape: /./)
-        list    = [escape(char), encoded.downcase, encoded.upcase].uniq.map { |c| Regexp.escape(c) }
-        if char == " "
-          list << encoded('+') if space_matches_plus
-          list << " "
-        end
-        "(?:%s)" % list.join("|")
+        "(?:%s)" % self.class.char_representations(char, uri_decode:, space_matches_plus:).map { |c| Regexp.escape(c) }.join("|")
       end
 
       # Compiles an AST to a regular expression.
