@@ -5,5 +5,6 @@ module Mustermann
     CompileError = Class.new(Error)         # Raised if anything goes wrong while compiling a {Pattern}.
     ParseError   = Class.new(Error)         # Raised if anything goes wrong while parsing a {Pattern}.
     ExpandError  = Class.new(Error)         # Raised if anything goes wrong while expanding a {Pattern}.
+    TrieError    = Class.new(CompileError)  # Raised if anything goes wrong while compiling a {Trie}.
   end
 end
