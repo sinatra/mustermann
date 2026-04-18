@@ -106,7 +106,7 @@ module Mustermann
 
     # Allows you to register your own converters.
     #
-    # It is reommended to use this on a subclass, so to not influence other subsystems
+    # It is recommended to use this on a subclass, so to not influence other subsystems
     # using flask templates.
     #
     # The object passed in as converter can implement #convert and/or #constraint.
@@ -135,7 +135,7 @@ module Mustermann
     #   MyPattern.new("/<up:name>").params('/foo') # => { "name" => "FOO" }
     #
     # @example with converter class
-    #   require 'mustermann/flasl'
+    #   require 'mustermann/flask'
     #
     #   class MyPattern < Mustermann::Flask
     #     class Converter
