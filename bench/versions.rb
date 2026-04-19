@@ -46,7 +46,15 @@ else
   scenarios.each do |step, title|
     puts "", title, "", "       user       system     total    real"
     ["bundler", *known_versions].each do |version|
-      system({ "MUSTERMANN_VERSION" => version }, "ruby", "-W0", __FILE__, step.to_s )
+      env = { "MUSTERMANN_VERSION" => version }
+      if version != "bundler"
+        ENV.each_key do |key|
+          next unless key.start_with?("BUNDLE")
+          env[key] = nil
+        end
+        env["RUBYOPT"] = nil
+      end
+      system(env, "ruby", "-W0", __FILE__, step.to_s )
     end
   end
   return
