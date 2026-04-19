@@ -35,7 +35,7 @@ describe Mustermann::Regular do
     it { should match('/foo')       .capturing foo: 'foo'       }
     it { should match('/bar')       .capturing foo: 'bar'       }
     it { should match('/foo.bar')   .capturing foo: 'foo.bar'   }
-    it { should match('/%0Afoo')    .capturing foo: "\nfoo"      }
+    it { should match('/%0Afoo')    .capturing foo: "\nfoo"     }
     it { should match('/foo%2Fbar') .capturing foo: 'foo/bar'   }
   end
 

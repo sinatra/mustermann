@@ -35,7 +35,7 @@ describe Mustermann::Simple do
     it { should match('/foo')       .capturing foo: 'foo'       }
     it { should match('/bar')       .capturing foo: 'bar'       }
     it { should match('/foo.bar')   .capturing foo: 'foo.bar'   }
-    it { should match('/%0Afoo')    .capturing foo: "\nfoo"      }
+    it { should match('/%0Afoo')    .capturing foo: "\nfoo"     }
     it { should match('/foo%2Fbar') .capturing foo: 'foo/bar'   }
 
     it { should_not match('/foo?')    }
@@ -86,7 +86,7 @@ describe Mustermann::Simple do
   pattern '/:foo/*' do
     it { should match("/foo/bar/baz")     .capturing foo: 'foo', splat: ['bar/baz']   }
     it { should match("/foo/")            .capturing foo: 'foo', splat: ['']          }
-    it { should match('/h%20w/h%20a%20y') .capturing foo: 'h w', splat: ['h a y']    }
+    it { should match('/h%20w/h%20a%20y') .capturing foo: 'h w', splat: ['h a y']     }
     it { should_not match('/foo') }
 
     example { pattern.params('/bar/foo').should be == {"splat" => ["foo"], "foo" => "bar"} }
@@ -147,7 +147,7 @@ describe Mustermann::Simple do
     it { should match('/2/test.bar')   .capturing id: '2'   }
     it { should match('/2E/test.bar')  .capturing id: '2E'  }
     it { should match('/2e/test.bar')  .capturing id: '2e'  }
-    it { should match('/%2E/test.bar') .capturing id: '.' }
+    it { should match('/%2E/test.bar') .capturing id: '.'   }
   end
 
   pattern '/10/:id' do

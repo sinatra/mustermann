@@ -48,7 +48,7 @@ describe Mustermann::Rails do
     it { should match('/foo')       .capturing foo: 'foo'       }
     it { should match('/bar')       .capturing foo: 'bar'       }
     it { should match('/foo.bar')   .capturing foo: 'foo.bar'   }
-    it { should match('/%0Afoo')    .capturing foo: "\nfoo"      }
+    it { should match('/%0Afoo')    .capturing foo: "\nfoo"     }
     it { should match('/foo%2Fbar') .capturing foo: 'foo/bar'   }
 
     it { should_not match('/foo?')    }
@@ -141,10 +141,10 @@ describe Mustermann::Rails do
   end
 
   pattern '/:foo/*bar' do
-    it { should match("/foo/bar/baz")     .capturing foo: 'foo',       bar: 'bar/baz'   }
-    it { should match("/foo%2Fbar/baz")   .capturing foo: 'foo/bar', bar: 'baz'   }
-    it { should match("/foo/")            .capturing foo: 'foo',     bar: ''      }
-    it { should match('/h%20w/h%20a%20y') .capturing foo: 'h w',     bar: 'h a y' }
+    it { should match("/foo/bar/baz")     .capturing foo: 'foo',     bar: 'bar/baz' }
+    it { should match("/foo%2Fbar/baz")   .capturing foo: 'foo/bar', bar: 'baz'     }
+    it { should match("/foo/")            .capturing foo: 'foo',     bar: ''        }
+    it { should match('/h%20w/h%20a%20y') .capturing foo: 'h w',     bar: 'h a y'   }
     it { should_not match('/foo') }
 
     it { should expand(foo: 'foo')                     .to('/foo/')          }
@@ -254,7 +254,7 @@ describe Mustermann::Rails do
     it { should match('/2/test.bar')   .capturing id: '2'   }
     it { should match('/2E/test.bar')  .capturing id: '2E'  }
     it { should match('/2e/test.bar')  .capturing id: '2e'  }
-    it { should match('/%2E/test.bar') .capturing id: '.' }
+    it { should match('/%2E/test.bar') .capturing id: '.'   }
   end
 
   pattern '/10/:id' do
@@ -369,8 +369,8 @@ describe Mustermann::Rails do
 
   pattern '/:foo', capture: 'a.b' do
     it { should match('/a.b')   .capturing foo: 'a.b'   }
-    it { should match('/a%2Eb') .capturing foo: 'a.b' }
-    it { should match('/a%2eb') .capturing foo: 'a.b' }
+    it { should match('/a%2Eb') .capturing foo: 'a.b'   }
+    it { should match('/a%2eb') .capturing foo: 'a.b'   }
 
     it { should_not match('/ab')   }
     it { should_not match('/afb')  }
