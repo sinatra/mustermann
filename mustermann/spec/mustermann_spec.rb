@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 require 'support'
 require 'mustermann'
-require 'sinatra/base'
 
 describe Mustermann do
   describe :new do
