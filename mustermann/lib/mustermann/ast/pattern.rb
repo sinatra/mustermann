@@ -83,6 +83,16 @@ module Mustermann
         raise error.class, "#{error.message}: #{@string.inspect}", error.backtrace
       end
 
+      # Returns a regexp that matches strings excluded by the +except+ option,
+      # or +nil+ if no +except+ constraint was given. Used by the trie matcher
+      # to filter out excluded strings at leaf nodes.
+      # @return [Regexp, nil]
+      # @!visibility private
+      def except_regexp
+        return unless except_str = options[:except]
+        @except_regexp ||= Regexp.new("\\A#{compiler.new.translate(parse(except_str), no_captures: true, **options.except(:except))}\\z")
+      end
+
       # Internal AST representation of pattern.
       # @!visibility private
       def to_ast

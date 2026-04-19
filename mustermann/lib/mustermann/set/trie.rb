@@ -144,6 +144,8 @@ module Mustermann
         result = [] if all
 
         @patterns.each do |pattern|
+          next if pattern.except_regexp&.match?(string)
+
           pattern_params = params.to_h do |key, value|
             value = value.flat_map { |v| pattern.map_param(key, v) }
             value = value.first if value.size < 2 and not pattern.always_array?(key)

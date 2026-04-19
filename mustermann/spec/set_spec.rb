@@ -198,6 +198,23 @@ describe Mustermann::Set do
       end
     end
 
+    # ── except option ────────────────────────────────────────────────────────
+
+    context 'except option' do
+      it 'respects the except constraint on a pattern' do
+        set.add(Mustermann.new('/:foo', except: '/bar'), :handler)
+        expect(set.match('/foo').value).to eq :handler
+        expect(set.match('/bar')).to be_nil
+      end
+
+      it 'falls through to an unrestricted pattern when except excludes a match' do
+        set.add(Mustermann.new('/:foo', except: '/bar'), :restricted)
+        set.add('/:foo', :unrestricted)
+        expect(set.match('/foo').value).to eq :restricted
+        expect(set.match('/bar').value).to eq :unrestricted
+      end
+    end
+
     # ── conflict resolution (ordering) ───────────────────────────────────────
 
     context 'conflict resolution' do
