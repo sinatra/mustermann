@@ -12,6 +12,7 @@ counts = {
   single_match: 5_000_000,
   set_match: 10_000,
   set_size: 1000,
+  look_ahead_fail: 500,
 }
 
 format = proc do |count|
@@ -28,6 +29,7 @@ scenarios = {
   compile: "Compilation of #{format[counts[:compile]]} patterns",
   single_match: "Matching #{format[counts[:single_match]]} times against a single pattern",
   set_match: "Matching #{format[counts[:set_match]]} times against a set of #{format[counts[:set_size]]} patterns",
+  look_ahead_fail: "Matching #{format[counts[:look_ahead_fail]]} times with look-ahead pattern on a long failing input (atomic group speedup)",
 }
 
 case version = ENV['MUSTERMANN_VERSION']
@@ -102,6 +104,23 @@ Benchmark.benchmark do |x|
         callback.call(string)
       end
     end
+
+  when "look_ahead_fail"
+    # /:a:b? triggers the look-ahead transformer: :a and :b share the same
+    # character class ([^\/\?#]) with no separator between them.  Current
+    # Mustermann wraps the head capture (:a) in an atomic group so Oniguruma
+    # does not re-examine characters it has already committed to.  Older
+    # versions emit a plain non-atomic capture, which backtracks O(n) times
+    # when the overall match fails.
+    #
+    # The failing string ends with "/trailing" — the extra segment cannot be
+    # consumed by either capture (both exclude '/'), so the engine must try
+    # every possible split of the 5 000-character prefix before giving up.
+    # On current Mustermann this takes ~0.11 s; on older versions ~0.57 s.
+    pattern = Mustermann.new("/:a:b?")
+    failing  = "/" + "x" * 5_000 + "/trailing"
+    10.times { pattern.match(failing) }
+    x.report(Mustermann::VERSION) { counts[:look_ahead_fail].times { pattern.match(failing) } }
 
   else
     warn "Unknown step: #{ARGV.first}"

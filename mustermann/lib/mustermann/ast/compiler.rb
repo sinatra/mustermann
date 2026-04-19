@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'mustermann/ast/translator'
 
 module Mustermann
@@ -9,28 +10,59 @@ module Mustermann
     class Compiler < Translator
       raises CompileError
 
-      # Trivial compilations
-      translate(Array)      { |**o| map { |e| t(e, **o) }.join  }
+      # Compile an array of AST nodes, detecting which captures can safely use
+      # atomic groups.  A capture is safe to atomicize when its very next sibling
+      # is a *path separator* (payload '/'), because every Mustermann capture
+      # character class (Sinatra's [^\/\?#]+, Template's [\w\-\.~%]+, etc.)
+      # excludes '/', so the greedy match naturally stops before '/' and
+      # committing to it atomically never affects correctness.
+      #
+      # More permissive conditions (e.g. end-of-array) are intentionally avoided:
+      # template expressions nest captures inside inner arrays where end-of-array
+      # does NOT mean end-of-pattern, and non-'/' separators (e.g. '.' in
+      # {.a,b,c}) may appear inside the capture character class.
+      #
+      # Splats (.*?) and non-greedy captures are excluded — atomicizing them
+      # would commit to zero or one character and break match resolution.
+      # Strip `atomic:` from incoming options so a parent's value cannot bleed
+      # into siblings; each element's atomicity comes solely from its own context.
+      translate(Array) do |atomic: false, **options|
+        greedy = options.fetch(:greedy, true)
+        each_with_index.map do |element, index|
+          next_sibling = self[index + 1]
+          atomic = greedy &&
+            element.is_a?(:capture) &&
+            !element.is_a?(:splat) &&
+            next_sibling&.is_a?(:separator) &&
+            next_sibling.payload == '/'
+          t(element, **options, atomic: atomic)
+        end.join
+      end
+
       translate(:node)      { |**o| t(payload, **o)             }
       translate(:separator) { |**o| Regexp.escape(payload)      }
-      translate(:optional)  { |**o| "(?:%s)?" % t(payload, **o) }
+      translate(:optional)  { |**o| '(?:%s)?' % t(payload, **o) }
       translate(:char)      { |**o| t.encoded(payload, **o)     }
 
       translate :union do |**options|
-        "(?:%s)" % payload.map { |e| "(?:%s)" % t(e, **options) }.join(?|)
+        '(?:%s)' % payload.map { |e| '(?:%s)' % t(e, **options) }.join('|')
       end
 
       translate :expression do |greedy: true, **options|
         t(payload, allow_reserved: operator.allow_reserved, greedy: greedy && !operator.allow_reserved,
-          parametric: operator.parametric, separator: operator.separator, **options)
+                   parametric: operator.parametric, separator: operator.separator, **options)
       end
 
-      translate :with_look_ahead do |**options|
-        lookahead = each_leaf.inject("") do |ahead, element|
+      translate :with_look_ahead do |atomic: false, **options|
+        greedy = options.fetch(:greedy, true)
+        lookahead = each_leaf.inject('') do |ahead, element|
           ahead + t(element, skip_optional: true, lookahead: ahead, greedy: false, no_captures: true, **options).to_s
         end
         lookahead << (at_end ? '$' : '/')
-        t(head, lookahead: lookahead, **options) + t(payload, **options)
+        # The look-ahead already constrains what the head capture can match, so
+        # it is safe to make it atomic when greedy.  Non-greedy captures rely on
+        # backtracking to extend their match and must not be committed atomically.
+        t(head, **options, lookahead: lookahead, atomic: greedy) + t(payload, **options)
       end
 
       # Capture compilation is complex. :(
@@ -39,9 +71,23 @@ module Mustermann
         register :capture
 
         # @!visibility private
-        def translate(**options)
+        # When +atomic: true+ is passed (set by the Array translator for captures
+        # that are followed only by a separator or end-of-pattern), the compiled
+        # content is wrapped in an atomic group <tt>(?>…)</tt>.  This prevents
+        # Oniguruma from backtracking into characters the capture has already
+        # consumed, giving a measurable speedup on failing matches without
+        # changing the result for any valid input.
+        def translate(atomic: false, **options)
           return pattern(**options) if options[:no_captures]
-          "(?<#{name}>#{translate(no_captures: true, **options)})"
+
+          inner = translate(no_captures: true, **options)
+          # Atomic groups are only safe for pure character-class repetitions.
+          # Captures with an explicit array/hash/string option or a custom
+          # constraint produce alternations that need backtracking to resolve
+          # the correct alternative, so they must not be wrapped atomically.
+          apply_atomic = atomic && options[:capture].nil? && constraint.nil?
+          content = apply_atomic ? "(?>#{inner})" : inner
+          "(?<#{name}>#{content})"
         end
 
         # @return [String] regexp without the named capture
@@ -58,14 +104,44 @@ module Mustermann
         end
 
         private
-          def qualified(string, greedy: true, **options)        "#{string}#{qualifier || "+#{?? unless greedy}"}"                    end
-          def with_lookahead(string, lookahead: nil, **options)  lookahead ? "(?:(?!#{lookahead})#{string})" : string                end
-          def from_hash(hash,     **options)                     pattern(capture: hash[name.to_sym], **options)                      end
-          def from_array(array,   **options)                     Regexp.union(*array.map { |e| pattern(capture: e, **options) })     end
-          def from_symbol(symbol, **options)                     qualified(with_lookahead("[[:#{symbol}:]]", **options), **options)  end
-          def from_string(string, **options)                     Regexp.new(string.chars.map { |c| t.encoded(c, **options) }.join)   end
-          def from_nil(**options)                                qualified(with_lookahead(default(**options), **options), **options) end
-          def default(**options)                                 constraint || "[^/\\?#]"                                            end
+
+        def qualified(string, greedy: true,
+                      **options) "#{string}#{qualifier || "+#{'?' unless greedy}"}"
+        end
+
+        def with_lookahead(string, lookahead: nil,
+                           **options) lookahead ? "(?:(?!#{lookahead})#{string})" : string
+        end
+
+        def from_hash(hash,
+                      **options) pattern(capture: hash[name.to_sym],
+                                         **options)
+        end
+
+        def from_array(array, **options)
+          Regexp.union(*array.map do |e|
+            pattern(capture: e, **options)
+          end)
+        end
+
+        def from_symbol(symbol,
+                        **options) qualified(with_lookahead("[[:#{symbol}:]]", **options),
+                                             **options)
+        end
+
+        def from_string(string, **options)
+          Regexp.new(string.chars.map do |c|
+            t.encoded(c, **options)
+          end.join)
+        end
+
+        def from_nil(**options)
+          qualified(
+            with_lookahead(default(**options), **options), **options
+          )
+        end
+
+        def default(**options) = constraint || '[^/\\?#]'
       end
 
       # @!visibility private
@@ -74,7 +150,7 @@ module Mustermann
         # splats are always non-greedy
         # @!visibility private
         def pattern(**options)
-          constraint || ".*?"
+          constraint || '.*?'
         end
       end
 
@@ -83,11 +159,17 @@ module Mustermann
         register :variable
 
         # @!visibility private
-        def translate(**options)
-          return super(**options) if explode or not options[:parametric]
+        def translate(atomic: false, **options)
+          # Exploded variables expand to `pattern(?:sep pattern)*`.  The engine
+          # must be able to backtrack through that repetition when a following
+          # capture (e.g. the 'b' in {/a*,b}) needs to claim the last segment.
+          # Strip `atomic:` so Capture#translate never wraps the repetition.
+          effective_atomic = atomic && !explode
+          return super(atomic: effective_atomic, **options) if explode or !options[:parametric]
+
           # Remove this line after fixing broken compatibility between 2.1 and 2.2
           options.delete(:parametric) if options.has_key?(:parametric)
-          parametric super(parametric: false, **options)
+          parametric super(atomic: effective_atomic, parametric: false, **options)
         end
 
         # @!visibility private
@@ -117,6 +199,7 @@ module Mustermann
         # @!visibility private
         def register_param(parametric: false, split_params: nil, separator: nil, **options)
           return unless explode and split_params
+
           split_params[name] = { separator: separator, parametric: parametric }
         end
       end
@@ -124,9 +207,9 @@ module Mustermann
       # @return [Array<String>] all raw string representations of the character (literal + URI-encoded variants)
       # @!visibility private
       def self.char_representations(char, uri_decode: true, space_matches_plus: true)
-        if char == " " and space_matches_plus
-          @space_and_plus ||= char_representations(" ", space_matches_plus: false) +
-            char_representations("+", space_matches_plus: false)
+        if char == ' ' and space_matches_plus
+          @space_and_plus ||= char_representations(' ', space_matches_plus: false) +
+                              char_representations('+', space_matches_plus: false)
         else
           @char_representations ||= {}
           @char_representations[char] ||= begin
@@ -140,7 +223,10 @@ module Mustermann
       # @!visibility private
       def encoded(char, uri_decode: true, space_matches_plus: true, **options)
         return Regexp.escape(char) unless uri_decode
-        "(?:%s)" % self.class.char_representations(char, uri_decode:, space_matches_plus:).map { |c| Regexp.escape(c) }.join("|")
+
+        '(?:%s)' % self.class.char_representations(char, uri_decode:, space_matches_plus:).map { |c|
+          Regexp.escape(c)
+        }.join('|')
       end
 
       # Compiles an AST to a regular expression.
