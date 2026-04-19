@@ -42,7 +42,7 @@ pattern.params('/a/b.c') # => { "prefix" => "a", splat => ["b", "c"] }
 These features are included in the library, but not loaded by default
 
 * **[Pattern Set](#-pattern-set):** A collection of patterns with associated values, designed for building routing tables that dispatch efficiently as the number of routes grows.
-* **[Sinatra Integration](#-sinatra-integration):** Mustermann can be used as a [Sinatra](http://www.sinatrarb.com/) extension. Sinatra 2.0 and beyond will use Mustermann by default.
+* **Mustermann::Router:** A very basic rack router built on top of `Mustermann::Set` for demonstration purposes. Simple and fast.
 
 <a name="-pattern-types"></a>
 ## Pattern Types
@@ -56,7 +56,7 @@ require 'mustermann'
 pattern = Mustermann.new('/*/**', type: :shell)
 ```
 
-Note that this will use the type as suggestion: When passing in a string argument, it will create a pattern of the given type, but it might choose a different type for other objects (a regular expression argument will always result in a [regexp](#-pattern-details-regexp) pattern, a symbol always in a [sinatra](#-pattern-details-sinatra) pattern, etc).
+Note that this will use the type as suggestion: When passing in a string argument, it will create a pattern of the given type, but it might choose a different type for other objects (a regular expression argument will always result in a [regexp](../docs/patterns/regexp.md) pattern, a symbol always in a [sinatra](../docs/patterns/sinatra.md) pattern, etc).
 
 Alternatively, you can also load and instantiate the pattern type directly:
 
@@ -65,7 +65,7 @@ require 'mustermann/shell'
 pattern = Mustermann::Shell.new('/*/**')
 ```
 
-Mustermann itself includes the [sinatra](#-sinatra-pattern), [identity](#-identity-pattern) and [regexp](#-regexp-pattern) pattern types. Other pattern types are available as separate gems.
+Mustermann itself includes the [sinatra](../docs/patterns/sinatra.md), [identity](../docs/patterns/identity.md) and [regexp](../docs/patterns/regexp.md) pattern types. Other pattern types are available as separate gems.
 
 <a name="-binary-operators"></a>
 ## Binary Operators
@@ -655,9 +655,9 @@ Pattern objects should be treated as immutable. Their internals have been design
 
 When using a pattern instead of a regular expression for string matching, performance will usually be comparable.
 
-In certain cases, Mustermann might outperform naive, equivalent regular expressions. It achieves this by using look-ahead and atomic groups in ways that work well with a backtracking, NFA-based regular expression engine (such as the Oniguruma/Onigmo engine used by Ruby). It can be difficult and error prone to construct complex regular expressions using these techniques by hand. This only applies to patterns generating an AST internally (all but [identity](#-pattern-details-identity), [shell](#-pattern-details-shell), [simple](#-pattern-details-simple) and [regexp](#-pattern-details-regexp) patterns).
+In certain cases, Mustermann might outperform naive, equivalent regular expressions. It achieves this by using look-ahead and atomic groups in ways that work well with a backtracking, NFA-based regular expression engine (such as the Oniguruma/Onigmo engine used by Ruby). It can be difficult and error prone to construct complex regular expressions using these techniques by hand. This only applies to patterns generating an AST internally (all but [identity](../docs/patterns/identity.md), [shell](../docs/patterns/shell.md), [simple](../docs/patterns/simple.md) and [regexp](../docs/patterns/regexp.md) patterns).
 
-When using a Mustermann pattern as a direct Regexp replacement (ie, via methods like `=~`, `match` or `===`), the overhead will be a single method dispatch, which some Ruby implementations might even eliminate with method inlining. This only applies to patterns using a regular expression internally (all but [identity](#-pattern-details-identity) and [shell](#-pattern-details-shell) patterns).
+When using a Mustermann pattern as a direct Regexp replacement (ie, via methods like `=~`, `match` or `===`), the overhead will be a single method dispatch, which some Ruby implementations might even eliminate with method inlining. This only applies to patterns using a regular expression internally (all but [identity](../docs/patterns/identity.md) and [shell](../docs/patterns/shell.md) patterns).
 
 ### Routing
 
@@ -678,239 +678,8 @@ This comes with a few trade-offs:
 
 ## Details on Pattern Types
 
-<a name="-identity-pattern"></a>
-### `identity`
-
-**Supported options:**
-[`uri_decode`](#-available-options--uri_decode),
-[`ignore_unknown_options`](#-available-options--ignore_unknown_options).
-
-<table>
-  <thead>
-    <tr>
-      <th>Syntax Element</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><i>any character</i></td>
-      <td>Matches exactly that character or a URI escaped version of it.</td>
-    </tr>
-  </tbody>
-</table>
-
-<a name="-regexp-pattern"></a>
-### `regexp`
-
-**Supported options:**
-[`uri_decode`](#-available-options--uri_decode),
-[`ignore_unknown_options`](#-available-options--ignore_unknown_options), `check_anchors`.
-
-The pattern string (or actual Regexp instance) should not contain anchors (`^` outside of square brackets, `$`, `\A`, `\z`, or `\Z`).
-Anchors will be injected where necessary by Mustermann.
-
-By default, Mustermann will raise a `Mustermann::CompileError` if an anchor is encountered.
-If you still want it to contain anchors at your own risk, set the `check_anchors` option to `false`.
-
-Using anchors will break [peeking](#-peeking) and [concatenation](#-concatenation).
-
-<table>
-  <thead>
-    <tr>
-      <th>Syntax Element</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><i>any string</i></td>
-      <td>Interpreted as regular expression.</td>
-    </tr>
-  </tbody>
-</table>
-
-<a name="-sinatra-pattern"></a>
-### `sinatra`
-
-**Supported options:**
-[`capture`](#-available-options--capture),
-[`except`](#-available-options--except),
-[`greedy`](#-available-options--greedy),
-[`space_matches_plus`](#-available-options--space_matches_plus),
-[`uri_decode`](#-available-options--uri_decode),
-[`ignore_unknown_options`](#-available-options--ignore_unknown_options).
-
-<table>
-  <thead>
-    <tr>
-      <th>Syntax Element</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><b>:</b><i>name</i> <i><b>or</b></i> <b>&#123;</b><i>name</i><b>&#125;</b></td>
-      <td>
-        Captures anything but a forward slash in a semi-greedy fashion. Capture is named <i>name</i>.
-        Capture behavior can be modified with <tt>capture</tt> and <tt>greedy</tt> option.
-      </td>
-    </tr>
-    <tr>
-      <td><b>*</b><i>name</i> <i><b>or</b></i> <b>&#123;+</b><i>name</i><b>&#125;</b></td>
-      <td>
-        Captures anything in a non-greedy fashion. Capture is named <i>name</i>.
-      </td>
-    </tr>
-    <tr>
-      <td><b>*</b> <i><b>or</b></i> <b>&#123;+splat&#125;</b></td>
-      <td>
-        Captures anything in a non-greedy fashion. Capture is named splat.
-        It is always an array of captures, as you can use it more than once in a pattern.
-      </td>
-    </tr>
-    <tr>
-      <td><b>(</b><i>expression</i><b>)</b></td>
-      <td>
-        Enclosed <i>expression</i> is a group. Useful when combined with <tt>?</tt> to make it optional,
-        or to separate two elements that would otherwise be parsed as one.
-      </td>
-    </tr>
-    <tr>
-      <td><i>expression</i><b>|</b><i>expression</i><b>|</b><i>...</i></td>
-      <td>
-        Will match anything matching the nested expressions. May contain any other syntax element, including captures.
-      </td>
-    </tr>
-    <tr>
-      <td><i>x</i><b>?</b></td>
-      <td>Makes <i>x</i> optional. For instance, <tt>(foo)?</tt> matches <tt>foo</tt> or an empty string.</td>
-    </tr>
-    <tr>
-      <td><b>/</b></td>
-      <td>
-        Matches forward slash. Does not match URI encoded version of forward slash.
-      </td>
-    </tr>
-    <tr>
-      <td><b>\</b><i>x</i></td>
-      <td>Matches <i>x</i> or URI encoded version of <i>x</i>. For instance <tt>\*</tt> matches <tt>*</tt>.</td>
-    </tr>
-    <tr>
-      <td><i>any other character</i></td>
-      <td>Matches exactly that character or a URI encoded version of it.</td>
-    </tr>
-  </tbody>
-</table>
-
-<a name="-rails-pattern"></a>
-### `rails`
-
-Mustermann also implements the `rails` pattern. It is compatible with [Ruby on Rails](http://rubyonrails.org/), [Journey](https://github.com/rails/journey), the [http_router gem](https://github.com/joshbuddy/http_router), [Lotus](http://lotusrb.org/) and [Scalatra](http://scalatra.org/) (if [configured](http://scalatra.org/2.3/guides/http/routes.html#toc_248))</td>
-
-**Supported options:**
-[`capture`](#-available-options--capture),
-[`except`](#-available-options--except),
-[`greedy`](#-available-options--greedy),
-[`space_matches_plus`](#-available-options--space_matches_plus),
-[`uri_decode`](#-available-options--uri_decode),
-[`version`](#-rails-pattern--version),
-[`ignore_unknown_options`](#-available-options--ignore_unknown_options).
-
-**External documentation:**
-[Ruby on Rails Guides: Routing](http://guides.rubyonrails.org/routing.html).
-
-``` ruby
-require 'mustermann'
-
-pattern = Mustermann.new('/:example', type: :rails)
-pattern === "/foo.bar"     # => true
-pattern === "/foo/bar"     # => false
-pattern.params("/foo.bar") # => { "example" => "foo.bar" }
-pattern.params("/foo/bar") # => nil
-
-pattern = Mustermann.new('/:example(/:optional)', type: :rails)
-pattern === "/foo.bar"     # => true
-pattern === "/foo/bar"     # => true
-pattern.params("/foo.bar") # => { "example" => "foo.bar", "optional" => nil   }
-pattern.params("/foo/bar") # => { "example" => "foo",     "optional" => "bar" }
-
-pattern = Mustermann.new('/*example', type: :rails)
-pattern === "/foo.bar"     # => true
-pattern === "/foo/bar"     # => true
-pattern.params("/foo.bar") # => { "example" => "foo.bar" }
-pattern.params("/foo/bar") # => { "example" => "foo/bar" }
-```
-
-<a name="-rails-pattern--version"></a>
-#### `version`
-
-Rails syntax changed over time. You can target different Ruby on Rails versions by setting the `version` option to the desired Rails version.
-
-The default is `5.0`. Versions prior to `2.3` are not supported.
-
-``` ruby
-require 'mustermann'
-Mustermann.new('/', type: :rails, version: "2.3")
-Mustermann.new('/', type: :rails, version: "3.0.0")
-
-require 'rails'
-Mustermann.new('/', type: :rails, version: Rails::VERSION::STRING)
-```
-
-#### Syntax
-
-
-<table>
-  <thead>
-    <tr>
-      <th>Syntax Element</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><b>:</b><i>name</i></td>
-      <td>
-        Captures anything but a forward slash in a semi-greedy fashion. Capture is named <i>name</i>.
-        Capture behavior can be modified with <tt>capture</tt> and <tt>greedy</tt> option.
-      </td>
-    </tr>
-    <tr>
-      <td><b>*</b><i>name</i></td>
-      <td>
-        Captures anything in a non-greedy fashion. Capture is named <i>name</i>.
-      </td>
-    </tr>
-    <tr>
-      <td><b>(</b><i>expression</i><b>)</b></td>
-      <td>Enclosed <i>expression</i> is optional. Not available in 2.3 compatibility mode.</td>
-    </tr>
-    <tr>
-      <td><b>/</b></td>
-      <td>
-        Matches forward slash. Does not match URI encoded version of forward slash.
-      </td>
-    </tr>
-    <tr>
-      <td><b>\</b><i>x</i></td>
-      <td>
-        In 3.x compatibility mode and starting with 4.2:
-        Matches <i>x</i> or URI encoded version of <i>x</i>. For instance <tt>\*</tt> matches <tt>*</tt>.<br>
-        In 4.0 or 4.1 compatibility mode:
-        <b>\</b> is ignored, <i>x</i> is parsed normally.<br>
-      </td>
-    </tr>
-    <tr>
-      <td><i>expression</i> <b>|</b> <i>expression</i></td>
-      <td>
-        3.2+ mode: This will raise a `Mustermann::ParseError`. While Ruby on Rails happily parses this character, it will result in broken routes due to a buggy implementation.<br>
-        5.0 mode: It will match if any of the nested expressions matches.
-      </td>
-    </tr>
-    <tr>
-      <td><i>any other character</i></td>
-      <td>Matches exactly that character or a URI encoded version of it.</td>
-    </tr>
-  </tbody>
-</table>
+- [`identity`](../docs/patterns/identity.md)
+- [`regexp`](../docs/patterns/regexp.md)
+- [`sinatra`](../docs/patterns/sinatra.md)
+- [`rails`](../docs/patterns/rails.md)
+- [`hybrid`](../docs/patterns/hybrid.md)
