@@ -5,3 +5,8 @@ path '.' do
   Support::Projects.each { |name| gem(name) }
   gem 'support', group: :development
 end
+
+group :benchmark do
+  gem 'addressable'
+  gem 'benchmark'
+end

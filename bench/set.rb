@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-$:.unshift File.expand_path('../lib', __dir__)
+$:.unshift File.expand_path('../mustermann/lib', __dir__)
 
 require 'mustermann'
 require 'mustermann/set'
