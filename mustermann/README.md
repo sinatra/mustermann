@@ -126,7 +126,7 @@ pattern === '/home'    # => true (this allows using it in case statements)
 
 pattern = Mustermann.new('/home', type: :identity)
 pattern.match('/')     # => nil
-pattern.match('/home') # => #<Mustermann::SimpleMatch "/home">
+pattern.match('/home') # => #<Mustermann::Match ...>
 pattern =~ '/home'     # => 0
 pattern === '/home'    # => true (this allows using it in case statements)
 ```
@@ -175,7 +175,7 @@ Peeking gives the option to match a pattern against the beginning of a string ra
 
 * `peek` returns the matching substring.
 * `peek_size` returns the number of characters matching.
-* `peek_match` will return a `MatchData` or `Mustermann::SimpleMatch` (just like `match` does for the full string)
+* `peek_match` will return a `Mustermann::Match` (just like `match` does for the full string)
 * `peek_params` will return the `params` hash parsed from the substring and the number of characters.
 
 All of the above will turn `nil` if there was no match.

@@ -161,7 +161,7 @@ module Mustermann
     #   pattern.peek("/Frank/Sinatra") # => #<MatchData "/Frank" name:"Frank">
     #
     # @param [String] string The string to match against
-    # @return [MatchData, Mustermann::SimpleMatch, nil] MatchData or similar object if the pattern matches.
+    # @return [Mustermann::Match, nil] MatchData or similar object if the pattern matches.
     # @see #peek_params
     def peek_match(string)
       matched = peek(string)
