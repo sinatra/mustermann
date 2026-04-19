@@ -31,22 +31,27 @@ module Mustermann
           [*t(payload, trie, **options), trie]
         end
 
-        translate(:or) do |trie, **options|
-          payload.flat_map { |e| t(e, trie, **options) }
-        end
-
         translate(Array) do |trie, **options|
-          each_with_index do |element, index|
+          i = 0
+          while i < size
+            element = self[i]
             if element.is_a? :char or element.is_a? :separator
               trie = t(element, trie, **options)
-            elsif element.is_a? :splat or !self[index + 1]&.is_a? :separator
-              return trie[t.compile(self[index..-1])]
+              i += 1
+            elsif element.is_a? :splat and self[i + 1]&.is_a? :separator
+              # Compile splat+separator together so the splat is bounded by the separator,
+              # then continue building the trie for the remaining elements.
+              trie = trie[t.compile(self[i..i + 1])]
+              i += 2
+            elsif element.is_a? :splat or !self[i + 1]&.is_a? :separator
+              return trie[t.compile(self[i..-1])]
             else
               trie = t(element, trie, **options)
-              return trie.flat_map { |t| t(self[index + 1..-1], **options) } if trie.is_a? Array
+              return trie.flat_map { |node| t(self[i + 1..-1], node, **options) } if trie.is_a? Array
+              i += 1
             end
-            trie
           end
+          trie
         end
 
         attr_reader :pattern
@@ -78,28 +83,15 @@ module Mustermann
 
       def [](key)
         case key
-        when String
-          case key.size
-          when 0 then self
-          when 1 then @static[key] ||= Trie.new(@set)
-          else self[key[0]][key[1..-1]]
-          end
-        when Regexp
-          @dynamic[key] ||= Trie.new(@set)
-        else
-          raise ArgumentError, "Only String and Regexp keys are supported, but %p was given" % key
+        when String then @static[key] ||= Trie.new(@set)
+        when Regexp then @dynamic[key] ||= Trie.new(@set)
         end
       end
 
       def wire(string, target)
         return if string.empty?
         if string.size == 1
-          existing = @static[string]
-          if existing.nil?
-            @static[string] = target
-          elsif !existing.equal?(target)
-            existing.merge!(target)
-          end
+          @static[string] ||= target
         else
           (@static[string[0]] ||= Trie.new(@set)).wire(string[1..-1], target)
         end
@@ -110,14 +102,23 @@ module Mustermann
         result = [] if all
 
         if node = @static[string[position]]
-          if nested_result = node.match(string, all: false, peek:, position: position + 1, params:)
+          if nested_result = node.match(string, all:, peek:, position: position + 1, params:)
             return nested_result unless all
             result.concat(nested_result)
           end
         end
 
+        anchored = {}
         @dynamic.each do |matcher, node|
-          next unless regexp_match = matcher.match(string[position..-1])
+          remaining = string[position..-1]
+          regexp_match = matcher.match(remaining)
+          # Non-greedy patterns (e.g. splat .*?) can match 0 chars on non-empty input, making
+          # no progress. Retry with an end-of-string anchor so they consume the full remainder.
+          if regexp_match&.to_s&.empty? && !remaining.empty?
+            anchored_matcher = anchored[matcher] ||= Regexp.new(matcher.source + '\z')
+            regexp_match = anchored_matcher.match(remaining)
+          end
+          next unless regexp_match
 
           regexp_match.named_captures.each do |name, value|
             params = params.dup
@@ -131,7 +132,7 @@ module Mustermann
         end
 
         if peek
-          matches = build_matches(string, params, all:, post_match: string[position..-1])
+          matches = build_matches(string[0, position], params, all:, post_match: string[position..])
           return matches unless all
           result.concat(matches)
         end
@@ -162,13 +163,6 @@ module Mustermann
 
       def add(pattern)
         Translator.new(pattern).translate(pattern.to_ast, self)
-      end
-
-      def merge!(other)
-        return if equal?(other)
-        other.patterns.each { |p| @patterns << p unless @patterns.include?(p) }
-        other.static.each  { |k, v| wire(k, v) }
-        other.dynamic.each { |matcher, v| (@dynamic[matcher] ||= Trie.new(@set)).merge!(v) }
       end
     end
 

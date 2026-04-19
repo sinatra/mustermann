@@ -32,17 +32,32 @@ module Mustermann
     # @param (see Mustermann::Pattern#peek_match)
     # @return (see Mustermann::Pattern#peek_match)
     # @see (see Mustermann::Pattern#peek_match)
-    def peek_match(string)
-      @peek_regexp.match(string)
-    end
+    def peek_match(string) = build_match(@peek_regexp.match(string))
+
+    def match(string) = build_match(@regexp.match(string))
+
+    # private
+
+    # def build_match(match)
+    #   return unless match
+    #   Match.new(self, match.string, match.named_captures, post_match: match.post_match, pre_match: match.pre_match)
+    # end
 
     extend Forwardable
-    def_delegators :regexp, :===, :=~, :match, :names, :named_captures
+    def_delegators :regexp, :===, :=~, :names
 
-    def compile(**options)
-      raise NotImplementedError, 'subclass responsibility'
+    private
+
+    def build_match(match)
+      return unless match
+      params = match.regexp.named_captures.to_h do |name, positions|
+        value = positions.size < 2 && !always_array?(name) ? map_param(name, match[name]) :
+          positions.flat_map { |pos| map_param(name, match[pos]) }
+        [name, value]
+      end
+      Match.new(self, match.to_s, params, post_match: match.post_match, pre_match: match.pre_match)
     end
 
-    private :compile
+    def compile(**options) = raise NotImplementedError, 'subclass responsibility'
   end
 end

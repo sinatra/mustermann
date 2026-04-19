@@ -21,7 +21,9 @@ describe Mustermann::Identity do
     it { should_not expand(a: 10)                      }
 
     example do
-      pattern.match('').inspect.should be == '#<Mustermann::SimpleMatch "">'
+      match = pattern.match('')
+      match.should be_a(Mustermann::Match)
+      match.to_s.should be == ''
     end
   end
 

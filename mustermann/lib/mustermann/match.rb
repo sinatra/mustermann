@@ -22,11 +22,11 @@ module Mustermann
     
     def deconstruct_keys(keys) = keys.to_h { |key| [key, self[key]] }
 
-    def hash = pattern.hash ^ string.hash ^ values.hash ^ params.hash
-    
+    def hash = pattern.hash ^ string.hash ^ params.hash
+
     def eql?(other)
       return false unless other.is_a? self.class
-      pattern == other.pattern && string == other.string && params == other.params && value == other.value
+      pattern == other.pattern && string == other.string && params == other.params
     end
 
     def values_at(*keys) = keys.map { |key| self[key] }
@@ -34,10 +34,6 @@ module Mustermann
     alias == eql?
     alias to_s string
     alias to_h params
-    alias captures params
 
-    private
-
-    def evaluate(value) = value.is_a?(Proc) ? value.call : value
   end
 end

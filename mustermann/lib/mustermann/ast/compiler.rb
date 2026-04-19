@@ -125,17 +125,14 @@ module Mustermann
       # @!visibility private
       def self.char_representations(char, uri_decode: true, space_matches_plus: true)
         if char == " " and space_matches_plus
-          return [" ", "+"] unless uri_decode
           @space_and_plus ||= char_representations(" ", space_matches_plus: false) +
             char_representations("+", space_matches_plus: false)
-        elsif uri_decode
+        else
           @char_representations ||= {}
           @char_representations[char] ||= begin
             escaped = URI_PARSER.escape(char, /./)
             [char, escaped.upcase, escaped.downcase].uniq
           end
-        else
-          [char]
         end
       end
 

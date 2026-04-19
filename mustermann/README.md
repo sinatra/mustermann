@@ -41,6 +41,7 @@ pattern.params('/a/b.c') # => { "prefix" => "a", splat => ["b", "c"] }
 
 These features are included in the library, but not loaded by default
 
+* **[Pattern Set](#-pattern-set):** A collection of patterns with associated values, designed for building routing tables that dispatch efficiently as the number of routes grows.
 * **[Mapper](#-mapper):** A simple tool for mapping one string to another based on patterns.
 * **[Sinatra Integration](#-sinatra-integration):** Mustermann can be used as a [Sinatra](http://www.sinatrarb.com/) extension. Sinatra 2.0 and beyond will use Mustermann by default.
 
@@ -123,16 +124,12 @@ pattern.match('/')     # => nil
 pattern.match('/home') # => #<MatchData "/home" page:"home">
 pattern =~ '/home'     # => 0
 pattern === '/home'    # => true (this allows using it in case statements)
-pattern.names          # => ['page']
-pattern.names          # => {"page"=>[1]}
 
 pattern = Mustermann.new('/home', type: :identity)
 pattern.match('/')     # => nil
 pattern.match('/home') # => #<Mustermann::SimpleMatch "/home">
 pattern =~ '/home'     # => 0
 pattern === '/home'    # => true (this allows using it in case statements)
-pattern.names          # => []
-pattern.names          # => {}
 ```
 
 Moreover, patterns based on regular expressions (all but `identity` and `shell`) automatically convert to regular expressions when needed:
@@ -372,6 +369,119 @@ mapper = Mustermann::Mapper.new("/:page(.:format)?" => ["/:page/view.:format", "
 mapper['/foo']     # => "/foo/view.html"
 mapper['/foo.xml'] # => "/foo/view.xml"
 mapper['/foo/bar'] # => "/foo/bar"
+```
+
+<a name="-pattern-set"></a>
+## Pattern Set
+
+`Mustermann::Set` is a collection of patterns where each pattern is associated with an arbitrary value — typically a handler or action. A single call to `match` returns both the captured parameters and the value for the first matching pattern, making it straightforward to build a routing table.
+
+``` ruby
+require 'mustermann/set'
+
+set = Mustermann::Set.new
+set.add('/users/:id',  :users_show)
+set.add('/posts/:id',  :posts_show)
+set.add('/posts',      :posts_index)
+
+m = set.match('/users/42')
+m.value         # => :users_show
+m.params['id']  # => '42'
+
+set.match('/unknown')  # => nil
+```
+
+You can supply the initial mapping directly to the constructor:
+
+``` ruby
+set = Mustermann::Set.new(
+  '/users/:id' => :users_show,
+  '/posts/:id' => :posts_show
+)
+```
+
+Or use a block for imperative setup:
+
+``` ruby
+set = Mustermann::Set.new do |s|
+  s.add('/users/:id', :users_show)
+  s.add('/posts/:id', :posts_show)
+end
+```
+
+Pattern options such as `type:` are passed as keyword arguments and apply to all patterns in the set:
+
+``` ruby
+set = Mustermann::Set.new(type: :rails)
+set.add('/:controller(/:action(/:id))', :route)
+```
+
+### Values
+
+Each pattern can be associated with multiple values. `match` returns the first, while `match_all` returns one match per value:
+
+``` ruby
+set = Mustermann::Set.new
+set.add('/users/:id', :admin_handler, :user_handler)
+
+set.match('/users/1').value            # => :admin_handler
+set.match_all('/users/1').map(&:value) # => [:admin_handler, :user_handler]
+```
+
+When no value is given, a match still succeeds but `value` is `nil`:
+
+``` ruby
+set = Mustermann::Set.new
+set.add('/ping')
+set.match('/ping').value  # => nil
+```
+
+### Conflict Resolution
+
+The set follows insertion order: when two patterns both match a string, the one added first wins. Use `match_all` to retrieve every match:
+
+``` ruby
+set = Mustermann::Set.new
+set.add('/foo',  :static)
+set.add('/:var', :dynamic)
+
+set.match('/foo').value            # => :static
+set.match_all('/foo').map(&:value) # => [:static, :dynamic]
+```
+
+### Peeking
+
+`peek_match` matches a prefix of the input rather than the full string. The unmatched remainder is available via `post_match`:
+
+``` ruby
+set = Mustermann::Set.new
+set.add('/users/:id', :users)
+
+m = set.peek_match('/users/42/posts')
+m.to_s        # => '/users/42'
+m.post_match  # => '/posts'
+m.value       # => :users
+```
+
+`peek_match_all` returns every pattern that matches a prefix:
+
+``` ruby
+results = set.peek_match_all('/users/42/posts')
+results.map(&:value)      # => [:users]
+results.map(&:post_match) # => ['/posts']
+```
+
+### Expanding
+
+A set can generate strings from parameter hashes using the same interface as individual pattern expansion:
+
+``` ruby
+set = Mustermann::Set.new
+set.add('/users/:id', :users)
+set.add('/posts/:id', :posts)
+
+set.expand(id: '5')          # => '/users/5'  (first applicable pattern)
+set.expand(:posts, id: '5')  # => '/posts/5'  (patterns for a specific value)
 ```
 
 <a name="-sinatra-integration"></a>
@@ -690,6 +800,12 @@ When using a pattern instead of a regular expression for string matching, perfor
 In certain cases, Mustermann might outperform naive, equivalent regular expressions. It achieves this by using look-ahead and atomic groups in ways that work well with a backtracking, NFA-based regular expression engine (such as the Oniguruma/Onigmo engine used by Ruby). It can be difficult and error prone to construct complex regular expressions using these techniques by hand. This only applies to patterns generating an AST internally (all but [identity](#-pattern-details-identity), [shell](#-pattern-details-shell), [simple](#-pattern-details-simple) and [regexp](#-pattern-details-regexp) patterns).
 
 When using a Mustermann pattern as a direct Regexp replacement (ie, via methods like `=~`, `match` or `===`), the overhead will be a single method dispatch, which some Ruby implementations might even eliminate with method inlining. This only applies to patterns using a regular expression internally (all but [identity](#-pattern-details-identity) and [shell](#-pattern-details-shell) patterns).
+
+### Routing
+
+`Mustermann::Set` uses a trie (prefix tree) internally to match incoming strings against a table of patterns. Rather than testing every route in sequence, the trie walks the input path one character at a time and considers only the routes sharing the current prefix. This means dispatch time grows far more slowly than a linear scan as the number of routes increases, making it well suited to applications with large routing tables.
+
+Matching and expansion on a set are thread-safe once the set has been built. Adding patterns is not thread-safe, so the recommended practice is to populate the set during application startup and treat it as read-only during request handling.
 
 ### Expanding
 
