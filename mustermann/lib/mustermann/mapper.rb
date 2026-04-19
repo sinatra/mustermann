@@ -61,11 +61,7 @@ module Mustermann
     end
 
     # @return [Hash{Patttern: Expander}] Hash version of the mapper.
-    def to_h
-      @set.patterns.each_with_object({}) do |pattern, h|
-        h[pattern] = @set.values_for_pattern(pattern).first
-      end
-    end
+    def to_h = @set.patterns.to_h { [_1, @set[_1]] }
 
     # Convert a string according to mappings. You can pass in additional params.
     #
@@ -73,12 +69,9 @@ module Mustermann
     #   mapper = Mustermann::Mapper.new("/:example" => "(/:prefix)?/:example.html")
     #
     def convert(input, values = {})
-      @set.patterns.inject(input) do |current, pattern|
-        @set.values_for_pattern(pattern).inject(current) do |str, expander|
-          params = pattern.params(str)
-          params &&= Hash[values.merge(params).map { |k, v| [k.to_s, v] }]
-          expander.expandable?(params) ? expander.expand(params) : str
-        end
+      @set.match_all(input).inject(input) do |current, m|
+        params = Hash[values.merge(m.params).map { |k, v| [k.to_s, v] }]
+        m.value.expandable?(params) ? m.value.expand(params) : current
       end
     end
 
