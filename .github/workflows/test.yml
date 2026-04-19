@@ -10,7 +10,7 @@ on:
 
 jobs:
   test:
-    name: ruby ${{ matrix.ruby }}, sinatra ${{ matrix.sinatra }}
+    name: ruby ${{ matrix.ruby }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
@@ -20,17 +20,11 @@ jobs:
           - '3.3'
           - '3.4'
           - '4.0'
-        sinatra:
-          - ~> 4.0.0 # current stable
-        include:
-          - { ruby: 3.4, sinatra: head }
-          - { ruby: head, sinatra: head }
-          - { ruby: jruby, sinatra: ~> 4.0.0 }
-          - { ruby: jruby-head, sinatra: head }
-          - { ruby: truffleruby, sinatra: ~> 4.0.0 }
-          - { ruby: truffleruby-head, sinatra: head }
-    env:
-      sinatra: ${{ matrix.sinatra }}
+          - head
+          - jruby
+          - jruby-head
+          - truffleruby
+          - truffleruby-head
     steps:
     - uses: actions/checkout@v4
 

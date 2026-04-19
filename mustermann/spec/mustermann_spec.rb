@@ -66,15 +66,6 @@ describe Mustermann do
     example { expect { Mustermann[:expander] }.to raise_error(ArgumentError, "unsupported type :expander") }
   end
 
-  describe :extend_object do
-    context 'special behavior for Sinatra only' do
-      example { Object  .new.extend(Mustermann).should     be_a(Mustermann)            }
-      example { Class   .new.extend(Mustermann).should     be_a(Mustermann)            }
-
-      example { expect { Sinatra.new.extend(Mustermann) }.to raise_error(RuntimeError, "Mustermann extension for Sinatra has been extracted into its own gem. More information at https://github.com/sinatra/mustermann-sinatra-extension") }
-    end
-  end
-
   describe :=== do
     example { Mustermann.should be === Mustermann.new("") }
   end
