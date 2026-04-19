@@ -644,5 +644,12 @@ describe Mustermann::Rails do
         it { should match('bar') }
       end
     end
+
+    context '8.1' do
+      pattern 'foo|bar', version: '8.1' do
+        it { should match('foo') }
+        it { should match('bar') }
+      end
+    end
   end
 end
