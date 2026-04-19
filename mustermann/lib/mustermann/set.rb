@@ -294,6 +294,9 @@ module Mustermann
       expander(value).expand(behavior || @additional_values, values || {})
     end
 
+    # @return [Boolean] whether the set contains any pattern associated with the given value
+    def has_value?(value) = @reverse_mapping[value]&.any?
+
     # @!visibility private
     def values_for_pattern(pattern) = @mapping[pattern] # :nodoc:
 
