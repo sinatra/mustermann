@@ -30,6 +30,7 @@ Mustermann follows [Semantic Versioning 2.0](http://semver.org/). Anything docum
 
 * Drop support for Ruby before 3.3.0 (all EOL now).
 * Improve documentation. Add more examples and explanations. Split individual pattern types into separate pages.
+* Document how to implement custom pattern types.
 * Add code of conduct and contributing guidelines. Add AI policy.
 
 ## Stable Releases
