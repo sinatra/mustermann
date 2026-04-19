@@ -160,7 +160,7 @@ Any software using Mustermann is obviously compatible with at least one of the a
 
 ## Requirements
 
-Ruby 2.7+ compatible Ruby implementation (MRI, JRuby, and TruffleRuby are tested).
+Ruby 3.3+ compatible Ruby implementation (MRI, JRuby, and TruffleRuby are tested).
 
 ## Release History
 

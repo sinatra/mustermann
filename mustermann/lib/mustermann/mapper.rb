@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 require 'mustermann'
 require 'mustermann/expander'
+require 'mustermann/set'
 
 module Mustermann
   # A mapper allows mapping one string to another based on pattern parsing and expanding.
@@ -42,9 +43,9 @@ module Mustermann
     #     require 'mustermann/mapper'
     #     Mustermann::Mapper.new({"/:foo" => "/:foo.html"}, type: :rails)
     def initialize(map = {}, additional_values: :ignore, **options, &block)
-      @map               = []
       @options           = options
       @additional_values = additional_values
+      @set               = Set.new(use_trie: false, use_cache: false, **options)
       block.arity == 0 ? update(yield) : yield(self) if block
       update(map) if map
     end
@@ -54,15 +55,16 @@ module Mustermann
     # @param map [Hash{String, Pattern: String, Pattern, Arry<String, Pattern>, Expander}] the mapping
     def update(map)
       map.to_h.each_pair do |input, output|
-        input  = Mustermann.new(input, **@options)
         output = Expander.new(*output, additional_values: @additional_values, **@options) unless output.is_a? Expander
-        @map << [input, output]
+        @set.add(input, output)
       end
     end
 
     # @return [Hash{Patttern: Expander}] Hash version of the mapper.
     def to_h
-      Hash[@map]
+      @set.patterns.each_with_object({}) do |pattern, h|
+        h[pattern] = @set.values_for_pattern(pattern).first
+      end
     end
 
     # Convert a string according to mappings. You can pass in additional params.
@@ -71,10 +73,12 @@ module Mustermann
     #   mapper = Mustermann::Mapper.new("/:example" => "(/:prefix)?/:example.html")
     #
     def convert(input, values = {})
-      @map.inject(input) do |current, (pattern, expander)|
-        params = pattern.params(current)
-        params &&= Hash[values.merge(params).map { |k,v| [k.to_s, v] }]
-        expander.expandable?(params) ? expander.expand(params) : current
+      @set.patterns.inject(input) do |current, pattern|
+        @set.values_for_pattern(pattern).inject(current) do |str, expander|
+          params = pattern.params(str)
+          params &&= Hash[values.merge(params).map { |k, v| [k.to_s, v] }]
+          expander.expandable?(params) ? expander.expand(params) : str
+        end
       end
     end
 
