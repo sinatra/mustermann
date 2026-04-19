@@ -647,34 +647,16 @@ By setting `ignore_unknown_options` to `true`, it will happily ignore the option
 <a name="-performance"></a>
 ## Performance
 
-It's generally a good idea to reuse pattern objects, since as much computation as possible is happening during object creation, so that the actual matching or expanding is quite fast.
+Mustermann is designed so that as much work as possible happens at object-creation time, keeping matching and expansion fast at request time. Pattern objects should be treated as immutable; their internals are optimized for both speed and low memory usage.
 
-Pattern objects should be treated as immutable. Their internals have been designed for both performance and low memory usage. To reduce pattern compilation, `Mustermann.new` and `Mustermann::Pattern.new` might return the same instance when given the same arguments, if that instance has not yet been garbage collected. However, this is not guaranteed, so do not rely on object identity.
+Key points:
 
-### String Matching
+* **Pattern caching:** `Mustermann.new` may return the same instance for identical arguments while that instance is still alive. Do not rely on object identity.
+* **Single-pattern matching:** AST-based patterns (sinatra, rails, hybrid, template, flask) use bounded character classes, negative look-ahead, and non-greedy splats to avoid unnecessary backtracking in Ruby's Oniguruma engine. Using a pattern as a `Regexp` replacement adds at most one method-dispatch of overhead.
+* **Routing with `Mustermann::Set`:** Uses a trie (prefix tree) for large tables. Rather than checking every route in sequence, the trie walks the input one character at a time, sharing prefix traversal across all patterns that start with the same characters. Dispatch time grows far more slowly than a linear scan. A `use_trie:` threshold (default 50) controls when the switch happens, and an optional `ObjectSpace::WeakKeyMap` cache avoids re-matching the same string.
+* **Expansion:** Most computation is shifted to compile time. Memory grows linearly with the number of optional-key combinations in a pattern.
 
-When using a pattern instead of a regular expression for string matching, performance will usually be comparable.
-
-In certain cases, Mustermann might outperform naive, equivalent regular expressions. It achieves this by using look-ahead and atomic groups in ways that work well with a backtracking, NFA-based regular expression engine (such as the Oniguruma/Onigmo engine used by Ruby). It can be difficult and error prone to construct complex regular expressions using these techniques by hand. This only applies to patterns generating an AST internally (all but [identity](../docs/patterns/identity.md), [shell](../docs/patterns/shell.md), [simple](../docs/patterns/simple.md) and [regexp](../docs/patterns/regexp.md) patterns).
-
-When using a Mustermann pattern as a direct Regexp replacement (ie, via methods like `=~`, `match` or `===`), the overhead will be a single method dispatch, which some Ruby implementations might even eliminate with method inlining. This only applies to patterns using a regular expression internally (all but [identity](../docs/patterns/identity.md) and [shell](../docs/patterns/shell.md) patterns).
-
-### Routing
-
-`Mustermann::Set` uses a trie (prefix tree) internally to match incoming strings against a table of patterns. Rather than testing every route in sequence, the trie walks the input path one character at a time and considers only the routes sharing the current prefix. This means dispatch time grows far more slowly than a linear scan as the number of routes increases, making it well suited to applications with large routing tables.
-
-Matching and expansion on a set are thread-safe once the set has been built. Adding patterns is not thread-safe, so the recommended practice is to populate the set during application startup and treat it as read-only during request handling.
-
-### Expanding
-
-Pattern expansion significantly outperforms other, widely used Ruby tools for generating URLs from URL patterns in most use cases.
-
-This comes with a few trade-offs:
-
-* As with pattern compilation, as much computation as possible has been shifted to compiling expansion rules. This will add compilation overhead, which is why patterns only generate these rules on the first invocation to `Mustermann::Pattern#expand`. Create a `Mustermann::Expander` instance yourself to get better control over the point in time this computation should happen.
-* Memory is sacrificed in favor of performance: The size of the expander object will grow linear with the number of possible combination for expansion keys ("/:foo/:bar" has one such combination, but "/(:foo/)?:bar?" has four)
-* Parsing a params hash from a string generated from another params hash might not result in two identical hashes, and vice versa. Specifically, expanding ignores capture constraints, type casting and greediness.
-* Partial expansion is (currently) not supported.
+See **[docs/performance.md](../docs/performance.md)** for a detailed explanation of each optimization, the linear vs. trie trade-off, caching, thread-safety, and benchmark guidance.
 
 ## Details on Pattern Types
 
