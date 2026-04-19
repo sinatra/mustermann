@@ -42,7 +42,6 @@ pattern.params('/a/b.c') # => { "prefix" => "a", splat => ["b", "c"] }
 These features are included in the library, but not loaded by default
 
 * **[Pattern Set](#-pattern-set):** A collection of patterns with associated values, designed for building routing tables that dispatch efficiently as the number of routes grows.
-* **[Mapper](#-mapper):** A simple tool for mapping one string to another based on patterns.
 * **[Sinatra Integration](#-sinatra-integration):** Mustermann can be used as a [Sinatra](http://www.sinatrarb.com/) extension. Sinatra 2.0 and beyond will use Mustermann by default.
 
 <a name="-pattern-types"></a>
@@ -354,21 +353,6 @@ require 'mustermann'
 list    = ["foo", "example@email.com", "bar"]
 pattern = Mustermann.new(":name@:domain.:tld")
 email   = list.detect(&pattern) # => "example@email.com"
-```
-
-<a name="-mapper"></a>
-## Mapper
-
-
-You can use a mapper to transform strings according to two or more mappings:
-
-``` ruby
-require 'mustermann/mapper'
-
-mapper = Mustermann::Mapper.new("/:page(.:format)?" => ["/:page/view.:format", "/:page/view.html"])
-mapper['/foo']     # => "/foo/view.html"
-mapper['/foo.xml'] # => "/foo/view.xml"
-mapper['/foo/bar'] # => "/foo/bar"
 ```
 
 <a name="-pattern-set"></a>

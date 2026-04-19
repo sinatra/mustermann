@@ -258,6 +258,52 @@ Mustermann::FileUtils.cp_r(':base.:ext' => ':base.bak.:ext')
 Mustermann::FileUtils.ln_s('lib/:name.rb' => 'bin/:name')
 ```
 
+<a name="-mustermann-mapper"></a>
+# Mapper for Mustermann
+
+## Overview
+
+`Mustermann::Mapper` transforms strings according to a set of pattern mappings. Each mapping pairs an input pattern (used to extract parameters) with one or more output patterns (used to expand the result). All mappings that match are applied in insertion order.
+
+``` ruby
+require 'mustermann/mapper'
+
+mapper = Mustermann::Mapper.new("/:page(.:format)?" => ["/:page/view.:format", "/:page/view.html"])
+mapper['/foo']     # => "/foo/view.html"
+mapper['/foo.xml'] # => "/foo/view.xml"
+mapper['/foo/bar'] # => "/foo/bar"
+```
+
+You can also pass additional values at conversion time to supplement or override captured parameters:
+
+``` ruby
+mapper = Mustermann::Mapper.new("/:example" => "(/:prefix)?/:example.html")
+mapper['/foo', prefix: 'en']  # => "/en/foo.html"
+```
+
+## Building a Mapper
+
+Mappings can be supplied as a hash, added via `[]=`, or built with a block:
+
+``` ruby
+# Hash argument
+mapper = Mustermann::Mapper.new("/:a" => "/:a.html", "/:a/:b" => "/:b/:a")
+
+# Block (zero-argument, returns a hash)
+mapper = Mustermann::Mapper.new { { "/:a" => "/:a.html" } }
+
+# Block (one-argument, imperative)
+mapper = Mustermann::Mapper.new do |m|
+  m["/:a"] = "/:a.html"
+end
+
+# Incremental
+mapper = Mustermann::Mapper.new
+mapper["/:a"] = "/:a.html"
+```
+
+The output value may be a String, a `Mustermann::Pattern`, an `Array` of either (tried in order until one expands successfully), or a `Mustermann::Expander` directly.
+
 <a name="-mustermann-flask"></a>
 # Flask Syntax for Mustermann
 
