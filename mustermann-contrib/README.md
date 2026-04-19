@@ -805,6 +805,43 @@ You can also pass in default options for ad hoc patterns when creating the scann
 scanner = Mustermann::StringScanner.new(input, type: :shell)
 ```
 
+<a name="-mustermann-to-pattern"></a>
+# `to_pattern` for Mustermann
+
+## Overview
+
+`mustermann/to_pattern` adds a `to_pattern` method to `String`, `Symbol`, `Regexp`, `Array`, and `Mustermann::Pattern`, and provides the `Mustermann::ToPattern` mixin so you can add the same method to your own classes.
+
+``` ruby
+require 'mustermann/to_pattern'
+
+"/foo".to_pattern               # => #<Mustermann::Sinatra:"/foo">
+"/foo".to_pattern(type: :rails) # => #<Mustermann::Rails:"/foo">
+%r{/foo}.to_pattern             # => #<Mustermann::Regular:"\\/foo">
+"/foo".to_pattern.to_pattern    # => #<Mustermann::Sinatra:"/foo">
+```
+
+## `Mustermann::ToPattern` mixin
+
+Include `Mustermann::ToPattern` in any class to get a `to_pattern` method driven by its `to_s` output:
+
+``` ruby
+require 'mustermann/to_pattern'
+
+class MyRoute
+  include Mustermann::ToPattern
+
+  def to_s
+    "/users/:id"
+  end
+end
+
+MyRoute.new.to_pattern               # => #<Mustermann::Sinatra:"/users/:id">
+MyRoute.new.to_pattern(type: :rails) # => #<Mustermann::Rails:"/users/:id">
+```
+
+If your class wraps another object (via `__getobj__`, as in `Delegator` subclasses), `to_pattern` will unwrap it before converting.
+
 <a name="-mustermann-uri-template"></a>
 # URI Template Syntax for Mustermann
 
