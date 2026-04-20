@@ -14,7 +14,7 @@ describe Mustermann::Router do
       router = described_class.new
       status, headers, = router.call(env(path: '/missing'))
       expect(status).to eq 404
-      expect(headers['X-Cascade']).to eq 'pass'
+      expect(headers['x-cascade']).to eq 'pass'
     end
 
     it 'is frozen' do
@@ -93,7 +93,7 @@ describe Mustermann::Router do
       router = described_class.new
       status, headers, = router.call(env)
       expect(status).to eq 404
-      expect(headers['X-Cascade']).to eq 'pass'
+      expect(headers['x-cascade']).to eq 'pass'
     end
 
     it 'returns a mutable response from the default fallback so middleware can modify it' do
