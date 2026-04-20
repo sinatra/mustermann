@@ -24,7 +24,8 @@ Mustermann follows [Semantic Versioning 2.0](http://semver.org/). Anything docum
 
  | Scenario                    | Improvement over 3.1 |
  | --------------------------- | -------------------- |
- | Pattern compilation         | 30% speedup          |
+ | Simple pattern compilation  | 6x speedup           |
+ | Complex pattern compilation | 30% speedup          |
  | Matching `/:a`              | Same performance     |
  | Matching `/:a:b?`           | 8x speedup           |
  | Matching against 1k routes  | 10x to 25x speedup   |
@@ -32,7 +33,7 @@ Mustermann follows [Semantic Versioning 2.0](http://semver.org/). Anything docum
 
  Numbers are based on simple and realistic patterns run on MRI Ruby 4.0.2 on a MacBook Pro. The improvements you will see may vary based on your Ruby implementation, platform and patterns used.
 
-* Small to moderate improvements for compiling most patterns.
+* Small to moderate improvements for compiling complex patterns. Major improvements for simple patterns (`/resource/:id`), which are common in Sinatra and Rails applications.
 * Automatically switch between different matching algorithms for `Mustermann::Set` based on number of patterns. This makes it blazing fast both for small and large sets of patterns.
 * Major performance improvements for `Mustermann::Mapper`, as it is based on `Mustermann::Set` now, and can dispatch in logarithmic time instead of linear time.
 * Major speed improvements for sub-segment patterns with optional elements (like a format at the end of a path). These patterns are common in Sinatra and Rails applications.

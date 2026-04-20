@@ -46,6 +46,7 @@ when String
   $LOAD_PATH.unshift File.expand_path(version)
 else
   scenarios.each do |step, title|
+    next unless ARGV.empty? or ARGV.include?(step.to_s)
     puts "", title, "", "       user       system     total    real"
     ["bundler", *known_versions].each do |version|
       env = { "MUSTERMANN_VERSION" => version }

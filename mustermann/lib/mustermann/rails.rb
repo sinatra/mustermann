@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 require 'mustermann'
 require 'mustermann/ast/pattern'
+require 'mustermann/ast/fast_pattern'
 require 'mustermann/versions'
 
 module Mustermann
@@ -12,6 +13,7 @@ module Mustermann
   # @see Mustermann::Pattern
   # @see file:README.md#rails Syntax description in the README
   class Rails < AST::Pattern
+    include AST::FastPattern
     extend Versions
     register :rails
 

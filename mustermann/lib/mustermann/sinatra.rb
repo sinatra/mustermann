@@ -2,6 +2,7 @@
 require 'mustermann'
 require 'mustermann/identity'
 require 'mustermann/ast/pattern'
+require 'mustermann/ast/fast_pattern'
 require 'mustermann/sinatra/parser'
 require 'mustermann/sinatra/safe_renderer'
 require 'mustermann/sinatra/try_convert'
@@ -15,6 +16,7 @@ module Mustermann
   # @see Mustermann::Pattern
   # @see file:README.md#sinatra Syntax description in the README
   class Sinatra < AST::Pattern
+    include AST::FastPattern
     include Concat::Native
     register :sinatra
 
