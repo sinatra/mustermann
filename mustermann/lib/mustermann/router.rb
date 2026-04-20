@@ -11,7 +11,7 @@ module Mustermann
   #   router = Mustermann::Router.new do
   #     get "/hello/:name" do |env|
   #       name = env["mustermann.match"][:name]
-  #       [200, { "Content-Type" => "text/plain" }, ["Hello, #{name}!"]]
+  #       [200, { "content-type" => "text/plain" }, ["Hello, #{name}!"]]
   #     end
   #   end
   #
@@ -38,7 +38,7 @@ module Mustermann
   # @see Mustermann::Set
   # @see https://rack.github.io/rack/
   class Router
-    NOT_FOUND = [404, { "Content-Type" => "text/plain", "X-Cascade" => "pass" }, ["Not found"]].freeze
+    NOT_FOUND = [404, { "content-type" => "text/plain", "x-cascade" => "pass" }, ["Not found"]].freeze
     VERBS     = %w[GET HEAD POST PUT PATCH DELETE OPTIONS LINK UNLINK].freeze
     private_constant :VERBS, :NOT_FOUND
 
@@ -49,7 +49,7 @@ module Mustermann
       @key      = key
       @sets     = VERBS.to_h { |verb| [verb, Set.new] }
       @options  = options
-      @fallback = fallback || ->(env) { NOT_FOUND }
+      @fallback = fallback || ->(env) { NOT_FOUND.dup }
       instance_exec(&block) if block_given?
     end
 

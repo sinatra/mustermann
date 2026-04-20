@@ -96,6 +96,12 @@ describe Mustermann::Router do
       expect(headers['X-Cascade']).to eq 'pass'
     end
 
+    it 'returns a mutable response from the default fallback so middleware can modify it' do
+      router = described_class.new
+      response = router.call(env(path: '/missing'))
+      expect(response).not_to be_frozen
+    end
+
     it 'accepts a callable as the first positional argument' do
       custom = ->(_env) { [503, {}, ['down']] }
       router = described_class.new(custom)
