@@ -23,6 +23,8 @@ module Mustermann
         end
         result
       end
+
+      def optimize! = nil
     end
 
     private_constant :Linear

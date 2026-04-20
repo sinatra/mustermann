@@ -50,14 +50,18 @@ module Mustermann
       @sets     = VERBS.to_h { |verb| [verb, Set.new] }
       @options  = options
       @fallback = fallback || ->(env) { NOT_FOUND.dup }
-      instance_exec(&block) if block_given?
+
+      if block_given?
+        instance_exec(&block)
+        @sets.each_value(&:optimize!)
+      end
     end
 
     # @param env [Hash] The Rack environment hash for the request.
     # @return [Array] The Rack response array (status, headers, body).
     def call(env)
       if routes = @sets[env["REQUEST_METHOD"]] and match = routes.match(env["PATH_INFO"] || "/")
-        env = env.merge(@key => match)
+        env[@key] = match
         return match.value.call(env)
       end
       @fallback.call(env)

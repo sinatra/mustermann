@@ -89,6 +89,8 @@ module Mustermann
       update(mapping)
 
       block.arity == 0 ? update(yield) : yield(self) if block
+
+      optimize!
     end
 
     # Adds a pattern to the set, optionally associated with one or more values.
@@ -299,6 +301,9 @@ module Mustermann
 
     # @!visibility private
     def values_for_pattern(pattern) = @mapping[pattern] # :nodoc:
+
+    # Runs trie optimizations pro-actively and explicitly rather than at match time.
+    def optimize! = @matcher&.optimize!
 
     protected
 

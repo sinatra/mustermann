@@ -358,6 +358,7 @@ module Mustermann
     # @!visibility private
     def unescape(string, decode = uri_decode)
       return string unless decode and string
+      return string unless string.include?('%')
       @@uri.unescape(string)
     end
 
@@ -367,6 +368,13 @@ module Mustermann
     # @!visibility private
     def always_array?(key)
       ALWAYS_ARRAY.include? key
+    end
+
+    # @api private
+    # Returns true if params can be used as-is without calling map_param.
+    # Used by Set::Trie to skip building a redundant copy of the params hash.
+    def identity_params?(params)
+      !params.any? { |k, v| v.is_a?(Array) || always_array?(k) || (v.respond_to?(:include?) && v.include?('%')) }
     end
 
     private :unescape, :map_param, :respond_to_special?

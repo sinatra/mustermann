@@ -9,20 +9,25 @@ module Mustermann
       def self.new(matcher) = defined?(ObjectSpace::WeakKeyMap) ? super : matcher
 
       def initialize(matcher)
-        @matcher = matcher
-        @caches = {}
+        @matcher     = matcher
+        @match_cache = ObjectSpace::WeakKeyMap.new
       end
 
       def add(pattern)
         @matcher.add(pattern)
-        @caches.clear
+        @match_cache = ObjectSpace::WeakKeyMap.new
       end
 
-      def match(string, **options)
-        cache  = @caches[options] ||= ObjectSpace::WeakKeyMap.new
-        result = cache[string]    ||= @matcher.match(string, **options) || PLACEHOLDER
-        result unless result.equal? PLACEHOLDER
+      def match(string, all: false, peek: false)
+        if all || peek
+          @matcher.match(string, all:, peek:)
+        else
+          result = @match_cache[string] ||= @matcher.match(string) || PLACEHOLDER
+          result unless result.equal? PLACEHOLDER
+        end
       end
+
+      def optimize! = @matcher.optimize!
     end
 
     private_constant :Cache

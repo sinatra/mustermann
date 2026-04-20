@@ -23,6 +23,11 @@ module Mustermann
       instance_delegate %i[parser compiler transformer validation template_generator param_scanner boundaries] => 'self.class'
       instance_delegate parse: :parser, transform: :transformer, validate: :validation,
         generate_templates: :template_generator, scan_params: :param_scanner, set_boundaries: :boundaries
+      
+      # @api private
+      def self.ast_cache
+        @ast_cache ||= EqualityMap.new
+      end
 
       # @api private
       # @return [#parse] parser object for pattern
@@ -96,13 +101,14 @@ module Mustermann
       # Internal AST representation of pattern.
       # @!visibility private
       def to_ast
-        @ast_cache ||= EqualityMap.new
-        @ast_cache.fetch(@string) do
+        ast = self.class.ast_cache.fetch(@string) do
           ast   = parse(@string, pattern: self)
           ast &&= transform(ast)
           ast &&= set_boundaries(ast, string: @string)
           validate(ast)
         end
+        @param_converters ||= scan_params(ast) if ast
+        ast
       end
 
       # All AST-based pattern implementations support expanding.
@@ -138,6 +144,11 @@ module Mustermann
       # @!visibility private
       def param_converters
         @param_converters ||= scan_params(to_ast)
+      end
+
+      # @api private
+      def identity_params?(params)
+        param_converters.empty? && super
       end
 
       private :compile, :parse, :transform, :validate, :generate_templates, :param_converters, :scan_params, :set_boundaries

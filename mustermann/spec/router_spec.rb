@@ -76,13 +76,13 @@ describe Mustermann::Router do
       expect(body).to eq ['world']
     end
 
-    it 'does not mutate the original env hash' do
+    it 'stores the match in the env hash' do
       router = described_class.new do
         get('/foo') { |_e| [200, {}, []] }
       end
       original = env(path: '/foo')
       router.call(original)
-      expect(original).not_to have_key('mustermann.match')
+      expect(original).to have_key('mustermann.match')
     end
   end
 

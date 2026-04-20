@@ -242,6 +242,14 @@ describe Mustermann::Set do
         values = set.match_all('/foo').map(&:value)
         expect(values).to contain_exactly(:static, :dynamic)
       end
+
+      it 'match_all works with constrained captures (regex path)' do
+        s = described_class.new(use_trie:, use_cache: false, capture: { id: /\d+/ })
+        s.add('/:id', :handler)
+        results = s.match_all('/42')
+        expect(results.map(&:value)).to eq [:handler]
+        expect(results.first.params['id']).to eq '42'
+      end
     end
 
     # ── complex patterns ─────────────────────────────────────────────────────
@@ -457,6 +465,18 @@ describe Mustermann::Set do
       set.match('/bar')  # populate cache with nil result
       set.add('/bar', :second)
       expect(set.match('/bar').value).to eq :second
+    end
+
+    it 'supports match_all with cache enabled' do
+      set = described_class.new(use_trie: false, use_cache: true)
+      set.add('/:name', :handler)
+      expect(set.match_all('/foo').map(&:value)).to eq [:handler]
+    end
+
+    it 'supports peek_match with cache enabled' do
+      set = described_class.new(use_trie: false, use_cache: true)
+      set.add('/:name', :handler)
+      expect(set.peek_match('/foo/extra').value).to eq :handler
     end
   end
 end
