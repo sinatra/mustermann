@@ -66,19 +66,21 @@ require "benchmark"
 require "mustermann"
 require "mustermann/version"
 
+version = Mustermann::VERSION[/^(\d+\.\d+\.\d+)/]
+
 Benchmark.benchmark do |x|
   case ARGV.shift
   when "compile"
     element = String.new("a")
     100.times { Mustermann.new("/#{element.succ!}/:bar") }
-    x.report(Mustermann::VERSION) { counts[:compile].times { Mustermann.new("/#{element.succ!}/:bar") } }
+    x.report(version) { counts[:compile].times { Mustermann.new("/#{element.succ!}/:bar") } }
 
   when "single_match"
     pattern = Mustermann.new("/foo/:bar")
     element = String.new("a")
     100.times { pattern.match("/foo/#{element.succ!}") }
     strings = counts[:single_match].times.map { "/foo/#{element.succ!}" }
-    x.report(Mustermann::VERSION) { strings.each { |string| pattern === string } }
+    x.report(version) { strings.each { |string| pattern === string } }
   
   when "set_match"
     patterns = []
@@ -98,7 +100,7 @@ Benchmark.benchmark do |x|
       callback = proc { |s| patterns.select { |p| p === s } }
     end
 
-    x.report(Mustermann::VERSION) do
+    x.report(version) do
       counts[:set_match].times do
         string = routes.sample
         callback.call(string)
@@ -120,7 +122,7 @@ Benchmark.benchmark do |x|
     pattern = Mustermann.new("/:a:b?")
     failing  = "/" + "x" * 5_000 + "/trailing"
     10.times { pattern.match(failing) }
-    x.report(Mustermann::VERSION) { counts[:look_ahead_fail].times { pattern.match(failing) } }
+    x.report(version) { counts[:look_ahead_fail].times { pattern.match(failing) } }
 
   else
     warn "Unknown step: #{ARGV.first}"
