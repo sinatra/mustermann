@@ -4,7 +4,7 @@
 [![Inline docs](http://inch-ci.org/github/rkh/mustermann.svg)](http://inch-ci.org/github/rkh/mustermann)
 [![Documentation](http://img.shields.io/:yard-docs-38c800.svg)](https://gemdocs.org/gems/mustermann/)
 [![License](http://img.shields.io/:license-MIT-38c800.svg)](http://rkh.mit-license.org)
-[![Badges](http://img.shields.io/:badges-8/8-38c800.svg)](http://img.shields.io)
+[![Badges](http://img.shields.io/:badges-7/7-38c800.svg)](http://img.shields.io)
 
 This repository contains two projects (each installable as separate gems):
 
