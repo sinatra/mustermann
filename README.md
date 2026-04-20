@@ -2,7 +2,7 @@
 
 [![Build Status](https://github.com/sinatra/mustermann/actions/workflows/test.yml/badge.svg)](https://github.com/sinatra/mustermann/actions/workflows/test.yml) [![Coverage Status](https://coveralls.io/repos/github/rkh/mustermann/badge.svg?branch=main)](https://coveralls.io/github/rkh/mustermann?branch=main) ![Code Climate maintainability](https://img.shields.io/codeclimate/maintainability-percentage/rkh/mustermann) [![Gem Version](https://img.shields.io/gem/v/mustermann.svg)](https://rubygems.org/gems/mustermann)
 [![Inline docs](http://inch-ci.org/github/rkh/mustermann.svg)](http://inch-ci.org/github/rkh/mustermann)
-[![Documentation](http://img.shields.io/:yard-docs-38c800.svg)](http://www.rubydoc.info/gems/mustermann/frames)
+[![Documentation](http://img.shields.io/:yard-docs-38c800.svg)](https://gemdocs.org/gems/mustermann/)
 [![License](http://img.shields.io/:license-MIT-38c800.svg)](http://rkh.mit-license.org)
 [![Badges](http://img.shields.io/:badges-9/9-38c800.svg)](http://img.shields.io)
 

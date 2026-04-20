@@ -1,6 +1,6 @@
 # The Amazing Mustermann
 
-*Make sure you view the correct docs: [latest release](http://rubydoc.info/gems/mustermann/frames), [master](http://rubydoc.info/github/rkh/mustermann/master/frames).*
+*Make sure you view the correct docs: [latest release](https://rubydoc.info/gems/mustermann/), [master](http://rubydoc.info/github/sinatra/mustermann).*
 
 Welcome to [Mustermann](http://en.wikipedia.org/wiki/List_of_placeholder_names_by_language#German). Mustermann is your personal string matching expert. As an expert in the field of strings and patterns, Mustermann keeps its runtime dependencies to a minimum and is fully covered with specs and documentation.
 
