@@ -48,8 +48,8 @@ describe Mustermann::Cake do
     it { should match('/foo')       .capturing foo: 'foo'       }
     it { should match('/bar')       .capturing foo: 'bar'       }
     it { should match('/foo.bar')   .capturing foo: 'foo.bar'   }
-    it { should match('/%0Afoo')    .capturing foo: '%0Afoo'    }
-    it { should match('/foo%2Fbar') .capturing foo: 'foo%2Fbar' }
+    it { should match('/%0Afoo')    .capturing foo: "\nfoo"     }
+    it { should match('/foo%2Fbar') .capturing foo: 'foo/bar'   }
 
     it { should_not match('/foo?')    }
     it { should_not match('/foo/bar') }
@@ -81,9 +81,9 @@ describe Mustermann::Cake do
   end
 
   pattern '/**' do
-    it { should match('/')        .capturing splat: ''        }
-    it { should match('/foo')     .capturing splat: 'foo'     }
-    it { should match('/foo/bar') .capturing splat: 'foo/bar' }
+    it { should match('/')        .capturing splat: ['']        }
+    it { should match('/foo')     .capturing splat: ['foo']     }
+    it { should match('/foo/bar') .capturing splat: ['foo/bar'] }
 
     example { pattern.params('/foo/bar') .should be == {"splat" => ["foo/bar"]} }
     it { should generate_template('/{+splat}') }

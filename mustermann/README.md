@@ -1,6 +1,6 @@
 # The Amazing Mustermann
 
-*Make sure you view the correct docs: [latest release](http://rubydoc.info/gems/mustermann/frames), [master](http://rubydoc.info/github/rkh/mustermann/master/frames).*
+*Make sure you view the correct docs: [latest release](https://rubydoc.info/gems/mustermann/), [master](http://rubydoc.info/github/sinatra/mustermann).*
 
 Welcome to [Mustermann](http://en.wikipedia.org/wiki/List_of_placeholder_names_by_language#German). Mustermann is your personal string matching expert. As an expert in the field of strings and patterns, Mustermann keeps its runtime dependencies to a minimum and is fully covered with specs and documentation.
 
@@ -41,8 +41,8 @@ pattern.params('/a/b.c') # => { "prefix" => "a", splat => ["b", "c"] }
 
 These features are included in the library, but not loaded by default
 
-* **[Mapper](#-mapper):** A simple tool for mapping one string to another based on patterns.
-* **[Sinatra Integration](#-sinatra-integration):** Mustermann can be used as a [Sinatra](http://www.sinatrarb.com/) extension. Sinatra 2.0 and beyond will use Mustermann by default.
+* **[Pattern Set](#-pattern-set):** A collection of patterns with associated values, designed for building routing tables that dispatch efficiently as the number of routes grows.
+* **Mustermann::Router:** A very basic rack router built on top of `Mustermann::Set` for demonstration purposes. Simple and fast.
 
 <a name="-pattern-types"></a>
 ## Pattern Types
@@ -56,7 +56,7 @@ require 'mustermann'
 pattern = Mustermann.new('/*/**', type: :shell)
 ```
 
-Note that this will use the type as suggestion: When passing in a string argument, it will create a pattern of the given type, but it might choose a different type for other objects (a regular expression argument will always result in a [regexp](#-pattern-details-regexp) pattern, a symbol always in a [sinatra](#-pattern-details-sinatra) pattern, etc).
+Note that this will use the type as suggestion: When passing in a string argument, it will create a pattern of the given type, but it might choose a different type for other objects (a regular expression argument will always result in a [regexp](../docs/patterns/regexp.md) pattern, a symbol always in a [sinatra](../docs/patterns/sinatra.md) pattern, etc).
 
 Alternatively, you can also load and instantiate the pattern type directly:
 
@@ -65,7 +65,7 @@ require 'mustermann/shell'
 pattern = Mustermann::Shell.new('/*/**')
 ```
 
-Mustermann itself includes the [sinatra](#-sinatra-pattern), [identity](#-identity-pattern) and [regexp](#-regexp-pattern) pattern types. Other pattern types are available as separate gems.
+Mustermann itself includes the [sinatra](../docs/patterns/sinatra.md), [identity](../docs/patterns/identity.md) and [regexp](../docs/patterns/regexp.md) pattern types. Other pattern types are available as separate gems.
 
 <a name="-binary-operators"></a>
 ## Binary Operators
@@ -123,16 +123,12 @@ pattern.match('/')     # => nil
 pattern.match('/home') # => #<MatchData "/home" page:"home">
 pattern =~ '/home'     # => 0
 pattern === '/home'    # => true (this allows using it in case statements)
-pattern.names          # => ['page']
-pattern.names          # => {"page"=>[1]}
 
 pattern = Mustermann.new('/home', type: :identity)
 pattern.match('/')     # => nil
-pattern.match('/home') # => #<Mustermann::SimpleMatch "/home">
+pattern.match('/home') # => #<Mustermann::Match ...>
 pattern =~ '/home'     # => 0
 pattern === '/home'    # => true (this allows using it in case statements)
-pattern.names          # => []
-pattern.names          # => {}
 ```
 
 Moreover, patterns based on regular expressions (all but `identity` and `shell`) automatically convert to regular expressions when needed:
@@ -179,7 +175,7 @@ Peeking gives the option to match a pattern against the beginning of a string ra
 
 * `peek` returns the matching substring.
 * `peek_size` returns the number of characters matching.
-* `peek_match` will return a `MatchData` or `Mustermann::SimpleMatch` (just like `match` does for the full string)
+* `peek_match` will return a `Mustermann::Match` (just like `match` does for the full string)
 * `peek_params` will return the `params` hash parsed from the substring and the number of characters.
 
 All of the above will turn `nil` if there was no match.
@@ -359,119 +355,118 @@ pattern = Mustermann.new(":name@:domain.:tld")
 email   = list.detect(&pattern) # => "example@email.com"
 ```
 
-<a name="-mapper"></a>
-## Mapper
+<a name="-pattern-set"></a>
+## Pattern Set
 
-
-You can use a mapper to transform strings according to two or more mappings:
+`Mustermann::Set` is a collection of patterns where each pattern is associated with an arbitrary value — typically a handler or action. A single call to `match` returns both the captured parameters and the value for the first matching pattern, making it straightforward to build a routing table.
 
 ``` ruby
-require 'mustermann/mapper'
+require 'mustermann/set'
 
-mapper = Mustermann::Mapper.new("/:page(.:format)?" => ["/:page/view.:format", "/:page/view.html"])
-mapper['/foo']     # => "/foo/view.html"
-mapper['/foo.xml'] # => "/foo/view.xml"
-mapper['/foo/bar'] # => "/foo/bar"
+set = Mustermann::Set.new
+set.add('/users/:id',  :users_show)
+set.add('/posts/:id',  :posts_show)
+set.add('/posts',      :posts_index)
+
+m = set.match('/users/42')
+m.value         # => :users_show
+m.params['id']  # => '42'
+
+set.match('/unknown')  # => nil
 ```
 
-<a name="-sinatra-integration"></a>
-## Sinatra Integration
-
-Mustermann is used in Sinatra by default since version 2.0, for previous versions an [extension](https://github.com/sinatra/mustermann-sinatra-extension) is available.
-
-### Configuration
-
-You can change what pattern type you want to use for your app via the `pattern` option:
+You can supply the initial mapping directly to the constructor:
 
 ``` ruby
-require 'sinatra/base'
-require 'mustermann'
+set = Mustermann::Set.new(
+  '/users/:id' => :users_show,
+  '/posts/:id' => :posts_show
+)
+```
 
-class MyApp < Sinatra::Base
-  register Mustermann
-  set :pattern, type: :shell
+Or use a block for imperative setup:
 
-  get '/images/*.png' do
-    send_file request.path_info
-  end
-
-  get '/index{.htm,.html,}' do
-    erb :index
-  end
+``` ruby
+set = Mustermann::Set.new do |s|
+  s.add('/users/:id', :users_show)
+  s.add('/posts/:id', :posts_show)
 end
 ```
 
-You can use the same setting for options:
+Pattern options such as `type:` are passed as keyword arguments and apply to all patterns in the set:
 
 ``` ruby
-require 'sinatra'
-require 'mustermann'
-
-register Mustermann
-set :pattern, capture: { ext: %w[png jpg html txt] }
-
-get '/:slug(.:ext)?' do
-  # slug will be 'foo' for '/foo.png'
-  # slug will be 'foo.bar' for '/foo.bar'
-  # slug will be 'foo.bar' for '/foo.bar.html'
-  params[:slug]
-end
+set = Mustermann::Set.new(type: :rails)
+set.add('/:controller(/:action(/:id))', :route)
 ```
 
-It is also possible to pass in options to a specific route:
+### Values
+
+Each pattern can be associated with multiple values. `match` returns the first, while `match_all` returns one match per value:
 
 ``` ruby
-require 'sinatra'
-require 'mustermann'
+set = Mustermann::Set.new
+set.add('/users/:id', :admin_handler, :user_handler)
 
-register Mustermann
-
-get '/:slug(.:ext)?', pattern: { greedy: false } do
-  # slug will be 'foo' for '/foo.png'
-  # slug will be 'foo' for '/foo.bar'
-  # slug will be 'foo' for '/foo.bar.html'
-  params[:slug]
-end
+set.match('/users/1').value            # => :admin_handler
+set.match_all('/users/1').map(&:value) # => [:admin_handler, :user_handler]
 ```
 
-Of course, all of the above can be combined.
-Moreover, the `capture` and the `except` option can be passed to route directly.
-And yes, this also works with `before` and `after` filters.
+When no value is given, a match still succeeds but `value` is `nil`:
 
 ``` ruby
-require 'sinatra/base'
-require 'sinatra/respond_with'
-require 'mustermann'
-
-class MyApp < Sinatra::Base
-  register Mustermann, Sinatra::RespondWith
-  set :pattern, capture: { id: /\d+/ } # id will only match digits
-
-  # only capture extensions known to Rack
-  before '*:ext', capture: Rack::Mime::MIME_TYPES.keys do
-    content_type params[:ext]                 # set Content-Type
-    request.path_info = params[:splat].first  # drop the extension
-  end
-
-  get '/:id' do
-    not_found unless page = Page.find params[:id]
-    respond_with(page)
-  end
-end
+set = Mustermann::Set.new
+set.add('/ping')
+set.match('/ping').value  # => nil
 ```
 
-### Why would I want this?
+### Conflict Resolution
 
-* It gives you fine grained control over the pattern matching
-* Allows you to use different pattern styles in your app
-* The default is more robust and powerful than the built-in patterns
-* Sinatra 2.0 will use Mustermann internally
-* Better exceptions for broken route syntax
+The set follows insertion order: when two patterns both match a string, the one added first wins. Use `match_all` to retrieve every match:
 
-### Why not include this in Sinatra 1.x?
+``` ruby
+set = Mustermann::Set.new
+set.add('/foo',  :static)
+set.add('/:var', :dynamic)
 
-* It would introduce breaking changes, even though these would be minor
-* Like Sinatra 2.0, Mustermann requires Ruby 2.0 or newer
+set.match('/foo').value            # => :static
+set.match_all('/foo').map(&:value) # => [:static, :dynamic]
+```
+
+### Peeking
+
+`peek_match` matches a prefix of the input rather than the full string. The unmatched remainder is available via `post_match`:
+
+``` ruby
+set = Mustermann::Set.new
+set.add('/users/:id', :users)
+
+m = set.peek_match('/users/42/posts')
+m.to_s        # => '/users/42'
+m.post_match  # => '/posts'
+m.value       # => :users
+```
+
+`peek_match_all` returns every pattern that matches a prefix:
+
+``` ruby
+results = set.peek_match_all('/users/42/posts')
+results.map(&:value)      # => [:users]
+results.map(&:post_match) # => ['/posts']
+```
+
+### Expanding
+
+A set can generate strings from parameter hashes using the same interface as individual pattern expansion:
+
+``` ruby
+set = Mustermann::Set.new
+set.add('/users/:id', :users)
+set.add('/posts/:id', :posts)
+
+set.expand(id: '5')          # => '/users/5'  (first applicable pattern)
+set.expand(:posts, id: '5')  # => '/posts/5'  (patterns for a specific value)
+```
 
 <a name="-duck-typing"></a>
 ## Duck Typing
@@ -492,33 +487,6 @@ end
 
 object = MyObject.new
 Mustermann.new(object, type: :rails) # => #<Mustermann::Rails:"/foo">
-```
-
-It might also be that you want to call `to_pattern` yourself instead of `Mustermann.new`. You can load `mustermann/to_pattern` to implement this method for strings, regular expressions and pattern objects:
-
-``` ruby
-require 'mustermann/to_pattern'
-
-"/foo".to_pattern               # => #<Mustermann::Sinatra:"/foo">
-"/foo".to_pattern(type: :rails) # => #<Mustermann::Rails:"/foo">
-%r{/foo}.to_pattern             # => #<Mustermann::Regular:"\\/foo">
-"/foo".to_pattern.to_pattern    # => #<Mustermann::Sinatra:"/foo">
-```
-
-You can also use the `Mustermann::ToPattern` mixin to easily add `to_pattern` to your own objects:
-
-``` ruby
-require 'mustermann/to_pattern'
-
-class MyObject
-  include Mustermann::ToPattern
-
-  def to_s
-    "/foo"
-  end
-end
-
-MyObject.new.to_pattern # => #<Mustermann::Sinatra:"/foo">
 ```
 
 <a name="-duck-typing-respond-to"></a>
@@ -679,264 +647,21 @@ By setting `ignore_unknown_options` to `true`, it will happily ignore the option
 <a name="-performance"></a>
 ## Performance
 
-It's generally a good idea to reuse pattern objects, since as much computation as possible is happening during object creation, so that the actual matching or expanding is quite fast.
+Mustermann is designed so that as much work as possible happens at object-creation time, keeping matching and expansion fast at request time. Pattern objects should be treated as immutable; their internals are optimized for both speed and low memory usage.
 
-Pattern objects should be treated as immutable. Their internals have been designed for both performance and low memory usage. To reduce pattern compilation, `Mustermann.new` and `Mustermann::Pattern.new` might return the same instance when given the same arguments, if that instance has not yet been garbage collected. However, this is not guaranteed, so do not rely on object identity.
+Key points:
 
-### String Matching
+* **Pattern caching:** `Mustermann.new` may return the same instance for identical arguments while that instance is still alive. Do not rely on object identity.
+* **Single-pattern matching:** AST-based patterns (sinatra, rails, hybrid, template, flask) use bounded character classes, negative look-ahead, and non-greedy splats to avoid unnecessary backtracking in Ruby's Oniguruma engine. Using a pattern as a `Regexp` replacement adds at most one method-dispatch of overhead.
+* **Routing with `Mustermann::Set`:** Uses a trie (prefix tree) for large tables. Rather than checking every route in sequence, the trie walks the input one character at a time, sharing prefix traversal across all patterns that start with the same characters. Dispatch time grows far more slowly than a linear scan. A `use_trie:` threshold (default 50) controls when the switch happens, and an optional `ObjectSpace::WeakKeyMap` cache avoids re-matching the same string.
+* **Expansion:** Most computation is shifted to compile time. Memory grows linearly with the number of optional-key combinations in a pattern.
 
-When using a pattern instead of a regular expression for string matching, performance will usually be comparable.
-
-In certain cases, Mustermann might outperform naive, equivalent regular expressions. It achieves this by using look-ahead and atomic groups in ways that work well with a backtracking, NFA-based regular expression engine (such as the Oniguruma/Onigmo engine used by Ruby). It can be difficult and error prone to construct complex regular expressions using these techniques by hand. This only applies to patterns generating an AST internally (all but [identity](#-pattern-details-identity), [shell](#-pattern-details-shell), [simple](#-pattern-details-simple) and [regexp](#-pattern-details-regexp) patterns).
-
-When using a Mustermann pattern as a direct Regexp replacement (ie, via methods like `=~`, `match` or `===`), the overhead will be a single method dispatch, which some Ruby implementations might even eliminate with method inlining. This only applies to patterns using a regular expression internally (all but [identity](#-pattern-details-identity) and [shell](#-pattern-details-shell) patterns).
-
-### Expanding
-
-Pattern expansion significantly outperforms other, widely used Ruby tools for generating URLs from URL patterns in most use cases.
-
-This comes with a few trade-offs:
-
-* As with pattern compilation, as much computation as possible has been shifted to compiling expansion rules. This will add compilation overhead, which is why patterns only generate these rules on the first invocation to `Mustermann::Pattern#expand`. Create a `Mustermann::Expander` instance yourself to get better control over the point in time this computation should happen.
-* Memory is sacrificed in favor of performance: The size of the expander object will grow linear with the number of possible combination for expansion keys ("/:foo/:bar" has one such combination, but "/(:foo/)?:bar?" has four)
-* Parsing a params hash from a string generated from another params hash might not result in two identical hashes, and vice versa. Specifically, expanding ignores capture constraints, type casting and greediness.
-* Partial expansion is (currently) not supported.
+See **[docs/performance.md](../docs/performance.md)** for a detailed explanation of each optimization, the linear vs. trie trade-off, caching, thread-safety, and benchmark guidance.
 
 ## Details on Pattern Types
 
-<a name="-identity-pattern"></a>
-### `identity`
-
-**Supported options:**
-[`uri_decode`](#-available-options--uri_decode),
-[`ignore_unknown_options`](#-available-options--ignore_unknown_options).
-
-<table>
-  <thead>
-    <tr>
-      <th>Syntax Element</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><i>any character</i></td>
-      <td>Matches exactly that character or a URI escaped version of it.</td>
-    </tr>
-  </tbody>
-</table>
-
-<a name="-regexp-pattern"></a>
-### `regexp`
-
-**Supported options:**
-[`uri_decode`](#-available-options--uri_decode),
-[`ignore_unknown_options`](#-available-options--ignore_unknown_options), `check_anchors`.
-
-The pattern string (or actual Regexp instance) should not contain anchors (`^` outside of square brackets, `$`, `\A`, `\z`, or `\Z`).
-Anchors will be injected where necessary by Mustermann.
-
-By default, Mustermann will raise a `Mustermann::CompileError` if an anchor is encountered.
-If you still want it to contain anchors at your own risk, set the `check_anchors` option to `false`.
-
-Using anchors will break [peeking](#-peeking) and [concatenation](#-concatenation).
-
-<table>
-  <thead>
-    <tr>
-      <th>Syntax Element</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><i>any string</i></td>
-      <td>Interpreted as regular expression.</td>
-    </tr>
-  </tbody>
-</table>
-
-<a name="-sinatra-pattern"></a>
-### `sinatra`
-
-**Supported options:**
-[`capture`](#-available-options--capture),
-[`except`](#-available-options--except),
-[`greedy`](#-available-options--greedy),
-[`space_matches_plus`](#-available-options--space_matches_plus),
-[`uri_decode`](#-available-options--uri_decode),
-[`ignore_unknown_options`](#-available-options--ignore_unknown_options).
-
-<table>
-  <thead>
-    <tr>
-      <th>Syntax Element</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><b>:</b><i>name</i> <i><b>or</b></i> <b>&#123;</b><i>name</i><b>&#125;</b></td>
-      <td>
-        Captures anything but a forward slash in a semi-greedy fashion. Capture is named <i>name</i>.
-        Capture behavior can be modified with <tt>capture</tt> and <tt>greedy</tt> option.
-      </td>
-    </tr>
-    <tr>
-      <td><b>*</b><i>name</i> <i><b>or</b></i> <b>&#123;+</b><i>name</i><b>&#125;</b></td>
-      <td>
-        Captures anything in a non-greedy fashion. Capture is named <i>name</i>.
-      </td>
-    </tr>
-    <tr>
-      <td><b>*</b> <i><b>or</b></i> <b>&#123;+splat&#125;</b></td>
-      <td>
-        Captures anything in a non-greedy fashion. Capture is named splat.
-        It is always an array of captures, as you can use it more than once in a pattern.
-      </td>
-    </tr>
-    <tr>
-      <td><b>(</b><i>expression</i><b>)</b></td>
-      <td>
-        Enclosed <i>expression</i> is a group. Useful when combined with <tt>?</tt> to make it optional,
-        or to separate two elements that would otherwise be parsed as one.
-      </td>
-    </tr>
-    <tr>
-      <td><i>expression</i><b>|</b><i>expression</i><b>|</b><i>...</i></td>
-      <td>
-        Will match anything matching the nested expressions. May contain any other syntax element, including captures.
-      </td>
-    </tr>
-    <tr>
-      <td><i>x</i><b>?</b></td>
-      <td>Makes <i>x</i> optional. For instance, <tt>(foo)?</tt> matches <tt>foo</tt> or an empty string.</td>
-    </tr>
-    <tr>
-      <td><b>/</b></td>
-      <td>
-        Matches forward slash. Does not match URI encoded version of forward slash.
-      </td>
-    </tr>
-    <tr>
-      <td><b>\</b><i>x</i></td>
-      <td>Matches <i>x</i> or URI encoded version of <i>x</i>. For instance <tt>\*</tt> matches <tt>*</tt>.</td>
-    </tr>
-    <tr>
-      <td><i>any other character</i></td>
-      <td>Matches exactly that character or a URI encoded version of it.</td>
-    </tr>
-  </tbody>
-</table>
-
-<a name="-rails-pattern"></a>
-### `rails`
-
-Mustermann also implements the `rails` pattern. It is compatible with [Ruby on Rails](http://rubyonrails.org/), [Journey](https://github.com/rails/journey), the [http_router gem](https://github.com/joshbuddy/http_router), [Lotus](http://lotusrb.org/) and [Scalatra](http://scalatra.org/) (if [configured](http://scalatra.org/2.3/guides/http/routes.html#toc_248))</td>
-
-**Supported options:**
-[`capture`](#-available-options--capture),
-[`except`](#-available-options--except),
-[`greedy`](#-available-options--greedy),
-[`space_matches_plus`](#-available-options--space_matches_plus),
-[`uri_decode`](#-available-options--uri_decode),
-[`version`](#-rails-pattern--version),
-[`ignore_unknown_options`](#-available-options--ignore_unknown_options).
-
-**External documentation:**
-[Ruby on Rails Guides: Routing](http://guides.rubyonrails.org/routing.html).
-
-``` ruby
-require 'mustermann'
-
-pattern = Mustermann.new('/:example', type: :rails)
-pattern === "/foo.bar"     # => true
-pattern === "/foo/bar"     # => false
-pattern.params("/foo.bar") # => { "example" => "foo.bar" }
-pattern.params("/foo/bar") # => nil
-
-pattern = Mustermann.new('/:example(/:optional)', type: :rails)
-pattern === "/foo.bar"     # => true
-pattern === "/foo/bar"     # => true
-pattern.params("/foo.bar") # => { "example" => "foo.bar", "optional" => nil   }
-pattern.params("/foo/bar") # => { "example" => "foo",     "optional" => "bar" }
-
-pattern = Mustermann.new('/*example', type: :rails)
-pattern === "/foo.bar"     # => true
-pattern === "/foo/bar"     # => true
-pattern.params("/foo.bar") # => { "example" => "foo.bar" }
-pattern.params("/foo/bar") # => { "example" => "foo/bar" }
-```
-
-<a name="-rails-pattern--version"></a>
-#### `version`
-
-Rails syntax changed over time. You can target different Ruby on Rails versions by setting the `version` option to the desired Rails version.
-
-The default is `5.0`. Versions prior to `2.3` are not supported.
-
-``` ruby
-require 'mustermann'
-Mustermann.new('/', type: :rails, version: "2.3")
-Mustermann.new('/', type: :rails, version: "3.0.0")
-
-require 'rails'
-Mustermann.new('/', type: :rails, version: Rails::VERSION::STRING)
-```
-
-#### Syntax
-
-
-<table>
-  <thead>
-    <tr>
-      <th>Syntax Element</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><b>:</b><i>name</i></td>
-      <td>
-        Captures anything but a forward slash in a semi-greedy fashion. Capture is named <i>name</i>.
-        Capture behavior can be modified with <tt>capture</tt> and <tt>greedy</tt> option.
-      </td>
-    </tr>
-    <tr>
-      <td><b>*</b><i>name</i></td>
-      <td>
-        Captures anything in a non-greedy fashion. Capture is named <i>name</i>.
-      </td>
-    </tr>
-    <tr>
-      <td><b>(</b><i>expression</i><b>)</b></td>
-      <td>Enclosed <i>expression</i> is optional. Not available in 2.3 compatibility mode.</td>
-    </tr>
-    <tr>
-      <td><b>/</b></td>
-      <td>
-        Matches forward slash. Does not match URI encoded version of forward slash.
-      </td>
-    </tr>
-    <tr>
-      <td><b>\</b><i>x</i></td>
-      <td>
-        In 3.x compatibility mode and starting with 4.2:
-        Matches <i>x</i> or URI encoded version of <i>x</i>. For instance <tt>\*</tt> matches <tt>*</tt>.<br>
-        In 4.0 or 4.1 compatibility mode:
-        <b>\</b> is ignored, <i>x</i> is parsed normally.<br>
-      </td>
-    </tr>
-    <tr>
-      <td><i>expression</i> <b>|</b> <i>expression</i></td>
-      <td>
-        3.2+ mode: This will raise a `Mustermann::ParseError`. While Ruby on Rails happily parses this character, it will result in broken routes due to a buggy implementation.<br>
-        5.0 mode: It will match if any of the nested expressions matches.
-      </td>
-    </tr>
-    <tr>
-      <td><i>any other character</i></td>
-      <td>Matches exactly that character or a URI encoded version of it.</td>
-    </tr>
-  </tbody>
-</table>
+- [`identity`](../docs/patterns/identity.md)
+- [`regexp`](../docs/patterns/regexp.md)
+- [`sinatra`](../docs/patterns/sinatra.md)
+- [`rails`](../docs/patterns/rails.md)
+- [`hybrid`](../docs/patterns/hybrid.md)

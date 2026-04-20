@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 require 'mustermann'
 require 'mustermann/expander'
+require 'mustermann/set'
 
 module Mustermann
   # A mapper allows mapping one string to another based on pattern parsing and expanding.
@@ -42,9 +43,9 @@ module Mustermann
     #     require 'mustermann/mapper'
     #     Mustermann::Mapper.new({"/:foo" => "/:foo.html"}, type: :rails)
     def initialize(map = {}, additional_values: :ignore, **options, &block)
-      @map               = []
       @options           = options
       @additional_values = additional_values
+      @set               = Set.new(use_trie: false, use_cache: false, **options)
       block.arity == 0 ? update(yield) : yield(self) if block
       update(map) if map
     end
@@ -54,16 +55,13 @@ module Mustermann
     # @param map [Hash{String, Pattern: String, Pattern, Arry<String, Pattern>, Expander}] the mapping
     def update(map)
       map.to_h.each_pair do |input, output|
-        input  = Mustermann.new(input, **@options)
         output = Expander.new(*output, additional_values: @additional_values, **@options) unless output.is_a? Expander
-        @map << [input, output]
+        @set.add(input, output)
       end
     end
 
     # @return [Hash{Patttern: Expander}] Hash version of the mapper.
-    def to_h
-      Hash[@map]
-    end
+    def to_h = @set.patterns.to_h { [_1, @set[_1]] }
 
     # Convert a string according to mappings. You can pass in additional params.
     #
@@ -71,10 +69,9 @@ module Mustermann
     #   mapper = Mustermann::Mapper.new("/:example" => "(/:prefix)?/:example.html")
     #
     def convert(input, values = {})
-      @map.inject(input) do |current, (pattern, expander)|
-        params = pattern.params(current)
-        params &&= Hash[values.merge(params).map { |k,v| [k.to_s, v] }]
-        expander.expandable?(params) ? expander.expand(params) : current
+      @set.match_all(input).inject(input) do |current, m|
+        params = Hash[values.merge(m.params).map { |k, v| [k.to_s, v] }]
+        m.value.expandable?(params) ? m.value.expand(params) : current
       end
     end
 

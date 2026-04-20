@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 require 'mustermann'
 require 'mustermann/pattern'
-require 'mustermann/simple_match'
 
 module Mustermann
   # Matches strings that are identical to the pattern.

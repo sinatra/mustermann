@@ -1,6 +1,7 @@
+require "bundler/setup"
 require "objspace"
 require "uri"
-require_relative "../lib/mustermann/ast/translator"
+require "mustermann/ast/translator"
 
 translator = Mustermann::AST::Translator.new
 translator.escape("foo")

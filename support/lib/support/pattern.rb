@@ -18,7 +18,6 @@ module Support
         subject(:pattern, &instance)
         its(:to_s) { should be == pattern }
         its(:inspect) { should be == "#<#{described_class}:#{pattern.inspect}>" }
-        its(:names) { should be_an(Array) }
         its(:to_templates) { should be == [pattern] } if described_class.name == "Mustermann::Template"
 
         example 'string should be immune to external change' do

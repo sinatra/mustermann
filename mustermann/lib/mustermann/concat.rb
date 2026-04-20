@@ -75,10 +75,16 @@ module Mustermann
 
     # @see Mustermann::Pattern#peek_match
     def peek_match(string)
-      pump(string, initial: SimpleMatch.new) do |pattern, substring|
-        return unless match = pattern.peek_match(substring)
-        [match, match.to_s.size]
+      substring = string
+      params = {}
+
+      patterns.each do |pattern|
+        return unless part = pattern.peek_match(substring)
+        params.merge!(part.params)
+        substring = substring[part.to_s.size..-1]
       end
+
+      Match.new(self, string[0, string.size - substring.size], params, post_match: substring)
     end
 
     # @see Mustermann::Pattern#peek_params

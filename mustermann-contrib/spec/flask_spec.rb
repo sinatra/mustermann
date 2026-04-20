@@ -48,8 +48,8 @@ describe Mustermann::Flask do
     it { should match('/foo')       .capturing foo: 'foo'       }
     it { should match('/bar')       .capturing foo: 'bar'       }
     it { should match('/foo.bar')   .capturing foo: 'foo.bar'   }
-    it { should match('/%0Afoo')    .capturing foo: '%0Afoo'    }
-    it { should match('/foo%2Fbar') .capturing foo: 'foo%2Fbar' }
+    it { should match('/%0Afoo')    .capturing foo: "\nfoo"     }
+    it { should match('/foo%2Fbar') .capturing foo: 'foo/bar'   }
 
     it { should_not match('/foo?')    }
     it { should_not match('/foo/bar') }
@@ -75,8 +75,8 @@ describe Mustermann::Flask do
     it { should match('/foo')       .capturing foo: 'foo'       }
     it { should match('/bar')       .capturing foo: 'bar'       }
     it { should match('/foo.bar')   .capturing foo: 'foo.bar'   }
-    it { should match('/%0Afoo')    .capturing foo: '%0Afoo'    }
-    it { should match('/foo%2Fbar') .capturing foo: 'foo%2Fbar' }
+    it { should match('/%0Afoo')    .capturing foo: "\nfoo"     }
+    it { should match('/foo%2Fbar') .capturing foo: 'foo/bar'   }
 
     it { should_not match('/foo?')    }
     it { should_not match('/foo/bar') }
@@ -102,8 +102,8 @@ describe Mustermann::Flask do
     it { should match('/foo')       .capturing foo: 'foo'       }
     it { should match('/bar')       .capturing foo: 'bar'       }
     it { should match('/foo.bar')   .capturing foo: 'foo.bar'   }
-    it { should match('/%0Afoo')    .capturing foo: '%0Afoo'    }
-    it { should match('/foo%2Fbar') .capturing foo: 'foo%2Fbar' }
+    it { should match('/%0Afoo')    .capturing foo: "\nfoo"     }
+    it { should match('/foo%2Fbar') .capturing foo: 'foo/bar'   }
 
     it { should_not match('/f')       }
     it { should_not match('/foo?')    }
@@ -147,7 +147,7 @@ describe Mustermann::Flask do
   end
 
   pattern '/<int:foo>' do
-    it { should match('/42').capturing foo: '42' }
+    it { should match('/42').capturing foo: 42 }
 
     it { should_not match('/1.0')       }
     it { should_not match('/.5')        }
@@ -168,7 +168,7 @@ describe Mustermann::Flask do
   end
 
   pattern '/<int:foo>' do
-    it { should match('/42').capturing foo: '42' }
+    it { should match('/42').capturing foo: 42 }
 
     it { should_not match('/1.0')       }
     it { should_not match('/.5')        }
@@ -289,9 +289,9 @@ describe Mustermann::Flask do
   end
 
   pattern '/<prefix>/<float:foo>/<int:bar>' do
-    it { should match('/foo/42/42') .capturing foo: '42',  bar: '42'  }
-    it { should match('/foo/1.0/1') .capturing foo: '1.0', bar: '1'   }
-    it { should match('/foo/.5/0')  .capturing foo: '.5',  bar: '0'   }
+    it { should match('/foo/42/42') .capturing foo: 42.0, bar: 42 }
+    it { should match('/foo/1.0/1') .capturing foo: 1.0,  bar: 1  }
+    it { should match('/foo/.5/0')  .capturing foo: 0.5,  bar: 0  }
 
     it { should_not match('/foo/1/1.0')   }
     it { should_not match('/foo/1.0/1.0') }
@@ -324,7 +324,7 @@ describe Mustermann::Flask do
 
   converter = Struct.new(:convert).new(:upcase.to_proc)
   pattern '/<foo:bar>', converters: { foo: converter } do
-    it { should match('/foo').capturing bar: 'foo' }
+    it { should match('/foo').capturing bar: 'FOO' }
     example { pattern.params('/foo').should be == {"bar" => "FOO"} }
   end
 

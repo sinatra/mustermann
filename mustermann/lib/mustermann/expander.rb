@@ -13,15 +13,16 @@ module Mustermann
   #
   #   expander.expand(page_id: 58, format: :html5) # => "/pages/58?format=html5"
   class Expander
+    # @!visibility private
+    ADDITIONAL_VALUES = %i[raise ignore append].freeze
+
     attr_reader :patterns, :additional_values, :caster
 
     # @param [Array<#to_str, Mustermann::Pattern>] patterns list of patterns to expand, see {#add}.
     # @param [Symbol] additional_values behavior when encountering additional values, see {#expand}.
     # @param [Hash] options used when creating/expanding patterns, see {Mustermann.new}.
     def initialize(*patterns, additional_values: :raise, **options, &block)
-      unless additional_values == :raise or additional_values == :ignore or additional_values == :append
-        raise ArgumentError, "Illegal value %p for additional_values" % additional_values
-      end
+      raise ArgumentError, "Illegal value %p for additional_values" % additional_values unless ADDITIONAL_VALUES.include? additional_values
 
       @patterns          = []
       @api_expander      = AST::Expander.new
@@ -42,6 +43,10 @@ module Mustermann
     # @return [Mustermann::Expander] the expander
     def add(*patterns)
       patterns.each do |pattern|
+        if pattern.is_a? Expander
+          add(*pattern.patterns)
+          next
+        end
         pattern = Mustermann.new(pattern, **@options)
         if block_given?
           @api_expander.add(yield(pattern))

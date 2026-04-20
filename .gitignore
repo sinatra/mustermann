@@ -4,6 +4,7 @@
 .config
 .yardoc
 .test_queue_stats
+.tool-versions
 .coverage
 Gemfile.lock
 InstalledFiles

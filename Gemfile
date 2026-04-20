@@ -6,7 +6,7 @@ path '.' do
   gem 'support', group: :development
 end
 
-sinatra_version = ENV['sinatra'].to_s
-sinatra_version = nil if sinatra_version.empty? || (sinatra_version == 'stable')
-sinatra_version = { github: 'sinatra/sinatra' } if sinatra_version == 'head'
-gem 'sinatra', sinatra_version
+group :benchmark do
+  gem 'addressable'
+  gem 'benchmark'
+end

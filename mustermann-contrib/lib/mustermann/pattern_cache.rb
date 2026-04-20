@@ -22,7 +22,7 @@ module Mustermann
   class PatternCache
     # @param [Hash] pattern_options default options used for {#create_pattern}
     def initialize(**pattern_options)
-      @cached          = Set.new
+      @cached          = ::Set.new
       @mutex           = Mutex.new
       @pattern_options = pattern_options
     end

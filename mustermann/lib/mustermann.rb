@@ -115,10 +115,4 @@ module Mustermann
   def self.normalized_type(type)
     type.to_s.gsub('-', '_').downcase
   end
-
-  # @!visibility private
-  def self.extend_object(object)
-    return super unless defined? ::Sinatra::Base and object.is_a? Class and object < ::Sinatra::Base
-    require 'mustermann/extension'
-  end
 end

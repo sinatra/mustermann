@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 require 'mustermann/error'
-require 'mustermann/simple_match'
+require 'mustermann/match'
 require 'mustermann/equality_map'
 require 'uri'
 
@@ -84,12 +84,10 @@ module Mustermann
     end
 
     # @param [String] string The string to match against
-    # @return [MatchData, Mustermann::SimpleMatch, nil] MatchData or similar object if the pattern matches.
-    # @see http://ruby-doc.org/core-2.0/Regexp.html#method-i-match Regexp#match
-    # @see http://ruby-doc.org/core-2.0/MatchData.html MatchData
-    # @see Mustermann::SimpleMatch
+    # @return [Mustermann::Match, nil] the match object if the pattern matches.
+    # @see Mustermann::Match
     def match(string)
-      SimpleMatch.new(string) if self === string
+      Match.new(self, string) if self === string
     end
 
     # @param [String] string The string to match against
@@ -163,11 +161,11 @@ module Mustermann
     #   pattern.peek("/Frank/Sinatra") # => #<MatchData "/Frank" name:"Frank">
     #
     # @param [String] string The string to match against
-    # @return [MatchData, Mustermann::SimpleMatch, nil] MatchData or similar object if the pattern matches.
+    # @return [Mustermann::Match, nil] MatchData or similar object if the pattern matches.
     # @see #peek_params
     def peek_match(string)
       matched = peek(string)
-      match(matched) if matched
+      Match.new(self, matched, {}, post_match: string[matched.size..-1]) if matched
     end
 
     # Tries to match the pattern against the beginning of the string (as opposed to the full string).
@@ -184,33 +182,12 @@ module Mustermann
     # @return [Array<Hash, Integer>, nil] Array with params hash and length of substing if matched, nil otherwise
     def peek_params(string)
       match = peek_match(string)
-      [params(captures: match), match.to_s.size] if match
-    end
-
-    # @return [Hash{String: Array<Integer>}] capture names mapped to capture index.
-    # @see http://ruby-doc.org/core-2.0/Regexp.html#method-i-named_captures Regexp#named_captures
-    def named_captures
-      {}
-    end
-
-    # @return [Array<String>] capture names.
-    # @see http://ruby-doc.org/core-2.0/Regexp.html#method-i-names Regexp#names
-    def names
-      []
+      match ? [match.params, match.string.size] : nil
     end
 
     # @param [String] string the string to match against
     # @return [Hash{String: String, Array<String>}, nil] Sinatra style params if pattern matches.
-    def params(string = nil, captures: nil, offset: 0)
-      return unless captures ||= match(string)
-      params   = named_captures.map do |name, positions|
-        values = positions.map { |pos| map_param(name, captures[pos + offset]) }.flatten
-        values = values.first if values.size < 2 and not always_array? name
-        [name, values]
-      end
-
-      Hash[params]
-    end
+    def params(string = nil) = match(string)&.params
 
     # @note This method is only implemented by certain subclasses.
     #

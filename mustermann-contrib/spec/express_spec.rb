@@ -48,8 +48,8 @@ describe Mustermann::Express do
     it { should match('/foo')       .capturing foo: 'foo'       }
     it { should match('/bar')       .capturing foo: 'bar'       }
     it { should match('/foo.bar')   .capturing foo: 'foo.bar'   }
-    it { should match('/%0Afoo')    .capturing foo: '%0Afoo'    }
-    it { should match('/foo%2Fbar') .capturing foo: 'foo%2Fbar' }
+    it { should match('/%0Afoo')    .capturing foo: "\nfoo"     }
+    it { should match('/foo%2Fbar') .capturing foo: 'foo/bar'   }
 
     it { should_not match('/foo?')    }
     it { should_not match('/foo/bar') }
@@ -90,8 +90,8 @@ describe Mustermann::Express do
     it { should match('/foo')       .capturing foo: 'foo'       }
     it { should match('/bar')       .capturing foo: 'bar'       }
     it { should match('/foo.bar')   .capturing foo: 'foo.bar'   }
-    it { should match('/%0Afoo')    .capturing foo: '%0Afoo'    }
-    it { should match('/foo%2Fbar') .capturing foo: 'foo%2Fbar' }
+    it { should match('/%0Afoo')    .capturing foo: "\nfoo"     }
+    it { should match('/foo%2Fbar') .capturing foo: 'foo/bar'   }
     it { should match('/') }
 
     it { should_not match('/foo?')    }
@@ -174,15 +174,15 @@ describe Mustermann::Express do
 
   pattern '/(.+)' do
     it { should_not match('/') }
-    it { should match('/foo')     .capturing splat: 'foo' }
-    it { should match('/foo/bar') .capturing splat: 'foo/bar' }
+    it { should match('/foo')     .capturing splat: ['foo'] }
+    it { should match('/foo/bar') .capturing splat: ['foo/bar'] }
     it { should generate_template('/{+splat}') }
   end
 
   pattern '/(foo(a|b))' do
     it { should_not match('/') }
-    it { should match('/fooa') .capturing splat: 'fooa' }
-    it { should match('/foob') .capturing splat: 'foob' }
+    it { should match('/fooa') .capturing splat: ['fooa'] }
+    it { should match('/foob') .capturing splat: ['foob'] }
     it { should generate_template('/{+splat}') }
   end
 

@@ -42,6 +42,6 @@ module Mustermann
     version('4.2') { on(?\\) { |c| node(:char, expect(/./)) } }
 
     # Rails 5.0 fixes |
-    version('5.0') { on(?|) { |c| node(:or) }}
+    version('5', '6', '7', '8') { on(?|) { |c| node(:or) }}
   end
 end
