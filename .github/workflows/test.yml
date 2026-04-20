@@ -49,6 +49,8 @@ jobs:
       continue-on-error: ${{ matrix.allow-failure || false }}
       id: test
       run: bundle exec rake
+      env:
+        COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
 
     - name: "bundle exec rake outcome: ${{ steps.test.outcome }}"
       run: echo ""

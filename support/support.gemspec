@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'rack-test'
   s.add_dependency 'rake'
   s.add_dependency 'yard'
-  s.add_dependency 'simplecov', '~> 0.17.0'
+  s.add_dependency 'simplecov'
+  s.add_dependency 'coveralls_reborn'
   s.add_dependency 'irb'
 end
