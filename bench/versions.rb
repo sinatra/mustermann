@@ -10,6 +10,7 @@ known_versions = %w[
 counts = {
   compile: 1_000,
   single_match: 5_000_000,
+  params: 1_000_000,
   set_match: 10_000,
   set_size: 1000,
   look_ahead_fail: 500,
@@ -28,6 +29,8 @@ end
 scenarios = {
   compile: "Compilation of #{format[counts[:compile]]} patterns",
   single_match: "Matching #{format[counts[:single_match]]} times against a single pattern",
+  simple_params: "Extracting params #{format[counts[:params]]} times for a simple pattern",
+  complex_params: "Extracting params #{format[counts[:params]]} times for a complex pattern",
   set_match: "Matching #{format[counts[:set_match]]} times against a set of #{format[counts[:set_size]]} patterns",
   look_ahead_fail: "Matching #{format[counts[:look_ahead_fail]]} times with look-ahead pattern on a long failing input (atomic group speedup)",
 }
@@ -83,6 +86,20 @@ Benchmark.benchmark do |x|
     strings = counts[:single_match].times.map { "/foo/#{element.succ!}" }
     x.report(version) { strings.each { |string| pattern === string } }
   
+  when "simple_params"
+    pattern = Mustermann.new("/:controller/:action")
+    element = String.new("a")
+    100.times { pattern.params("/#{element.succ!}/show.html") }
+    strings = counts[:params].times.map { "/#{element.succ!}/show.html" }
+    x.report(version) { strings.each { |string| pattern.params(string) } }
+  
+  when "complex_params"
+    pattern = Mustermann.new("/:controller/:action(.:format)")
+    element = String.new("a")
+    100.times { pattern.params("/#{element.succ!}/show.html") }
+    strings = counts[:params].times.map { "/#{element.succ!}/show.html" }
+    x.report(version) { strings.each { |string| pattern.params(string) } }
+
   when "set_match"
     patterns = []
     routes   = []

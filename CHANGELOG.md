@@ -22,21 +22,25 @@ Mustermann follows [Semantic Versioning 2.0](http://semver.org/). Anything docum
   
 #### Performance improvements
 
- | Scenario                    | Improvement over 3.1 |
- | --------------------------- | -------------------- |
- | Simple pattern compilation  | 6x speedup           |
- | Complex pattern compilation | 30% speedup          |
- | Matching `/:a`              | Same performance     |
- | Matching `/:a:b?`           | 8x speedup           |
- | Matching against 1k routes  | 10x to 25x speedup   |
- | Matching against 10k routes | 80x to 2500x speedup |
-
- Numbers are based on simple and realistic patterns run on MRI Ruby 4.0.2 on a MacBook Pro. The improvements you will see may vary based on your Ruby implementation, platform and patterns used.
-
-* Small to moderate improvements for compiling complex patterns. Major improvements for simple patterns (`/resource/:id`), which are common in Sinatra and Rails applications.
+* Small to moderate improvements for compiling complex patterns. Major improvements for simple patterns, which are common in web applications.
 * Automatically switch between different matching algorithms for `Mustermann::Set` based on number of patterns. This makes it blazing fast both for small and large sets of patterns.
 * Major performance improvements for `Mustermann::Mapper`, as it is based on `Mustermann::Set` now, and can dispatch in logarithmic time instead of linear time.
-* Major speed improvements for sub-segment patterns with optional elements (like a format at the end of a path). These patterns are common in Sinatra and Rails applications.
+* Major speed improvements for sub-segment patterns with optional elements (like a format at the end of a path). These patterns are common in web applications.
+
+ | Scenario                      | Improvement over 3.1  |
+ | ----------------------------- | --------------------- |
+ | Simple pattern compilation    | 6x speedup            |
+ | Complex pattern compilation   | 30% speedup           |
+ | Simple param extraction       | 2.4x speedup          |
+ | Complex param extraction      | 70% speedup           |
+ | Matching a simple pattern     | Same performance      |
+ | Matching a complex pattern    | 8x speedup            |
+ | Matching against 1k patterns  | 20x to 350x speedup   |
+ | Matching against 10k patterns | 200x to 3500x speedup |
+
+ Numbers are based on simple and realistic patterns run on MRI Ruby 4.0 on a MacBook Pro. The improvements you will see may vary based on your Ruby implementation, platform and patterns used.
+
+ Simple and complex in the above table refer to patterns with only static segments or captures matching exactly one segment each (like `/resource/:id` or `/:controller/:action`) versus patterns with more complex captures (like `/resource/*path/:id` or `/resource/:id(.:format)?`). The matching improvements against 1k and 10k patterns assume the new `Mustermann::Set` is used. Otherwise the difference should be in line with the single pattern matching improvements.
 
 #### Housekeeping
 
