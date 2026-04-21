@@ -16,6 +16,7 @@ module Mustermann
   #   end
   #
   #   # in config.ru
+  #   use Rack::Head
   #   run router
   #
   # @example Routing to other applications
@@ -30,7 +31,7 @@ module Mustermann
   #
   # @example As middleware
   #   use Mustermann::Router do
-  #     get("/up") { [200, { "Content-Type" => "text/plain" }, ["Up!"]] }
+  #     get("/up") { [200, { "content-type" => "text/plain" }, ["Up!"]] }
   #   end
   #
   #   run MyApp
