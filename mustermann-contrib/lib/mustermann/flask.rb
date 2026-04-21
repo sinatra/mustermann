@@ -104,6 +104,16 @@ module Mustermann
       defaults.merge(converters(false))
     end
 
+    # Ensure each subclass gets its own @converters hash so that converters
+    # registered on a subclass do not leak into the parent class.
+    # This works around a JRuby bug where @converters ||= {} in a class method
+    # may incorrectly return the parent class's instance variable.
+    # @!visibility private
+    def self.inherited(subclass)
+      super
+      subclass.instance_variable_set(:@converters, {})
+    end
+
     # Allows you to register your own converters.
     #
     # It is recommended to use this on a subclass, so to not influence other subsystems
