@@ -5,29 +5,42 @@ module Mustermann
   class Set
     class Cache
       PLACEHOLDER = Object.new.freeze
+      EMPTY_ARRAY = [].freeze
 
       def self.new(matcher) = defined?(ObjectSpace::WeakKeyMap) ? super : matcher
 
       def initialize(matcher)
-        @matcher     = matcher
-        @match_cache = ObjectSpace::WeakKeyMap.new
+        @matcher = matcher
+        reset_cache
       end
 
       def add(pattern)
         @matcher.add(pattern)
-        @match_cache = ObjectSpace::WeakKeyMap.new
+        reset_cache
       end
 
       def match(string, all: false, peek: false)
-        if all || peek
-          @matcher.match(string, all:, peek:)
-        else
-          result = @match_cache[string] ||= @matcher.match(string) || PLACEHOLDER
-          result unless result.equal? PLACEHOLDER
-        end
+        cache  = @match_cache[all][peek]
+        result = cache[string] ||= @matcher.match(string, all: all, peek: peek) || PLACEHOLDER
+        return result unless result.equal? PLACEHOLDER
+        all ? EMPTY_ARRAY : nil
+      end
+
+      def reset_cache
+        @match_cache = {
+          true => {
+            true => ObjectSpace::WeakKeyMap.new,
+            false => ObjectSpace::WeakKeyMap.new
+          },
+          false => {
+            true => ObjectSpace::WeakKeyMap.new,
+            false => ObjectSpace::WeakKeyMap.new
+          }
+        }
       end
 
       def optimize! = @matcher.optimize!
+      def track(...) = @matcher.track(...)
     end
 
     private_constant :Cache

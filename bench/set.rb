@@ -16,6 +16,7 @@ while ARGV.any?
   when "--no-trie"        then options[:use_trie] = false
   when "--cache"          then options[:use_cache] = true
   when "--no-cache"       then options[:use_cache] = false
+  when "--strict-order"   then options[:strict_order] = true
   when "-n", "--nesting"  then nesting = Integer(ARGV.shift)
   when "-r", "--routes"   then route_count = ARGV.shift.split(",").map { Integer(it) }.sort
   when "-m", "--matches"  then match_count = Integer(ARGV.shift)

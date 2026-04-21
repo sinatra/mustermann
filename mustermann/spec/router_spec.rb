@@ -128,7 +128,7 @@ describe Mustermann::Router do
   # ── HTTP verb shorthand methods ────────────────────────────────────────────
 
   context 'HTTP verb shorthand methods' do
-    %w[GET HEAD POST PUT PATCH DELETE OPTIONS LINK UNLINK].each do |verb|
+    %w[GET POST PUT PATCH DELETE OPTIONS LINK UNLINK].each do |verb|
       it "defines ##{verb.downcase} routing" do
         router = described_class.new
         router.send(verb.downcase, '/test') { |_env| [200, {}, [verb]] }
@@ -232,6 +232,52 @@ describe Mustermann::Router do
         get('/handled') { |_| [200, {}, ['handled']] }
       end
       expect { router.call(env(path: '/handled')) }.not_to raise_error
+    end
+  end
+
+  # ── strict_order option ────────────────────────────────────────────────────
+
+  context 'strict_order option' do
+    it 'forwards strict_order: true to each underlying set' do
+      router = described_class.new(strict_order: true)
+      sets = router.instance_variable_get(:@sets)
+      expect(sets.values).to all(satisfy(&:strict_order?))
+    end
+
+    it 'defaults to strict_order: false on each underlying set' do
+      router = described_class.new
+      sets = router.instance_variable_get(:@sets)
+      expect(sets.values).to all(satisfy { |s| !s.strict_order? })
+    end
+
+    it 'dispatches in insertion order when strict_order: true' do
+      matched = nil
+      dynamic_handler = ->(_env) { matched = :dynamic; [200, {}, []] }
+      static_handler  = ->(_env) { matched = :static;  [200, {}, []] }
+
+      # use_trie: true forces the trie, which would normally prefer the static
+      # route over the dynamic one — strict_order must override that.
+      router = described_class.new(strict_order: true, use_trie: true) do
+        get('/:path',  dynamic_handler)
+        get('/static', static_handler)
+      end
+
+      router.call(env(path: '/static'))
+      expect(matched).to eq :dynamic
+    end
+
+    it 'prefers static routes over dynamic without strict_order (trie default behavior)' do
+      matched = nil
+      dynamic_handler = ->(_env) { matched = :dynamic; [200, {}, []] }
+      static_handler  = ->(_env) { matched = :static;  [200, {}, []] }
+
+      router = described_class.new(use_trie: true) do
+        get('/:path',  dynamic_handler)
+        get('/static', static_handler)
+      end
+
+      router.call(env(path: '/static'))
+      expect(matched).to eq :static
     end
   end
 end

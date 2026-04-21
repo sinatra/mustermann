@@ -39,7 +39,7 @@ module Mustermann
   # @see https://rack.github.io/rack/
   class Router
     NOT_FOUND = [404, { "content-type" => "text/plain", "x-cascade" => "pass" }, ["Not found"]].freeze
-    VERBS     = %w[GET HEAD POST PUT PATCH DELETE OPTIONS LINK UNLINK].freeze
+    VERBS     = %w[GET POST PUT PATCH DELETE OPTIONS LINK UNLINK].freeze
     private_constant :VERBS, :NOT_FOUND
 
     # Initializes a new router.
@@ -47,8 +47,7 @@ module Mustermann
     # @param options [Hash] Options to be passed to the Mustermann patterns.
     def initialize(fallback = nil, key: "mustermann.match", **options, &block)
       @key      = key
-      @sets     = VERBS.to_h { |verb| [verb, Set.new] }
-      @options  = options
+      @sets     = VERBS.to_h { |verb| [verb, Set.new(**options)] }
       @fallback = fallback || ->(env) { NOT_FOUND.dup }
 
       if block_given?
@@ -60,7 +59,9 @@ module Mustermann
     # @param env [Hash] The Rack environment hash for the request.
     # @return [Array] The Rack response array (status, headers, body).
     def call(env)
-      if routes = @sets[env["REQUEST_METHOD"]] and match = routes.match(env["PATH_INFO"] || "/")
+      request_method = env["REQUEST_METHOD"] || "GET"
+      request_method = "GET" if request_method == "HEAD"
+      if routes = @sets[request_method] and match = routes.match(env["PATH_INFO"] || "/")
         env[@key] = match
         return match.value.call(env)
       end
@@ -82,7 +83,6 @@ module Mustermann
     def route(verb, pattern, target = nil, **options, &block)
       raise ArgumentError, "need to provide target, :to or a block" unless target || block
       raise ArgumentError, "unknown verb: #{verb}" unless VERBS.include?(verb)
-      pattern = Mustermann.new(pattern, **@options, **options)
       @sets[verb].add(pattern, target || block)
     end
 

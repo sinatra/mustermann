@@ -252,6 +252,30 @@ describe Mustermann::Set do
       end
     end
 
+    # ── strict ordering ──────────────────────────────────────────────────────
+    context 'strict ordering' do
+      it 'tracks insertion order if strict_order is enabled' do
+        s = described_class.new(use_trie:, use_cache: false, strict_order: true)
+        s.add('/:a', :first)
+        s.add('/b', :second)
+        s.add('/:c', :third)
+
+        expect(s.match('/b').value).to eq :first
+
+        results = s.match_all('/b').map(&:value)
+        expect(results).to eq [:first, :second, :third]
+      end
+
+      it 'vaguely maintains insertion order even if strict_order is disabled' do
+        set.add('/:a', :first)
+        set.add('/b', :second)
+        set.add('/:c', :third)
+
+        expect(set.match('/b').value).to eq (set.use_trie? ? :second : :first)
+        expect(set.match('/a').value).to eq :first
+      end
+    end
+
     # ── complex patterns ─────────────────────────────────────────────────────
 
     context 'complex patterns' do

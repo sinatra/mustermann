@@ -489,6 +489,66 @@ object = MyObject.new
 Mustermann.new(object, type: :rails) # => #<Mustermann::Rails:"/foo">
 ```
 
+### Match order
+
+A set can match patterns and values in loose or strict insertion order.
+
+You have the following guarantees without strict ordering:
+
+* Patterns with dynamic segments in the same position and equal static parts will always match in the order they were added.
+* Multiple values for the same pattern will retain their insertion order in regards to that pattern.
+
+Trade-offs without strict ordering:
+
+* Static segments may be favored over dynamic segments. If you want to guarantee this behavior, enable trie-mode proactively.
+* When a pattern has multiple values, these will follow each other directly when using `match_all` or `peek_match_all`.
+
+Strict ordering comes with both a performance overhead and marginally increased memory usage.
+How big the performance overhead is depends on the number of patterns that overlap in the strings they successfully match against.
+It does use Ruby's built-in sorting, which on MRI is based on quicksort. The memory overhead grows linear with the number
+of pattern and value combinations, but is generally small compared to the memory used by the patterns and values themselves.
+
+With strict ordering enabled, patterns and values are guaranteed to occur in insertion order.
+
+Without strict ordering, not using a trie:
+
+```ruby
+set = Mustermann::Set.new(use_trie: false)
+
+set.add("/:path",  :first)
+set.add("/static", :second)
+set.add("/:path",  :third)
+
+set.match("/static").value             # => :first
+set.match_all("/static").map(&:value)  # => [:first, :third, :second]
+```
+
+Without strict ordering, using a trie:
+
+```ruby
+set = Mustermann::Set.new(use_trie: true)
+
+set.add("/:path",  :first)
+set.add("/static", :second)
+set.add("/:path",  :third)
+
+set.match("/static").value             # => :second
+set.match_all("/static").map(&:value)  # => [:second, :first, :third]
+```
+
+With strict ordering enabled, regardless of whether a trie is used or not:
+
+```ruby
+set = Mustermann::Set.new(strict_order: true)
+
+set.add("/:path",  :first)
+set.add("/static", :second)
+set.add("/:path",  :third)
+
+set.match("/static").value             # => :first
+set.match_all("/static").map(&:value)  # => [:first, :second, :third]
+```
+
 <a name="-duck-typing-respond-to"></a>
 ### `respond_to?`
 

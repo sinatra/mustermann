@@ -3,6 +3,7 @@ require 'mustermann'
 require 'mustermann/expander'
 require 'mustermann/set/cache'
 require 'mustermann/set/linear'
+require 'mustermann/set/strict_order'
 require 'mustermann/set/trie'
 
 module Mustermann
@@ -61,11 +62,27 @@ module Mustermann
     #   Mustermann::Set.new { { '/users/:id' => :users } }
     #
     # @param mapping [Array] initial patterns or mappings to add
-    # @param additional_values [:raise, :ignore, :append] behavior when extra keys are passed to {#expand};
-    #   defaults to +:raise+
-    # @param options [Hash] pattern options forwarded to {Mustermann.new} (e.g. +type: :rails+)
+    #
+    # @param additional_values [:raise, :ignore, :append] behavior when extra keys are passed to {#expand}.
+    #   Defaults to +:raise+
+    #
+    # @param use_trie [Boolean, Integer]
+    #   whether to use a trie for matching
+    #   If an Integer is given, it is the number of patterns at which to switch from linear to trie matching.
+    #   Defaults to 50
+    #
+    # @param use_cache [Boolean]
+    #   whether to cache matches not yet garbage collected. Defaults to +true+
+    #
+    # @param strict_order [Boolean]
+    #   whether to match patterns in strict insertion order rather than trie order. Defaults to +false+.
+    #   See {#use_strict_order?} for details
+    #
+    # @param options [Hash]
+    #   pattern options forwarded to {Mustermann.new} (e.g. +type: :rails+)
+    #
     # @raise [ArgumentError] if +additional_values+ is not a recognized behavior symbol
-    def initialize(*mapping, additional_values: :raise, use_trie: 50, use_cache: true, **options, &block)
+    def initialize(*mapping, additional_values: :raise, use_trie: 50, use_cache: true, strict_order: false, **options, &block)
       raise ArgumentError, "Illegal value %p for additional_values" % additional_values unless Expander::ADDITIONAL_VALUES.include? additional_values
       raise ArgumentError, "Illegal value %p for use_trie" % use_trie unless [true, false].include?(use_trie) or use_trie.is_a? Integer
 
@@ -77,6 +94,7 @@ module Mustermann
       @options           = {}
       @expanders         = {}
       @additional_values = additional_values
+      @strict_order      = strict_order
 
       options.each do |key, value|
         if key.is_a? Symbol
@@ -92,6 +110,62 @@ module Mustermann
 
       optimize!
     end
+
+    # A set can match patterns and values in loose or strict insertion order.
+    #
+    # You have the following guarantees without strict ordering:
+    # - Patterns with dynamic segments in the same position and equal static parts will always match in the order they were added.
+    # - Multiple values for the same pattern will retain their insertion order in regards to that pattern.
+    #
+    # Trade-offs without strict ordering:
+    # - Static segments may be favored over dynamic segments. If you want to guarantee this behavior, enable trie-mode proactively.
+    # - When a pattern has multiple values, these will follow each other directly when using {#match_all} or {#peek_match_all}.
+    # 
+    # Strict ordering comes with both a performance overhead and marginally increased memory usage.
+    # How big the performance overhead is depends on the number of patterns that overlap in the strings they successfully match against.
+    # It does use Ruby's built-in sorting, which on MRI is based on quicksort. The memory overhead grows linear with the number
+    # of pattern and value combinations, but is generally small compared to the memory used by the patterns and values themselves.
+    # 
+    # With strict ordering enabled, patterns and values are guaranteed to occur in insertion order.
+    #
+    # @example Without strict ordering, not using a trie
+    #   set = Mustermann::Set.new(use_trie: false)
+    # 
+    #   set.add("/:path",  :first)
+    #   set.add("/static", :second)
+    #   set.add("/:path",  :third)
+    #
+    #   set.match("/static").value             # => :first
+    #   set.match_all("/static").map(&:value)  # => [:first, :third, :second]
+    #
+    # @example Without strict ordering, using a trie
+    #   set = Mustermann::Set.new(use_trie: true)
+    #
+    #   set.add("/:path",  :first)
+    #   set.add("/static", :second)
+    #   set.add("/:path",  :third)
+    #   
+    #   set.match("/static").value             # => :second
+    #   set.match_all("/static").map(&:value)  # => [:second, :first, :third]
+    #
+    # @example With strict ordering
+    #   set = Mustermann::Set.new(strict_order: true)
+    #   
+    #   set.add("/:path",  :first)
+    #   set.add("/static", :second)
+    #   set.add("/:path",  :third)
+    #   
+    #   set.match("/static").value             # => :first
+    #   set.match_all("/static").map(&:value)  # => [:first, :second, :third]
+    #
+    # @return [Boolean] whether matching happens in strict pattern/value insertion order
+    def strict_order? = @strict_order
+    
+    # @return [Boolean] whether caching is enabled
+    def use_cache? = @use_cache
+    
+    # @return [Boolean] whether trie optimization is enabled
+    def use_trie? = @use_trie == true
 
     # Adds a pattern to the set, optionally associated with one or more values.
     #
@@ -131,6 +205,7 @@ module Mustermann
         @reverse_mapping[value] ||= []
         @reverse_mapping[value] << pattern unless @reverse_mapping[value].include? pattern
         @expanders[value]&.add(pattern)
+        @matcher.track(pattern, value) if strict_order?
       end
 
       self
@@ -150,8 +225,8 @@ module Mustermann
     #   set['/users/42']  # => :users_show (or nil)
     #
     # @example Pattern lookup
-    #   pat = Mustermann.new('/users/:id')
-    #   set[pat]          # => :users_show (or nil)
+    #   pattern = Mustermann.new('/users/:id')
+    #   set[pattern] # => :users_show (or nil)
     #
     # @param pattern_or_string [String, Pattern]
     # @return [Object, nil] the associated value, or +nil+ if not found
@@ -312,21 +387,22 @@ module Mustermann
     private
 
     def add_pattern(pattern)
-      case @use_trie
-      when true
-        @matcher ||= Trie.new(self, @mapping.keys)
-      when Integer
-        if @mapping.size >= @use_trie
-          @matcher = Trie.new(self, @mapping.keys)
-          @use_trie = true
-        end
+      if @use_trie.is_a? Integer and @mapping.size >= @use_trie
+        @use_trie = true
+        @matcher = build_matcher
       end
 
-      @matcher ||= Linear.new(self, @mapping.keys)
-      @matcher = Cache.new(@matcher) if @use_cache and not @matcher.is_a? Cache
+      @matcher ||= build_matcher
       @matcher.add(pattern)
-
       @expanders[self]&.add(pattern)
+    end
+
+    def build_matcher
+      factory = use_trie? ? Trie : Linear
+      matcher = factory.new(self, @mapping.keys)
+      matcher = StrictOrder.new(matcher) if strict_order?
+      matcher = Cache.new(matcher) if use_cache?
+      matcher
     end
   end
 end
