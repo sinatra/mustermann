@@ -420,19 +420,6 @@ set.add('/ping')
 set.match('/ping').value  # => nil
 ```
 
-### Conflict Resolution
-
-The set follows insertion order: when two patterns both match a string, the one added first wins. Use `match_all` to retrieve every match:
-
-``` ruby
-set = Mustermann::Set.new
-set.add('/foo',  :static)
-set.add('/:var', :dynamic)
-
-set.match('/foo').value            # => :static
-set.match_all('/foo').map(&:value) # => [:static, :dynamic]
-```
-
 ### Peeking
 
 `peek_match` matches a prefix of the input rather than the full string. The unmatched remainder is available via `post_match`:
