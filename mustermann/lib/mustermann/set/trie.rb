@@ -228,7 +228,12 @@ module Mustermann
         @dynamic_entries = @dynamic.map do |matcher, node|
           names = matcher.names.each(&:freeze)
           # Detect unconstrained single-segment captures: can use fast string.index instead of regex.
-          fast = names.size == 1 && matcher.source == "\\G(?<#{names.first}>[^/]+)" ? names.first : nil
+          # Two conditions: (1) the edge is a bare capture (source starts with \G(?<name>), no leading
+          # static chars) and (2) the capture's character class excludes '/' (PATH_INFO never has '?' or '#').
+          fast = if names.size == 1
+            name = names.first
+            matcher.source.start_with?("\\G(?<#{name}>") && !matcher.match?('/') ? name : nil
+          end
           [matcher, node, names, fast]
         end
       end

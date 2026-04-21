@@ -461,6 +461,28 @@ describe Mustermann::Set do
     include_examples 'a set', use_trie: true
   end
 
+  # ── trie fast-path for single-segment captures ───────────────────────────
+
+  context 'trie fast-path for single-segment captures' do
+    subject(:set) { described_class.new(use_trie: true, use_cache: false) }
+
+    it 'does not match when the capture position holds a slash (empty segment)' do
+      set.add('/:id', :show)
+      # After consuming '/', the next char is another '/' — the segment is empty,
+      # so the fast path skips this dynamic edge and the overall match fails.
+      expect(set.match('//foo')).to be_nil
+    end
+
+    it 'returns all matches through the regex path for non-fast-path dynamic edges' do
+      set.add('/files/*path', :files)
+      # Named splat compiles to \G(?<path>.*?) which can match '/', so fast_name is nil
+      # and the regex path is taken. With all: true, result.concat(nested_result) is hit.
+      results = set.match_all('/files/a/b/c')
+      expect(results.size).to eq 1
+      expect(results.first.params['path']).to eq 'a/b/c'
+    end
+  end
+
   # ── strategy-specific / trie threshold ───────────────────────────────────
 
   context 'trie threshold' do
