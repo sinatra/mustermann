@@ -455,27 +455,6 @@ set.expand(id: '5')          # => '/users/5'  (first applicable pattern)
 set.expand(:posts, id: '5')  # => '/posts/5'  (patterns for a specific value)
 ```
 
-<a name="-duck-typing"></a>
-## Duck Typing
-
-<a name="-duck-typing-to-pattern"></a>
-### `to_pattern`
-
-All methods converting string input to pattern objects will also accept any arbitrary object that implements `to_pattern`:
-
-``` ruby
-require 'mustermann'
-
-class MyObject
-  def to_pattern(**options)
-    Mustermann.new("/foo", **options)
-  end
-end
-
-object = MyObject.new
-Mustermann.new(object, type: :rails) # => #<Mustermann::Rails:"/foo">
-```
-
 ### Match order
 
 A set can match patterns and values in loose or strict insertion order.
@@ -534,6 +513,27 @@ set.add("/:path",  :third)
 
 set.match("/static").value             # => :first
 set.match_all("/static").map(&:value)  # => [:first, :second, :third]
+```
+
+<a name="-duck-typing"></a>
+## Duck Typing
+
+<a name="-duck-typing-to-pattern"></a>
+### `to_pattern`
+
+All methods converting string input to pattern objects will also accept any arbitrary object that implements `to_pattern`:
+
+``` ruby
+require 'mustermann'
+
+class MyObject
+  def to_pattern(**options)
+    Mustermann.new("/foo", **options)
+  end
+end
+
+object = MyObject.new
+Mustermann.new(object, type: :rails) # => #<Mustermann::Rails:"/foo">
 ```
 
 <a name="-duck-typing-respond-to"></a>
