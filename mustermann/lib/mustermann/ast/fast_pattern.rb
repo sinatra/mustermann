@@ -34,7 +34,7 @@ module Mustermann
         return unless match = @regexp.match(string)
         params = match.named_captures
         params.transform_values! { |v| unescape(v) } if string.include?('%')
-        Match.new(self, string, params)
+        Match.new(self, match, params:)
       end
 
       # Public override: fast path for simple patterns, falls through to super otherwise.

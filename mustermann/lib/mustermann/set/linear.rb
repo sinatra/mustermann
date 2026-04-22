@@ -17,9 +17,9 @@ module Mustermann
         result = [] if all
         @patterns.each do |pattern|
           next unless match = peek ? pattern.peek_match(string) : pattern.match(string)
-          return Match.new(match:, value: @set.values_for_pattern(pattern)&.first) unless all
+          return Match.new(match, value: @set.values_for_pattern(pattern)&.first) unless all
           values = @set.values_for_pattern(pattern) || [nil]
-          values.each { |value| result << Match.new(match:, value:) }
+          values.each { |value| result << Match.new(match, value:) }
         end
         result
       end

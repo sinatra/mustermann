@@ -3,21 +3,21 @@ require 'mustermann/match'
 
 module Mustermann
   class Set
+
+    # Subclass of {Mustermann::Match} that also includes the value associated with the pattern that produced the match.
     class Match < Mustermann::Match
+      # @return the value associated with the pattern that produced the match, if any
       attr_reader :value
 
-      def initialize(pattern = nil, string = nil, params = {}, value: nil, match: nil, post_match: '', pre_match: '')
+      # (see Mustermann::Match#initialize)
+      # @option options [Object] :value the value associated with the pattern that produced the match, if any
+      def initialize(*, value: nil, **)
         @value = value
-        if match
-          @pattern    = match.pattern
-          @string     = match.string
-          @params     = match.params
-          @post_match = match.post_match
-          @pre_match  = match.pre_match
-        else
-          super(pattern, string, params, post_match:, pre_match:)
-        end
+        super(*, **)
       end
+
+      # @see Mustermann::Match#eql?
+      def eql?(other) = super && value == other.value
     end
   end
 end

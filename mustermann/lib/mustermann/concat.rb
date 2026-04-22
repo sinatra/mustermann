@@ -75,16 +75,21 @@ module Mustermann
 
     # @see Mustermann::Pattern#peek_match
     def peek_match(string)
-      substring = string
-      params = {}
+      post_match      = string
+      params         = {}
+      captures       = []
+      named_captures = {}
 
       patterns.each do |pattern|
-        return unless part = pattern.peek_match(substring)
+        return unless part = pattern.peek_match(post_match)
         params.merge!(part.params)
-        substring = substring[part.to_s.size..-1]
+        named_captures.merge!(part.named_captures)
+        captures.concat(part.captures)
+        post_match = post_match[part.to_s.size..-1]
       end
 
-      Match.new(self, string[0, string.size - substring.size], params, post_match: substring)
+      matched = string[0, string.size - post_match.size]
+      Match.new(self, string, matched:, params:, captures:, named_captures:, post_match:)
     end
 
     # @see Mustermann::Pattern#peek_params

@@ -22,6 +22,21 @@ describe Mustermann::Set do
       it('supports string key access')    { expect(set.match('/foo')['name']).to eq 'foo'             }
     end
 
+    # ── captures and named_captures ─────────────────────────────────────────
+
+    context 'captures and named_captures' do
+      before { set.add('/a/:a/b/:b', :handler) }
+
+      let(:m) { set.match('/a/foo/b/bar') }
+
+      it('exposes captures as an ordered array')  { expect(m.captures).to eq ['foo', 'bar'] }
+      it('exposes named_captures as a hash')      { expect(m.named_captures).to eq('a' => 'foo', 'b' => 'bar') }
+      it('supports integer index access')         { expect(m[0]).to eq 'foo' }
+      it('supports integer index access (second)') { expect(m[1]).to eq 'bar' }
+      it('supports integer + length access')      { expect(m[0, 2]).to eq ['foo', 'bar'] }
+      it('supports range access')                 { expect(m[0..1]).to eq ['foo', 'bar'] }
+    end
+
     # ── values ──────────────────────────────────────────────────────────────
 
     context 'values' do

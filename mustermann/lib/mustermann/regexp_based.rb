@@ -35,10 +35,10 @@ module Mustermann
     # @see (see Mustermann::Pattern#peek_match)
     def peek_match(string) = build_match(@peek_regexp.match(string))
 
-    def match(string)
-      return unless match = @regexp.match(string)
-      Match.new(self, string, build_params(match))
-    end
+    # @param (see Mustermann::Pattern#match)
+    # @return (see Mustermann::Pattern#match)
+    # @see (see Mustermann::Pattern#match)
+    def match(string) = build_match(@regexp.match(string))
 
     extend Forwardable
     def_delegators :regexp, :===, :=~, :names
@@ -47,7 +47,7 @@ module Mustermann
 
     def build_match(match)
       return unless match
-      Match.new(self, match.to_s, build_params(match), post_match: match.post_match, pre_match: match.pre_match)
+      Match.new(self, match, params: build_params(match))
     end
 
     def build_params(match)

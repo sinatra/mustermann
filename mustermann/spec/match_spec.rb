@@ -7,18 +7,30 @@ describe Mustermann::Match do
   let(:pattern) { Mustermann::Sinatra.new('/:name') }
   subject(:match) { pattern.match('/foo') }
 
+  # For a full match, string and to_s are both the matched string.
   its(:string)     { should be == '/foo'            }
+  its(:to_s)       { should be == '/foo'            }
   its(:params)     { should be == { 'name' => 'foo' } }
   its(:post_match) { should be == ''                }
   its(:pre_match)  { should be == ''                }
-  its(:to_s)       { should be == '/foo'            }
   its(:to_h)       { should be == { 'name' => 'foo' } }
+  its(:captures)        { should be == ['foo'] }
+  its(:named_captures)  { should be == { 'name' => 'foo' } }
+
+  # For a peek match, #string is the full searched string and #to_s is the matched portion.
+  describe 'peek match' do
+    subject(:peek) { pattern.peek_match('/foo/bar') }
+    its(:string) { should be == '/foo/bar' }
+    its(:to_s)   { should be == '/foo'     }
+  end
 
   describe :[] do
-    example('symbol key') { match[:name].should  be == 'foo' }
-    example('string key') { match['name'].should be == 'foo' }
+    example('symbol key')  { match[:name].should  be == 'foo' }
+    example('string key')  { match['name'].should be == 'foo' }
+    example('integer key') { match[0].should      be == 'foo' }
+    example('range key')   { match[0..0].should   be == ['foo'] }
     example('invalid key') do
-      expect { match[1] }.to raise_error(ArgumentError, /key must be a String or Symbol/)
+      expect { match[1.0] }.to raise_error(ArgumentError, /key must be/)
     end
   end
 
@@ -44,5 +56,15 @@ describe Mustermann::Match do
   describe :== do
     example { (match == pattern.match('/foo')).should be true  }
     example { (match == pattern.match('/bar')).should be false }
+  end
+
+  describe 'invalid constructor arguments' do
+    example('bad first argument') do
+      expect { Mustermann::Match.new('not a pattern', '/foo') }.to raise_error(ArgumentError, /first argument/)
+    end
+
+    example('bad second argument') do
+      expect { Mustermann::Match.new(pattern, 42) }.to raise_error(ArgumentError, /second argument/)
+    end
   end
 end

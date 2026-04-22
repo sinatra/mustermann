@@ -165,7 +165,7 @@ module Mustermann
     # @see #peek_params
     def peek_match(string)
       matched = peek(string)
-      Match.new(self, matched, {}, post_match: string[matched.size..-1]) if matched
+      Match.new(self, string, matched:, params: {}, post_match: string[matched.size..-1]) if matched
     end
 
     # Tries to match the pattern against the beginning of the string (as opposed to the full string).
@@ -182,7 +182,7 @@ module Mustermann
     # @return [Array<Hash, Integer>, nil] Array with params hash and length of substing if matched, nil otherwise
     def peek_params(string)
       match = peek_match(string)
-      match ? [match.params, match.string.size] : nil
+      match ? [match.params, match.to_s.size] : nil
     end
 
     # @param [String] string the string to match against

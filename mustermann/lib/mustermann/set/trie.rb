@@ -148,7 +148,7 @@ module Mustermann
         end
 
         if peek
-          matches = build_matches(string[0, position], params, all:, post_match: string[position..], pre_match: '')
+          matches = build_matches(string, params, all:, matched_length: position, post_match: string[position..], pre_match: '')
           return matches unless all
           result.concat(matches)
         end
@@ -158,17 +158,18 @@ module Mustermann
 
       NIL_VALUES = [nil].freeze
 
-      def build_matches(string, params, all: false, post_match: '', pre_match: '')
+      def build_matches(string, params, all: false, matched_length: string.size, post_match: '', pre_match: '')
         result = [] if all
+        matched = string[0, matched_length]
 
         @patterns.each do |pattern|
-          next if pattern.except_regexp&.match?(string)
+          next if pattern.except_regexp&.match?(matched)
 
           pattern_params = build_pattern_params(pattern, params)
 
           values = @set.values_for_pattern(pattern) || NIL_VALUES
           values.each do |value|
-            match = Set::Match.new(pattern, string, pattern_params, value:, post_match:, pre_match:)
+            match = Set::Match.new(pattern, string, matched:, params: pattern_params, value:, post_match:, pre_match:)
             return match unless all
             result << match
           end
