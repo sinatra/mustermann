@@ -105,40 +105,32 @@ module Mustermann
 
         private
 
-        def qualified(string, greedy: true,
-                      **options) "#{string}#{qualifier || "+#{'?' unless greedy}"}"
+        def qualified(string, greedy: true, **options)
+          "#{string}#{qualifier || "+#{'?' unless greedy}"}"
         end
 
-        def with_lookahead(string, lookahead: nil,
-                           **options) lookahead ? "(?:(?!#{lookahead})#{string})" : string
+        def with_lookahead(string, lookahead: nil, **options)
+          lookahead ? "(?:(?!#{lookahead})#{string})" : string
         end
 
-        def from_hash(hash,
-                      **options) pattern(capture: hash[name.to_sym],
-                                         **options)
+        def from_hash(hash, **options)
+          pattern(capture: hash[name.to_sym],**options)
         end
 
         def from_array(array, **options)
-          Regexp.union(*array.map do |e|
-            pattern(capture: e, **options)
-          end)
+          Regexp.union(*array.map { |e| pattern(capture: e, **options) })
         end
 
-        def from_symbol(symbol,
-                        **options) qualified(with_lookahead("[[:#{symbol}:]]", **options),
-                                             **options)
+        def from_symbol(symbol, **options)
+          qualified(with_lookahead("[[:#{symbol}:]]", **options), **options)
         end
 
         def from_string(string, **options)
-          Regexp.new(string.chars.map do |c|
-            t.encoded(c, **options)
-          end.join)
+          Regexp.new(string.chars.map { |c| t.encoded(c, **options) }.join)
         end
 
         def from_nil(**options)
-          qualified(
-            with_lookahead(default(**options), **options), **options
-          )
+          qualified(with_lookahead(default(**options), **options), **options)
         end
 
         def default(**options) = constraint || '[^/\\?#]'
