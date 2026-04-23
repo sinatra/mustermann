@@ -42,8 +42,8 @@ describe Mustermann::Sinatra do
     it { should match('/foo')       .capturing foo: 'foo'       }
     it { should match('/bar')       .capturing foo: 'bar'       }
     it { should match('/foo.bar')   .capturing foo: 'foo.bar'   }
-    it { should match('/%0Afoo')    .capturing foo: "\nfoo"     }
-    it { should match('/foo%2Fbar') .capturing foo: 'foo/bar'   }
+    it { should match('/%0Afoo')    .capturing foo: '%0Afoo'    }
+    it { should match('/foo%2Fbar') .capturing foo: 'foo%2Fbar' }
 
     it { should_not match('/foo?')    }
     it { should_not match('/foo/bar') }
@@ -126,18 +126,18 @@ describe Mustermann::Sinatra do
   end
 
   pattern '/*' do
-    it { should match('/')        .capturing splat: [''] }
-    it { should match('/foo')     .capturing splat: ['foo'] }
-    it { should match('/foo/bar') .capturing splat: ['foo/bar'] }
+    it { should match('/')        .capturing splat: '' }
+    it { should match('/foo')     .capturing splat: 'foo' }
+    it { should match('/foo/bar') .capturing splat: 'foo/bar' }
     it { should generate_template('/{+splat}') }
 
     example { pattern.params('/foo').should be == {"splat" => ["foo"]} }
   end
 
   pattern '/{+splat}' do
-    it { should match('/')        .capturing splat: [''] }
-    it { should match('/foo')     .capturing splat: ['foo'] }
-    it { should match('/foo/bar') .capturing splat: ['foo/bar'] }
+    it { should match('/')        .capturing splat: '' }
+    it { should match('/foo')     .capturing splat: 'foo' }
+    it { should match('/foo/bar') .capturing splat: 'foo/bar' }
     it { should generate_template('/{+splat}') }
 
     example { pattern.params('/foo').should be == {"splat" => ["foo"]} }
@@ -174,9 +174,9 @@ describe Mustermann::Sinatra do
   end
 
   pattern '/:foo/*' do
-    it { should match("/foo/bar/baz")     .capturing foo: 'foo', splat: ['bar/baz']   }
-    it { should match("/foo/")            .capturing foo: 'foo', splat: ['']          }
-    it { should match('/h%20w/h%20a%20y') .capturing foo: 'h w', splat: ['h a y']     }
+    it { should match("/foo/bar/baz")     .capturing foo: 'foo',    splat: 'bar/baz'   }
+    it { should match("/foo/")            .capturing foo: 'foo',    splat: ''          }
+    it { should match('/h%20w/h%20a%20y') .capturing foo: 'h%20w', splat: 'h%20a%20y' }
     it { should_not match('/foo') }
     it { should generate_template('/{foo}/{+splat}') }
 
@@ -185,9 +185,9 @@ describe Mustermann::Sinatra do
   end
 
   pattern '/{foo}/*' do
-    it { should match("/foo/bar/baz")     .capturing foo: 'foo', splat: ['bar/baz']   }
-    it { should match("/foo/")            .capturing foo: 'foo', splat: ['']          }
-    it { should match('/h%20w/h%20a%20y') .capturing foo: 'h w', splat: ['h a y']     }
+    it { should match("/foo/bar/baz")     .capturing foo: 'foo',    splat: 'bar/baz'   }
+    it { should match("/foo/")            .capturing foo: 'foo',    splat: ''          }
+    it { should match('/h%20w/h%20a%20y') .capturing foo: 'h%20w', splat: 'h%20a%20y' }
     it { should_not match('/foo') }
     it { should generate_template('/{foo}/{+splat}') }
 
@@ -252,8 +252,8 @@ describe Mustermann::Sinatra do
     it { should match('/pony%2Ejpg') .capturing file: 'pony', ext: 'jpg' }
     it { should match('/pony%2ejpg') .capturing file: 'pony', ext: 'jpg' }
 
-    it { should match('/pony%E6%AD%A3%2Ejpg') .capturing file: 'pony正', ext: 'jpg' }
-    it { should match('/pony%e6%ad%a3%2ejpg') .capturing file: 'pony正', ext: 'jpg' }
+    it { should match('/pony%E6%AD%A3%2Ejpg') .capturing file: 'pony%E6%AD%A3', ext: 'jpg' }
+    it { should match('/pony%e6%ad%a3%2ejpg') .capturing file: 'pony%e6%ad%a3', ext: 'jpg' }
     it { should match('/pony正%2Ejpg')        .capturing file: 'pony正',         ext: 'jpg' }
     it { should match('/pony正%2ejpg')        .capturing file: 'pony正',         ext: 'jpg' }
     it { should match('/pony正..jpg')         .capturing file: 'pony正.',        ext: 'jpg' }
@@ -301,7 +301,7 @@ describe Mustermann::Sinatra do
     it { should match('/2/test.bar')   .capturing id: '2'   }
     it { should match('/2E/test.bar')  .capturing id: '2E'  }
     it { should match('/2e/test.bar')  .capturing id: '2e'  }
-    it { should match('/%2E/test.bar') .capturing id: '.'   }
+    it { should match('/%2E/test.bar') .capturing id: '%2E' }
   end
 
   pattern '/10/:id' do
@@ -513,8 +513,8 @@ describe Mustermann::Sinatra do
 
   pattern '/:foo', capture: 'a.b' do
     it { should match('/a.b')   .capturing foo: 'a.b'   }
-    it { should match('/a%2Eb') .capturing foo: 'a.b'   }
-    it { should match('/a%2eb') .capturing foo: 'a.b'   }
+    it { should match('/a%2Eb') .capturing foo: 'a%2Eb' }
+    it { should match('/a%2eb') .capturing foo: 'a%2eb' }
 
     it { should_not match('/ab')   }
     it { should_not match('/afb')  }

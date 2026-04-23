@@ -222,7 +222,7 @@ describe 'Atomic group compilation' do
 
     it 'handles percent-encoded characters in the input' do
       m = pattern.match('/hello%20world/foo')
-      expect(m[:a]).to eq 'hello world'
+      expect(m[:a]).to eq 'hello%20world'
     end
   end
 

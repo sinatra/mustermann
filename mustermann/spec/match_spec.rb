@@ -16,6 +16,7 @@ describe Mustermann::Match do
   its(:to_h)       { should be == { 'name' => 'foo' } }
   its(:captures)        { should be == ['foo'] }
   its(:named_captures)  { should be == { 'name' => 'foo' } }
+  its(:names)           { should be == ['name'] }
 
   # For a peek match, #string is the full searched string and #to_s is the matched portion.
   describe 'peek match' do

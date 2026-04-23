@@ -74,10 +74,13 @@ module Mustermann
       end
     end
 
+    # @return [Array<String>] the names of the named captures
+    def names = named_captures.keys
+
     # @overload [](key)
-    #   Access params by key.
+    #   Access named captures by key.
     #   @param key [String, Symbol] the key to access
-    #   @return the value of the param, or nil if not found
+    #   @return the value of the named capture, or nil if not found
     #
     # @overload [](index)
     #   Access captures by index.
@@ -96,8 +99,8 @@ module Mustermann
     #   @return [Array] the values of the captures
     def [](key, length = nil)
       case key
-      when String  then params[key]
-      when Symbol  then params[key.to_s]
+      when String  then named_captures[key]
+      when Symbol  then named_captures[key.to_s]
       when Integer then length ? captures[key, length] : captures[key]
       when Range   then captures[key]
       else raise ArgumentError, "key must be a String, Symbol, Integer, or Range, not #{key.class}"

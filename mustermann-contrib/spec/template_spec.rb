@@ -86,7 +86,7 @@ describe Mustermann::Template do
       pattern '/hello/{person}' do
         it { should match('/hello/Frank').capturing person: 'Frank' }
         it { should match('/hello/a_b~c').capturing person: 'a_b~c' }
-        it { should match('/hello/a.%20').capturing person: 'a. ' }
+        it { should match('/hello/a.%20').capturing person: 'a.%20' }
 
         it { should_not match('/hello/:') }
         it { should_not match('/hello//') }
@@ -122,8 +122,8 @@ describe Mustermann::Template do
       pattern '/hello/{+person}' do
         it { should match('/hello/Frank') .capturing person: 'Frank' }
         it { should match('/hello/a_b~c') .capturing person: 'a_b~c' }
-        it { should match('/hello/a.%20') .capturing person: 'a. '   }
-        it { should match('/hello/a/%20') .capturing person: 'a/ '   }
+        it { should match('/hello/a.%20') .capturing person: 'a.%20' }
+        it { should match('/hello/a/%20') .capturing person: 'a/%20' }
         it { should match('/hello/:')     .capturing person: ?:      }
         it { should match('/hello//')     .capturing person: ?/      }
         it { should match('/hello/?')     .capturing person: ??      }
@@ -155,8 +155,8 @@ describe Mustermann::Template do
       pattern '/hello/{#person}' do
         it { should match('/hello/#Frank') .capturing person: 'Frank' }
         it { should match('/hello/#a_b~c') .capturing person: 'a_b~c' }
-        it { should match('/hello/#a.%20') .capturing person: 'a. '   }
-        it { should match('/hello/#a/%20') .capturing person: 'a/ '   }
+        it { should match('/hello/#a.%20') .capturing person: 'a.%20' }
+        it { should match('/hello/#a/%20') .capturing person: 'a/%20' }
         it { should match('/hello/#:')     .capturing person: ?:      }
         it { should match('/hello/#/')     .capturing person: ?/      }
         it { should match('/hello/#?')     .capturing person: ??      }
@@ -528,9 +528,9 @@ describe Mustermann::Template do
 
       context 'expand' do
         pattern '{a*}' do
-          it { should match('a')     .capturing a: ['a']           }
-          it { should match('a,b')   .capturing a: ['a', 'b']      }
-          it { should match('a,b,c') .capturing a: ['a', 'b', 'c'] }
+          it { should match('a')     .capturing a: 'a'       }
+          it { should match('a,b')   .capturing a: 'a,b'     }
+          it { should match('a,b,c') .capturing a: 'a,b,c'   }
           it { should_not match('a,b/c') }
           it { should_not match('a,') }
 
@@ -539,8 +539,8 @@ describe Mustermann::Template do
         end
 
         pattern '{a*},{b}' do
-          it { should match('a,b')   .capturing a: ['a'],        b: 'b' }
-          it { should match('a,b,c') .capturing a: ['a', 'b'],   b: 'c' }
+          it { should match('a,b')   .capturing a: 'a',   b: 'b' }
+          it { should match('a,b,c') .capturing a: 'a,b', b: 'c' }
           it { should_not match('a,b/c') }
           it { should_not match('a,') }
 
@@ -549,8 +549,8 @@ describe Mustermann::Template do
         end
 
         pattern '{a*,b}' do
-          it { should match('a,b')   .capturing a: ['a'],        b: 'b' }
-          it { should match('a,b,c') .capturing a: ['a', 'b'],   b: 'c' }
+          it { should match('a,b')   .capturing a: 'a',   b: 'b' }
+          it { should match('a,b,c') .capturing a: 'a,b', b: 'c' }
           it { should_not match('a,b/c') }
           it { should_not match('a,') }
 
@@ -581,15 +581,15 @@ describe Mustermann::Template do
 
       context 'expand' do
         pattern '{+a*}' do
-          it { should match('a')     .capturing a: ['a']           }
-          it { should match('a,b')   .capturing a: ['a', 'b']      }
-          it { should match('a,b,c') .capturing a: ['a', 'b', 'c'] }
-          it { should match('a,b/c') .capturing a: ['a', 'b/c']    }
+          it { should match('a')     .capturing a: 'a'       }
+          it { should match('a,b')   .capturing a: 'a,b'     }
+          it { should match('a,b,c') .capturing a: 'a,b,c'   }
+          it { should match('a,b/c') .capturing a: 'a,b/c'   }
         end
 
         pattern '{+a*},{b}' do
-          it { should match('a,b')   .capturing a: ['a'],        b: 'b' }
-          it { should match('a,b,c') .capturing a: ['a', 'b'],   b: 'c' }
+          it { should match('a,b')   .capturing a: 'a',   b: 'b' }
+          it { should match('a,b,c') .capturing a: 'a,b', b: 'c' }
           it { should_not match('a,b/c') }
           it { should_not match('a,') }
 
@@ -615,18 +615,18 @@ describe Mustermann::Template do
 
       context 'expand' do
         pattern '{#a*}' do
-          it { should match('#a')     .capturing a: ['a']           }
-          it { should match('#a,b')   .capturing a: ['a', 'b']      }
-          it { should match('#a,b,c') .capturing a: ['a', 'b', 'c'] }
-          it { should match('#a,b/c') .capturing a: ['a', 'b/c']    }
+          it { should match('#a')     .capturing a: 'a'       }
+          it { should match('#a,b')   .capturing a: 'a,b'     }
+          it { should match('#a,b,c') .capturing a: 'a,b,c'   }
+          it { should match('#a,b/c') .capturing a: 'a,b/c'   }
 
           example { pattern.params('#a,b').should be == { 'a' => ['a', 'b'] }}
           example { pattern.params('#a,b,c').should be == { 'a' => ['a', 'b', 'c'] }}
         end
 
         pattern '{#a*,b}' do
-          it { should match('#a,b')   .capturing a: ['a'],        b: 'b' }
-          it { should match('#a,b,c') .capturing a: ['a', 'b'],   b: 'c' }
+          it { should match('#a,b')   .capturing a: 'a',   b: 'b' }
+          it { should match('#a,b,c') .capturing a: 'a,b', b: 'c' }
           it { should_not match('#a,') }
 
           example { pattern.params('#a,b').should be == { 'a' => ['a'], 'b' => 'b' }}
@@ -651,16 +651,16 @@ describe Mustermann::Template do
 
       context 'expand' do
         pattern '{.a*}' do
-          it { should match('.a')     .capturing a: ['a']           }
-          it { should match('.a.b')   .capturing a: ['a', 'b']      }
-          it { should match('.a.b.c') .capturing a: ['a', 'b', 'c'] }
+          it { should match('.a')     .capturing a: 'a'       }
+          it { should match('.a.b')   .capturing a: 'a.b'     }
+          it { should match('.a.b.c') .capturing a: 'a.b.c'   }
           it { should_not match('.a.b,c') }
           it { should_not match('.a,') }
         end
 
         pattern '{.a*,b}' do
-          it { should match('.a.b')   .capturing a: ['a'],        b: 'b' }
-          it { should match('.a.b.c') .capturing a: ['a', 'b'],   b: 'c' }
+          it { should match('.a.b')   .capturing a: 'a',   b: 'b' }
+          it { should match('.a.b.c') .capturing a: 'a.b', b: 'c' }
           it { should_not match('.a.b/c') }
           it { should_not match('.a.') }
 
@@ -686,16 +686,16 @@ describe Mustermann::Template do
 
       context 'expand' do
         pattern '{/a*}' do
-          it { should match('/a')     .capturing a: ['a']           }
-          it { should match('/a/b')   .capturing a: ['a', 'b']      }
-          it { should match('/a/b/c') .capturing a: ['a', 'b', 'c'] }
+          it { should match('/a')     .capturing a: 'a'       }
+          it { should match('/a/b')   .capturing a: 'a/b'     }
+          it { should match('/a/b/c') .capturing a: 'a/b/c'   }
           it { should_not match('/a/b,c') }
           it { should_not match('/a,') }
         end
 
         pattern '{/a*,b}' do
-          it { should match('/a/b')   .capturing a: ['a'],        b: 'b' }
-          it { should match('/a/b/c') .capturing a: ['a', 'b'],   b: 'c' }
+          it { should match('/a/b')   .capturing a: 'a',   b: 'b' }
+          it { should match('/a/b/c') .capturing a: 'a/b', b: 'c' }
           it { should_not match('/a/b,c') }
           it { should_not match('/a/') }
 
@@ -721,16 +721,16 @@ describe Mustermann::Template do
 
       context 'expand' do
         pattern '{;a*}' do
-          it { should match(';a=1')         .capturing a: ['1']           }
-          it { should match(';a=1;a=2')     .capturing a: ['1', '2']      }
-          it { should match(';a=1;a=2;a=3') .capturing a: ['1', '2', '3'] }
+          it { should match(';a=1')         .capturing a: 'a=1'           }
+          it { should match(';a=1;a=2')     .capturing a: 'a=1;a=2'       }
+          it { should match(';a=1;a=2;a=3') .capturing a: 'a=1;a=2;a=3'   }
           it { should_not match(';a=1;a=2;b=3') }
           it { should_not match(';a=1;a=2;a=3,') }
         end
 
         pattern '{;a*,b}' do
-          it { should match(';a=1;b')       .capturing a: ['1'],      b: nil }
-          it { should match(';a=2;a=2;b=1') .capturing a: ['2', '2'], b: '1' }
+          it { should match(';a=1;b')       .capturing a: 'a=1',     b: nil }
+          it { should match(';a=2;a=2;b=1') .capturing a: 'a=2;a=2', b: '1' }
           it { should_not match(';a;b;c') }
           it { should_not match(';a;') }
 
@@ -755,16 +755,16 @@ describe Mustermann::Template do
 
       context 'expand' do
         pattern '{?a*}' do
-          it { should match('?a=1')         .capturing a: ['1']           }
-          it { should match('?a=1&a=2')     .capturing a: ['1', '2']      }
-          it { should match('?a=1&a=2&a=3') .capturing a: ['1', '2', '3'] }
+          it { should match('?a=1')         .capturing a: 'a=1'           }
+          it { should match('?a=1&a=2')     .capturing a: 'a=1&a=2'       }
+          it { should match('?a=1&a=2&a=3') .capturing a: 'a=1&a=2&a=3'   }
           it { should_not match('?a=1&a=2&b=3') }
           it { should_not match('?a=1&a=2&a=3,') }
         end
 
         pattern '{?a*,b}' do
-          it { should match('?a=1&b')       .capturing a: ['1'],      b: nil }
-          it { should match('?a=2&a=2&b=1') .capturing a: ['2', '2'], b: '1' }
+          it { should match('?a=1&b')       .capturing a: 'a=1',     b: nil }
+          it { should match('?a=2&a=2&b=1') .capturing a: 'a=2&a=2', b: '1' }
           it { should_not match('?a&b&c') }
           it { should_not match('?a&') }
 
@@ -789,16 +789,16 @@ describe Mustermann::Template do
 
       context 'expand' do
         pattern '{&a*}' do
-          it { should match('&a=1')         .capturing a: ['1']           }
-          it { should match('&a=1&a=2')     .capturing a: ['1', '2']      }
-          it { should match('&a=1&a=2&a=3') .capturing a: ['1', '2', '3'] }
+          it { should match('&a=1')         .capturing a: 'a=1'           }
+          it { should match('&a=1&a=2')     .capturing a: 'a=1&a=2'       }
+          it { should match('&a=1&a=2&a=3') .capturing a: 'a=1&a=2&a=3'   }
           it { should_not match('&a=1&a=2&b=3') }
           it { should_not match('&a=1&a=2&a=3,') }
         end
 
         pattern '{&a*,b}' do
-          it { should match('&a=1&b')       .capturing a: ['1'],      b: nil }
-          it { should match('&a=2&a=2&b=1') .capturing a: ['2', '2'], b: '1' }
+          it { should match('&a=1&b')       .capturing a: 'a=1',     b: nil }
+          it { should match('&a=2&a=2&b=1') .capturing a: 'a=2&a=2', b: '1' }
           it { should_not match('&a&b&c') }
           it { should_not match('&a&') }
 

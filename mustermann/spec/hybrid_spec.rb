@@ -41,9 +41,9 @@ describe Mustermann::Hybrid do
   end
 
   pattern '/*' do
-    it { should match('/')        .capturing splat: ['']        }
-    it { should match('/foo')     .capturing splat: ['foo']     }
-    it { should match('/foo/bar') .capturing splat: ['foo/bar'] }
+    it { should match('/')        .capturing splat: ''        }
+    it { should match('/foo')     .capturing splat: 'foo'     }
+    it { should match('/foo/bar') .capturing splat: 'foo/bar' }
 
     it { should generate_template('/{+splat}') }
   end
