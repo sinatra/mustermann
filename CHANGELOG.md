@@ -16,7 +16,7 @@ Mustermann follows [Semantic Versioning 2.0](http://semver.org/). Anything docum
 #### New features
 
 * `Mustermann::Rails` now supports Rails up to version 8.2 (previously 5.0).
-* Add `Mustermann::Hybrid`, a pattern that's a union of Sinatra, Rails and URI Template syntax. It is designed to be as compatible as possible with all three syntaxes.
+* Added `Mustermann::Hybrid`, a pattern that's a union of Sinatra, Rails and URI Template syntax. It is designed to be as compatible as possible with all three syntaxes.
 * Added `Mustermann::Set` to `mustermann`, which is a collection of patterns with associated values, designed for building routing tables that dispatch efficiently as the number of routes grows.
 * Reintroduce `Mustermann::Router`, now based on `Mustermann::Set`, for demonstration purposes and use in small applications or middleware. Simple and fast.
 * The `capture` option now supports special class and symbol values, that both set an expected capture pattern and define a params converter.
