@@ -21,7 +21,7 @@ jobs:
           - '3.4'
           - '4.0'
           - head
-          - jruby-10.1.0.0 # TODO: change back to "jruby"
+          - jruby
           - jruby-head
           - truffleruby
           - truffleruby-head

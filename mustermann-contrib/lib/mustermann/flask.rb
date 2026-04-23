@@ -104,6 +104,13 @@ module Mustermann
       defaults.merge(converters(false))
     end
 
+    # @!visibility private
+    def self.inherited(subclass) # :nodoc:
+      super
+      # Work around JRuby bug
+      subclass.instance_variable_set(:@converters, {})
+    end
+
     # Allows you to register your own converters.
     #
     # It is recommended to use this on a subclass, so to not influence other subsystems
