@@ -101,7 +101,7 @@ module Mustermann
       # Internal AST representation of pattern.
       # @!visibility private
       def to_ast
-        ast = self.class.ast_cache.fetch(@string) do
+        ast = self.class.ast_cache.fetch([@string, options]) do
           ast   = parse(@string, pattern: self)
           ast &&= transform(ast)
           ast &&= set_boundaries(ast, string: @string)
