@@ -107,7 +107,7 @@ module Mustermann
           ast &&= set_boundaries(ast, string: @string)
           validate(ast)
         end
-        @param_converters ||= scan_params(ast) if ast
+        @param_converters ||= scan_params(ast, options) if ast
         ast
       end
 
@@ -143,7 +143,7 @@ module Mustermann
 
       # @!visibility private
       def param_converters
-        @param_converters ||= scan_params(to_ast)
+        @param_converters ||= scan_params(to_ast, options)
       end
 
       # @api private

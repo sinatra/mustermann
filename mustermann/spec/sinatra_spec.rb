@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 require 'support'
 require 'mustermann/sinatra'
+require 'date'
+require 'rubygems/version'
 
 describe Mustermann::Sinatra do
   extend Support::Pattern
@@ -598,6 +600,171 @@ describe Mustermann::Sinatra do
     it { should match('/a@1')   .capturing a: 'a',   b: '1' }
     it { should match('/a@b')   .capturing a: 'a@b', b: nil }
     it { should match('/a@1@2') .capturing a: 'a@1', b: '2' }
+  end
+
+  context 'capture: class and symbol converters' do
+    pattern '/:n', capture: Integer do
+      it { should match('/42')  .capturing n: '42'  }
+      it { should match('/-5')  .capturing n: '-5'  }
+      it { should match('/0')   .capturing n: '0'   }
+      it { should_not match('/') }
+      it { should_not match('/foo') }
+      it { should_not match('/3.14') }
+      example { pattern.params('/42').should be == { 'n' => 42 } }
+      example { pattern.params('/-5').should be == { 'n' => -5 } }
+    end
+
+    pattern '/:n', capture: :integer do
+      it { should match('/42')  .capturing n: '42' }
+      it { should match('/-5')  .capturing n: '-5' }
+      it { should_not match('/foo') }
+      example { pattern.params('/42').should be == { 'n' => 42 } }
+    end
+
+    pattern '/:name', capture: Symbol do
+      it { should match('/hello')   .capturing name: 'hello'   }
+      it { should match('/foo_bar') .capturing name: 'foo_bar' }
+      it { should_not match('/') }
+      it { should_not match('/hello-world') }
+      example { pattern.params('/hello').should be == { 'name' => :hello } }
+    end
+
+    pattern '/:name', capture: :symbol do
+      it { should match('/hello')   .capturing name: 'hello'   }
+      it { should match('/foo_bar') .capturing name: 'foo_bar' }
+      it { should_not match('/hello-world') }
+      example { pattern.params('/hello').should be == { 'name' => :hello } }
+    end
+
+    pattern '/:f', capture: Float do
+      it { should match('/3.14') .capturing f: '3.14' }
+      it { should match('/-2.5') .capturing f: '-2.5' }
+      it { should match('/5')    .capturing f: '5'    }
+      it { should_not match('/') }
+      it { should_not match('/foo') }
+      example { pattern.params('/3.14').should be == { 'f' => 3.14 } }
+      example { pattern.params('/5').should    be == { 'f' => 5.0  } }
+    end
+
+    pattern '/:f', capture: :float do
+      it { should match('/3.14') .capturing f: '3.14' }
+      it { should match('/5')    .capturing f: '5'    }
+      it { should_not match('/foo') }
+      example { pattern.params('/3.14').should be == { 'f' => 3.14 } }
+    end
+
+    pattern '/:d', capture: Date do
+      it { should match('/2026-04-23') .capturing d: '2026-04-23' }
+      it { should_not match('/') }
+      it { should_not match('/foo') }
+      it { should_not match('/04-23-2026') }
+      it { should_not match('/2026/04/23') }
+      example { pattern.params('/2026-04-23').should be == { 'd' => Date.new(2026, 4, 23) } }
+    end
+
+    pattern '/:d', capture: :date do
+      it { should match('/2026-04-23') .capturing d: '2026-04-23' }
+      it { should_not match('/foo') }
+      example { pattern.params('/2026-04-23').should be == { 'd' => Date.new(2026, 4, 23) } }
+    end
+
+    pattern '/:v', capture: Gem::Version do
+      it { should match('/1.0')           .capturing v: '1.0'           }
+      it { should match('/1.2.3')         .capturing v: '1.2.3'         }
+      it { should match('/0.9.0.alpha.1') .capturing v: '0.9.0.alpha.1' }
+      it { should_not match('/') }
+      it { should_not match('/foo') }
+      example { pattern.params('/1.2.3').should be == { 'v' => Gem::Version.new('1.2.3') } }
+    end
+
+    pattern '/:v', capture: :version do
+      it { should match('/1.2.3') .capturing v: '1.2.3' }
+      it { should_not match('/foo') }
+      example { pattern.params('/1.2.3').should be == { 'v' => Gem::Version.new('1.2.3') } }
+    end
+
+    pattern '/:lang', capture: :locale do
+      it { should match('/en')         .capturing lang: 'en'         }
+      it { should match('/en-US')      .capturing lang: 'en-US'      }
+      it { should match('/zh-Hans-CN') .capturing lang: 'zh-Hans-CN' }
+      it { should match('/i')          .capturing lang: 'i'          }
+      it { should_not match('/') }
+      it { should_not match('/e') }
+    end
+
+    pattern '/:s', capture: :slug do
+      it { should match('/hello')       .capturing s: 'hello'       }
+      it { should match('/hello-world') .capturing s: 'hello-world' }
+      it { should_not match('/') }
+      it { should_not match('/Hello') }
+      it { should_not match('/hello-') }
+    end
+
+    pattern '/:id', capture: :uuid do
+      it { should match('/f47ac10b-58cc-4372-a567-0e02b2c3d479') .capturing id: 'f47ac10b-58cc-4372-a567-0e02b2c3d479' }
+      it { should match('/F47AC10B-58CC-4372-A567-0E02B2C3D479') .capturing id: 'F47AC10B-58CC-4372-A567-0E02B2C3D479' }
+      it { should_not match('/') }
+      it { should_not match('/foo') }
+      it { should_not match('/f47ac10b-58cc-4372-a567') }
+    end
+
+    example 'capture: String raises CompileError (nil pattern cannot constrain)' do
+      expect { Mustermann::Sinatra.new('/:x', capture: String) }.
+        to raise_error(Mustermann::CompileError, /no converter for class String/)
+    end
+
+    example 'capture: unsupported class raises CompileError' do
+      expect { Mustermann::Sinatra.new('/:x', capture: Range) }.
+        to raise_error(Mustermann::CompileError, /no converter for class Range/)
+    end
+
+    example 'capture: unsupported value raises CompileError' do
+      expect { Mustermann::Sinatra.new('/:x', capture: Object.new) }.
+        to raise_error(Mustermann::CompileError, /invalid capture constraint/)
+    end
+
+    context 'capture: array of types tries each in order' do
+      pattern '/:n', capture: [Integer, Float] do
+        it { should match('/42')   .capturing n: '42'   }
+        it { should match('/-5')   .capturing n: '-5'   }
+        it { should match('/3.14') .capturing n: '3.14' }
+        it { should match('/-2.5') .capturing n: '-2.5' }
+        it { should_not match('/') }
+        it { should_not match('/foo') }
+        example { pattern.params('/42').should   be == { 'n' => 42   } }
+        example { pattern.params('/-5').should   be == { 'n' => -5   } }
+        example { pattern.params('/3.14').should be == { 'n' => 3.14 } }
+        example { pattern.params('/-2.5').should be == { 'n' => -2.5 } }
+      end
+
+      pattern '/:n', capture: [Integer, :slug] do
+        it { should match('/42')          .capturing n: '42'          }
+        it { should match('/hello-world') .capturing n: 'hello-world' }
+        it { should_not match('/') }
+        it { should_not match('/Hello') }
+        example { pattern.params('/42').should          be == { 'n' => 42           } }
+        example { pattern.params('/hello-world').should be == { 'n' => 'hello-world' } }
+      end
+    end
+
+    context 'converters apply when capture is the head of a look-ahead node' do
+      pattern '/:id(.:format)?', capture: { id: Integer } do
+        it { should match('/42')      .capturing id: '42' }
+        it { should match('/42.json') .capturing id: '42' }
+        it { should_not match('/foo') }
+        it { should_not match('/foo.json') }
+        example { pattern.params('/42').should      be == { 'id' => 42, 'format' => nil  } }
+        example { pattern.params('/42.json').should be == { 'id' => 42, 'format' => 'json' } }
+      end
+
+      pattern '/:id(.:format)?', capture: { id: Integer, format: :slug } do
+        it { should match('/42')          .capturing id: '42' }
+        it { should match('/42.json')     .capturing id: '42' }
+        it { should_not match('/foo.json') }
+        example { pattern.params('/42').should      be == { 'id' => 42, 'format' => nil   } }
+        example { pattern.params('/42.json').should be == { 'id' => 42, 'format' => 'json' } }
+      end
+    end
   end
 
   pattern '/(:a)b?', greedy: false do

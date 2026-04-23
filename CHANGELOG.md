@@ -19,6 +19,35 @@ Mustermann follows [Semantic Versioning 2.0](http://semver.org/). Anything docum
 * Add `Mustermann::Hybrid`, a pattern that's a union of Sinatra, Rails and URI Template syntax. It is designed to be as compatible as possible with all three syntaxes.
 * Added `Mustermann::Set` to `mustermann`, which is a collection of patterns with associated values, designed for building routing tables that dispatch efficiently as the number of routes grows.
 * Reintroduce `Mustermann::Router`, now based on `Mustermann::Set`, for demonstration purposes and use in small applications or middleware. Simple and fast.
+* The `capture` option now supports special class and symbol values, that both set an expected capture pattern and define a params converter.
+
+Here's an example using `Mustermann::Hybrid`, `Mustermann::Set`, and the new `capture` options:
+
+```ruby
+require "mustermann/set"
+
+set = Mustermann::Set.new(type: :hybrid, capture: { id: Integer, user_id: Integer, slug: :slug })
+
+# adding values is optional
+set.add "/users",                "users.index"
+set.add "/users/:id",            "users.show"
+set.add "/posts",                "posts.index"
+set.add "/users/:user_id/posts", "posts.index"
+set.add "/posts/:id(-:slug)",    "posts.show" # slug is optional
+
+match = set.match("/posts/42-awesome-post")
+
+# id is automatically converted to an Integer, and slug is available as a string
+match.params # => { id: 42, slug: "awesome-post" }
+
+# You can access the pattern and value that matched
+match.value   # => "posts.show"
+match.pattern # => #<Mustermann::Hybrid:"/posts/:id(-:slug)">
+
+# Generate a path from a set value and params
+set.expand("posts.index")              # => "/posts"
+set.expand("posts.index", user_id: 42) # => "/users/42/posts"
+```
   
 #### Performance improvements
 

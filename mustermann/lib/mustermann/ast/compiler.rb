@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'mustermann/ast/translator'
+require 'mustermann/ast/converters'
 
 module Mustermann
   # @see Mustermann::AST::Pattern
@@ -99,7 +100,9 @@ module Mustermann
           when Hash   then from_hash(capture, **options)
           when String then from_string(capture, **options)
           when nil    then from_nil(**options)
-          else capture
+          when Regexp then capture
+          when Class  then from_class(capture, **options)
+          else raise CompileError, "invalid capture constraint %p for %p" % [capture, name]
           end
         end
 
@@ -114,7 +117,7 @@ module Mustermann
         end
 
         def from_hash(hash, **options)
-          pattern(capture: hash[name.to_sym],**options)
+          pattern(capture: hash[name.to_sym], **options)
         end
 
         def from_array(array, **options)
@@ -122,6 +125,8 @@ module Mustermann
         end
 
         def from_symbol(symbol, **options)
+          capture, _ = CONVERTERS[symbol]
+          return pattern(capture:, **options) if capture
           qualified(with_lookahead("[[:#{symbol}:]]", **options), **options)
         end
 
@@ -131,6 +136,12 @@ module Mustermann
 
         def from_nil(**options)
           qualified(with_lookahead(default(**options), **options), **options)
+        end
+
+        def from_class(klass, **options)
+          capture, _ = CONVERTERS[klass.name]
+          raise CompileError, "no converter for class %p" % klass unless capture
+          pattern(capture:, **options)
         end
 
         def default(**options) = constraint || '[^/\\?#]'

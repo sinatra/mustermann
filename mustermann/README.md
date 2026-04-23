@@ -595,6 +595,99 @@ Mustermann.new('/:id.:ext', capture: { id: /\d+/, ext: ['png', 'jpg'] })
 
 Available POSIX character classes are: `:alnum`, `:alpha`, `:blank`, `:cntrl`, `:digit`, `:graph`, `:lower`, `:print`, `:punct`, `:space`, `:upper`, `:xdigit`, `:word` and `:ascii`.
 
+#### Typed Captures
+
+Certain Ruby classes and named symbols can be passed as a capture value. They constrain what the capture matches **and** automatically convert the captured string in `params` to the appropriate type.
+
+``` ruby
+require 'mustermann'
+require 'date'
+
+# Integer: only matches integers, converts to Integer in params
+pattern = Mustermann.new('/:id', capture: Integer)
+pattern.match('/42')    # matches
+pattern.match('/foo')   # does not match
+pattern.params('/42')   # => { "id" => 42 }
+
+# Float: matches integers and decimals, converts to Float in params
+pattern = Mustermann.new('/:price', capture: Float)
+pattern.params('/3.14') # => { "price" => 3.14 }
+pattern.params('/5')    # => { "price" => 5.0 }
+
+# Symbol: only matches word characters (\w+), converts to Symbol in params
+pattern = Mustermann.new('/:format', capture: Symbol)
+pattern.params('/json')       # => { "format" => :json }
+pattern.match('/with-hyphen') # does not match
+
+# Date: only matches YYYY-MM-DD dates, converts to Date in params
+pattern = Mustermann.new('/:date', capture: Date)
+pattern.params('/2026-04-23') # => { "date" => #<Date: 2026-04-23> }
+pattern.match('/04-23-2026')  # does not match
+
+# Gem::Version: matches version strings, converts to Gem::Version in params
+require 'rubygems/version'
+pattern = Mustermann.new('/:version', capture: Gem::Version)
+pattern.params('/1.2.3') # => { "version" => #<Gem::Version "1.2.3"> }
+```
+
+Lowercase symbol aliases are also available: `:integer`, `:float`, `:symbol`, `:date`, `:version`. They behave identically to their class counterparts:
+
+``` ruby
+pattern = Mustermann.new('/:id', capture: :integer)
+pattern.params('/42') # => { "id" => 42 }
+```
+
+These can be mixed with other capture types in a hash:
+
+``` ruby
+pattern = Mustermann.new('/:id(.:format)?', capture: { id: Integer, format: :slug })
+pattern.params('/42')      # => { "id" => 42, "format" => nil }
+pattern.params('/42.json') # => { "id" => 42, "format" => "json" }
+```
+
+Like all other capture types, these can also be used in an array:
+
+``` ruby
+pattern = Mustermann.new('/score/:score', capture: [Integer, Float])
+pattern.params('/42')   # => { "score" => 42 }
+pattern.params('/3.14') # => { "score" => 3.14 }
+```
+
+#### Pattern-Only Named Symbols
+
+The following symbols constrain the capture with a regex but do **not** perform any type conversion — `params` still returns a string:
+
+| Symbol    | Matches |
+|-----------|---------|
+| `:locale` | BCP 47 language tags (`en`, `en-US`, `zh-Hans-CN`) |
+| `:slug`   | Lowercase URL slugs (`hello-world`, `foo-bar-baz`) |
+| `:uuid`   | UUIDs (`f47ac10b-58cc-4372-a567-0e02b2c3d479`, case-insensitive) |
+
+``` ruby
+Mustermann.new('/:lang', capture: :locale).match('/zh-Hans-CN') # matches
+Mustermann.new('/:slug', capture: :slug).match('/Hello')        # does not match
+Mustermann.new('/:id',   capture: :uuid).match('/not-a-uuid')   # does not match
+```
+
+Again, these can be mixed with other capture types in a hash or array:
+
+```ruby
+set = Mustermann::Set.new(capture: { id: [Integer, :uuid], locale: :locale })
+
+set.add("(/:locale)?/:id", :show)
+set.add("/(:locale)?", :index)
+
+# without capture constraints, this would match the :show pattern instead
+match = set.match('/en')
+match.value # => :index
+
+match = set.match('/f47ac10b-58cc-4372-a567-0e02b2c3d479')
+match.value # => :show
+
+match = set.match('/en/12')
+match.value # => :show
+```
+
 <a name="-available-options--except"></a>
 ### `except`
 
