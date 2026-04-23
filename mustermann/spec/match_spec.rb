@@ -59,6 +59,30 @@ describe Mustermann::Match do
     example { (match == pattern.match('/bar')).should be false }
   end
 
+  describe :inspect do
+    example('with a capture') { match.inspect.should be == '#<Mustermann::Match: "/foo" name:"foo">' }
+
+    example('without captures') do
+      Mustermann::Sinatra.new('/hello').match('/hello').inspect.should be == '#<Mustermann::Match: "/hello">'
+    end
+
+    example('multiple captures') do
+      Mustermann::Sinatra.new('/:a/:b').match('/x/y').inspect.should be == '#<Mustermann::Match: "/x/y" a:"x" b:"y">'
+    end
+
+    example('type-converted capture shows converted value') do
+      Mustermann::Sinatra.new('/:n', capture: Integer).match('/42').inspect.should be == '#<Mustermann::Match: "/42" n:42>'
+    end
+  end
+
+  describe :pretty_print do
+    example('with a capture') { PP.pp(match, +'').chomp.should be == '#<Mustermann::Match: "/foo" name:"foo">' }
+
+    example('without captures') do
+      PP.pp(Mustermann::Sinatra.new('/hello').match('/hello'), +'').chomp.should be == '#<Mustermann::Match: "/hello">'
+    end
+  end
+
   describe 'invalid constructor arguments' do
     example('bad first argument') do
       expect { Mustermann::Match.new('not a pattern', '/foo') }.to raise_error(ArgumentError, /first argument/)

@@ -31,6 +31,17 @@ describe Mustermann::Pattern do
     it { expect { pattern.to_templates } .to raise_error(NotImplementedError) }
   end
 
+  describe :inspect do
+    example { Mustermann::Sinatra.new('/:name').inspect.should be == '#<Mustermann::Sinatra:"/:name">' }
+    example { Mustermann::Sinatra.new('/foo/bar').inspect.should be == '#<Mustermann::Sinatra:"/foo/bar">' }
+    example { Mustermann::Rails.new('/:name').inspect.should be == '#<Mustermann::Rails:"/:name">' }
+  end
+
+  describe :pretty_print do
+    example { PP.pp(Mustermann::Sinatra.new('/:name'), +'').chomp.should be == '#<Mustermann::Sinatra:"/:name">' }
+    example { PP.pp(Mustermann::Rails.new('/foo'), +'').chomp.should be == '#<Mustermann::Rails:"/foo">' }
+  end
+
   describe :== do
     example { Mustermann::Pattern.new('/foo') .should     be == Mustermann::Pattern.new('/foo') }
     example { Mustermann::Pattern.new('/foo') .should_not be == Mustermann::Pattern.new('/bar') }

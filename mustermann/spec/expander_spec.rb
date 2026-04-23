@@ -120,6 +120,34 @@ describe Mustermann::Expander do
     example { Mustermann::Expander.new('/foo', type: :rails) .should_not be_eql Mustermann::Expander.new('/foo', type: :sinatra) }
   end
 
+  describe :inspect do
+    example('single pattern') do
+      Mustermann::Expander.new('/:name').inspect.should be == '#<Mustermann::Expander: "/:name">'
+    end
+
+    example('multiple patterns') do
+      Mustermann::Expander.new('/:name', '/:name.:ext').inspect.should be == '#<Mustermann::Expander: "/:name", "/:name.:ext">'
+    end
+
+    example('empty expander') do
+      Mustermann::Expander.new.inspect.should be == '#<Mustermann::Expander>'
+    end
+  end
+
+  describe :pretty_print do
+    example('single pattern') do
+      PP.pp(Mustermann::Expander.new('/:name'), +'').chomp.should be == '#<Mustermann::Expander "/:name">'
+    end
+
+    example('multiple patterns') do
+      PP.pp(Mustermann::Expander.new('/:name', '/:name.:ext'), +'').chomp.should be == '#<Mustermann::Expander "/:name", "/:name.:ext">'
+    end
+
+    example('empty expander') do
+      PP.pp(Mustermann::Expander.new, +'').chomp.should be == '#<Mustermann::Expander>'
+    end
+  end
+
   describe :equal? do
     example { Mustermann::Expander.new('/foo')               .should_not be_equal Mustermann::Expander.new('/foo') }
     example { Mustermann::Expander.new('/foo')               .should_not be_equal Mustermann::Expander.new('/bar') }

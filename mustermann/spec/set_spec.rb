@@ -540,4 +540,68 @@ describe Mustermann::Set do
       expect(set.peek_match('/foo/extra').value).to eq :handler
     end
   end
+
+  # ── inspect and pretty_print ─────────────────────────────────────────────
+
+  describe :inspect do
+    example('single pattern with value') do
+      set = Mustermann::Set.new
+      set.add('/:name', :handler)
+      set.inspect.should be == '#<Mustermann::Set: "/:name" => :handler>'
+    end
+
+    example('multiple values for one pattern') do
+      set = Mustermann::Set.new
+      set.add('/:name', :a)
+      set.add('/:name', :b)
+      set.inspect.should be == '#<Mustermann::Set: "/:name" => [:a, :b]>'
+    end
+
+    example('pattern with no value') do
+      set = Mustermann::Set.new
+      set.add('/:name')
+      set.inspect.should be == '#<Mustermann::Set: "/:name">'
+    end
+
+    example('array value') do
+      set = Mustermann::Set.new
+      set.add('/:name', [:x, :y])
+      set.inspect.should be == '#<Mustermann::Set: "/:name" => [[:x, :y]]>'
+    end
+
+    example('multiple patterns') do
+      set = Mustermann::Set.new
+      set.add('/foo', :a)
+      set.add('/bar', :b)
+      set.inspect.should be == '#<Mustermann::Set: "/foo" => :a, "/bar" => :b>'
+    end
+  end
+
+  describe :pretty_print do
+    example('single pattern with value') do
+      set = Mustermann::Set.new
+      set.add('/:name', :handler)
+      PP.pp(set, +'').chomp.should be == '#<Mustermann::Set "/:name" => :handler>'
+    end
+
+    example('multiple patterns') do
+      set = Mustermann::Set.new
+      set.add('/foo', :a)
+      set.add('/bar', :b)
+      PP.pp(set, +'').chomp.should be == '#<Mustermann::Set "/foo" => :a, "/bar" => :b>'
+    end
+
+    example('pattern with no value') do
+      set = Mustermann::Set.new
+      set.add('/foo')
+      PP.pp(set, +'').chomp.should be == '#<Mustermann::Set "/foo">'
+    end
+
+    example('multiple values for one pattern') do
+      set = Mustermann::Set.new
+      set.add('/:name', :a)
+      set.add('/:name', :b)
+      PP.pp(set, +'').chomp.should be == '#<Mustermann::Set "/:name" => [:a, :b]>'
+    end
+  end
 end

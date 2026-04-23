@@ -380,6 +380,38 @@ module Mustermann
     # Runs trie optimizations pro-actively and explicitly rather than at match time.
     def optimize! = @matcher&.optimize!
 
+    # @!visibility private
+    def inspect # :nodoc:
+      mapping = @mapping.map do |pattern, values|
+        if values.size > 1 or values.first.is_a? Array
+          "%p => %p" % [pattern.to_s, values]
+        elsif values.first != nil
+          "%p => %p" % [pattern.to_s, values.first]
+        else
+          "%p" % pattern.to_s
+        end
+      end
+      "#<#{self.class.name}: #{mapping.join(", ")}>"
+    end
+
+    # @!visibility private
+    def pretty_print(q) # :nodoc:
+      q.text "#<#{self.class.name}"
+      q.group(1, "", ">") do
+        @mapping.each_with_index do |(pattern, values), index|
+          q.breakable(index == 0 ? " " : ", ")
+          q.pp(pattern.to_s)
+          if values.size > 1 or values.first.is_a? Array
+            q.text " => "
+            q.pp(values)
+          elsif values.first != nil
+            q.text " => "
+            q.pp(values.first)
+          end
+        end
+      end
+    end
+
     protected
 
     attr_reader :mapping

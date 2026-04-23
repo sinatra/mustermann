@@ -159,6 +159,23 @@ module Mustermann
       end
     end
 
+    # @!visibility private
+    def inspect
+      return "#<#{self.class.name}>" if @patterns.empty?
+      "#<#{self.class.name}: #{@patterns.map { |p| p.to_s.inspect }.join(", ")}>"
+    end
+
+    # @!visibility private
+    def pretty_print(q)
+      q.text "#<#{self.class.name}"
+      q.group(1, "", ">") do
+        @patterns.each_with_index do |pattern, index|
+          q.breakable(index == 0 ? " " : ", ")
+          q.pp pattern.to_s
+        end
+      end
+    end
+
     # @see Object#==
     def ==(other)
       return false unless other.class == self.class

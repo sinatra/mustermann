@@ -340,6 +340,13 @@ module Mustermann
     end
 
     # @!visibility private
+    def pretty_print(q)
+      q.text "#<%p:" % self.class
+      q.pp(@string)
+      q.text ">"
+    end
+
+    # @!visibility private
     def inspect
       "#<%p:%p>" % [self.class, @string]
     end

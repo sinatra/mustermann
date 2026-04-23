@@ -132,5 +132,24 @@ module Mustermann
 
     alias == eql?
     alias to_h params
+
+    # @!visibility private
+    def inspect
+      params_str = params.map { |k, v| " #{k}:#{v.inspect}" }.join
+      "#<#{self.class.name}: #{@matched.inspect}#{params_str}>"
+    end
+
+    # @!visibility private
+    def pretty_print(q)
+      q.group(1, "#<#{self.class.name}:", ">") do
+        q.breakable
+        q.pp @matched
+        params.each do |key, value|
+          q.breakable
+          q.text("#{key}:")
+          q.pp value
+        end
+      end
+    end
   end
 end
