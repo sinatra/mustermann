@@ -22,6 +22,13 @@ module Mustermann
         node
       end
 
+      # eliminate redundant optional nodes - this helps avoid regexp warnings
+      translate(:optional) do
+        return t(payload) if payload.is_a? Node[:optional]
+        node.payload = t(payload)
+        node
+      end
+
       # ignore unknown objects on the tree
       translate(Object) { node }
 
