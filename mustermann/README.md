@@ -653,7 +653,7 @@ pattern.params('/42')   # => { "score" => 42 }
 pattern.params('/3.14') # => { "score" => 3.14 }
 ```
 
-#### Pattern-Only Named Symbols
+#### Other Symbols
 
 The following symbols constrain the capture with a regex but do **not** perform any type conversion — `params` still returns a string:
 
