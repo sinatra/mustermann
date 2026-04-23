@@ -22,23 +22,23 @@ These include, amongst others:
 * [Hanami](https://hanamirb.org/):
   A flexible framework for maintainable Ruby apps
 * [Grape](https://www.ruby-grape.org/):
-  An opinionated framework for creating REST-like APIs in Ruby
+  An opinionated framework for creating REST-like APIs in Ruby.
 * [Padrino](http://padrinorb.com/):
   A Ruby web framework built upon Sinatra.
 * [Praxis](https://github.com/praxis/praxis):
-  A framework that focuses on both the design and implementation aspects of creating APIs
+  A framework that focuses on both the design and implementation aspects of creating APIs.
 * [Webspicy](https://yourbackendisbroken.dev/):
   A technology agnostic specification and test framework that yields better coverage for less testing effort.
 * [Alchemrest](https://github.com/Betterment/alchemrest):
-  Betterment's library for building robust, reliable, performant integrations with third party apis, with a focus on making APIs work with the rest of your domain layer not against it.
+  Betterment's library for building robust, reliable, performant integrations with third party APIs, with a focus on making APIs work with the rest of your domain layer not against it.
 * [HTTP Fake](https://alchemists.io/projects/http-fake):
-  A HTTP fake implementation for test suites.
+  An HTTP fake implementation for test suites.
 * [oas_parser](https://github.com/Nexmo/oas_parser) and [oas_parser_reborn](https://github.com/MarioRuiz/oas_parser_reborn):
   An open source Open API Spec 3 Definition Parser
 * [Pendragon](https://github.com/namusyaka/pendragon):
   Provides an HTTP router and its toolkit for use in Rack. As a Rack application, it makes it easy to define complicated routing.
 * [Wayferer](https://rubygems.org/gems/wayfarer):
-  Web crawling framework based on ActiveJob
+  Web crawling framework based on ActiveJob.
 * [apiculture](https://rubygems.org/gems/apiculture):
   A toolkit for building REST APIs on top of Rack. By WeTransfer.
 

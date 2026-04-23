@@ -42,7 +42,7 @@ pattern.params('/a/b.c') # => { "prefix" => "a", splat => ["b", "c"] }
 These features are included in the library, but not loaded by default
 
 * **[Pattern Set](#-pattern-set):** A collection of patterns with associated values, designed for building routing tables that dispatch efficiently as the number of routes grows.
-* **Mustermann::Router:** A very basic rack router built on top of `Mustermann::Set` for demonstration purposes. Simple and fast.
+* **Mustermann::Router:** A very basic rack router built on top of `Mustermann::Set` for demonstration purposes or small-footprint routing in Rack middleware. Simple and fast.
 
 <a name="-pattern-types"></a>
 ## Pattern Types
@@ -120,7 +120,7 @@ require 'mustermann'
 
 pattern = Mustermann.new('/:page')
 pattern.match('/')     # => nil
-pattern.match('/home') # => #<MatchData "/home" page:"home">
+pattern.match('/home') # => #<Mustermann::Match>
 pattern =~ '/home'     # => 0
 pattern === '/home'    # => true (this allows using it in case statements)
 
@@ -723,10 +723,10 @@ Semi-greedy behavior is not specific to dots, it works with all characters or st
 
 ``` ruby
 pattern = Mustermann.new(':a.:b', greedy: true)
-pattern.match('a.b.c.d') # => #<MatchData a:"a.b.c" b:"d">
+pattern.match('a.b.c.d') # => #<Mustermann::Match>
 
 pattern = Mustermann.new(':a.:b', greedy: false)
-pattern.match('a.b.c.d') # => #<MatchData a:"a" b:"b.c.d">
+pattern.match('a.b.c.d') # => #<Mustermann::Match>
 ```
 
 <a name="-available-options--space_matches_plus"></a>
