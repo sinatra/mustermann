@@ -155,9 +155,30 @@ describe Mustermann::Composite do
     let(:shell)    { Mustermann.new('x', type: :shell)    }
     let(:identity) { Mustermann.new('x', type: :identity) }
 
-    example { (sinatra | shell)            .inspect.should include('(sinatra:"x" | shell:"x")')                  }
-    example { (sinatra ^ shell)            .inspect.should include('(sinatra:"x" ^ shell:"x")')                  }
-    example { (sinatra | shell | identity) .inspect.should include('(sinatra:"x" | shell:"x" | identity:"x")')   }
-    example { (sinatra | shell & identity) .inspect.should include('(sinatra:"x" | (shell:"x" & identity:"x"))') }
+    example { (sinatra | shell)            .inspect.should be == '(sinatra:"x" | shell:"x")'                  }
+    example { (sinatra ^ shell)            .inspect.should be == '(sinatra:"x" ^ shell:"x")'                  }
+    example { (sinatra | shell | identity) .inspect.should be == '(sinatra:"x" | shell:"x" | identity:"x")'   }
+    example { (sinatra | shell & identity) .inspect.should be == '(sinatra:"x" | (shell:"x" & identity:"x"))' }
+  end
+
+  describe :simple_inspect do
+    let(:sinatra)  { Mustermann.new('x')                  }
+    let(:shell)    { Mustermann.new('x', type: :shell)    }
+    let(:identity) { Mustermann.new('x', type: :identity) }
+
+    example { (sinatra | shell)            .simple_inspect.should be == 'sinatra:"x" | shell:"x"'                  }
+    example { (sinatra | shell | identity) .simple_inspect.should be == 'sinatra:"x" | shell:"x" | identity:"x"'   }
+    example { (sinatra | shell & identity) .simple_inspect.should be == 'sinatra:"x" | (shell:"x" & identity:"x")' }
+  end
+
+  describe :pretty_print do
+    let(:sinatra)  { Mustermann.new('x')                  }
+    let(:shell)    { Mustermann.new('x', type: :shell)    }
+    let(:identity) { Mustermann.new('x', type: :identity) }
+
+    example { PP.pp(sinatra | shell,            +'').chomp.should be == '(sinatra:"x" | shell:"x")'                  }
+    example { PP.pp(sinatra ^ shell,            +'').chomp.should be == '(sinatra:"x" ^ shell:"x")'                  }
+    example { PP.pp(sinatra | shell | identity, +'').chomp.should be == '(sinatra:"x" | shell:"x" | identity:"x")'   }
+    example { PP.pp(sinatra | shell & identity, +'').chomp.should be == '(sinatra:"x" | (shell:"x" & identity:"x"))' }
   end
 end

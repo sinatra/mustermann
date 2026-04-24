@@ -79,19 +79,33 @@ module Mustermann
     end
 
     # @return [String] the string representation of the pattern
-    def to_s
-      simple_inspect
-    end
+    def to_s = inspect
 
     # @!visibility private
     def inspect
-      "#<%p:%s>" % [self.class, simple_inspect]
+      "(#{simple_inspect})"
     end
 
     # @!visibility private
     def simple_inspect
-      pattern_strings = patterns.map { |p| p.simple_inspect }
-      "(#{pattern_strings.join(" #{operator} ")})"
+      patterns.map { |p| p.is_a?(Composite) ? p.inspect : p.simple_inspect }.join(" #{operator} ")
+    end
+
+    # @!visibility private
+    def pretty_print(q)
+      q.group(1, "(", ")") do
+        patterns.each_with_index do |pattern, index|
+          unless index == 0
+            q.text " #{operator}"
+            q.breakable " "
+          end
+          if pattern.is_a?(Composite)
+            q.pp pattern
+          else
+            q.text pattern.simple_inspect
+          end
+        end
+      end
     end
 
     # @!visibility private
