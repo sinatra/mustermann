@@ -64,7 +64,7 @@ module Mustermann
       self.class.new(safe_string + "|" + converted.safe_string, **options)
     end
 
-    # Generates a string represenation of the pattern that can safely be used for def interpolation
+    # Generates a string representation of the pattern that can safely be used for def interpolation
     # without changing its semantics.
     #
     # @example
@@ -72,9 +72,9 @@ module Mustermann
     #   unsafe = Mustermann.new("/:name")
     #
     #   Mustermann.new("#{unsafe}bar").params("/foobar") # => { "namebar" => "foobar" }
-    #   Mustermann.new("#{unsafe.safe_string}bar").params("/foobar") # => { "name" => "bar" }
+    #   Mustermann.new("#{unsafe.safe_string}bar").params("/foobar") # => { "name" => "foo" }
     #
-    # @return [String] string representatin of the pattern
+    # @return [String] string representations of the pattern
     def safe_string
       @safe_string ||= SafeRenderer.translate(to_ast)
     end
