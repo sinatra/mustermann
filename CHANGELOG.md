@@ -58,20 +58,66 @@ set.expand("posts.index", user_id: 42) # => "/users/42/posts"
 * Major performance improvements for `Mustermann::Mapper`, as it is based on `Mustermann::Set` now, and can dispatch in logarithmic time instead of linear time.
 * Major speed improvements for sub-segment patterns with optional elements (like a format at the end of a path). These patterns are common in web applications.
 
- | Scenario                      | Improvement over 3.1  |
- | ----------------------------- | --------------------- |
- | Simple pattern compilation    | 6x speedup            |
- | Complex pattern compilation   | 30% speedup           |
- | Simple param extraction       | 2.4x speedup          |
- | Complex param extraction      | 70% speedup           |
- | Matching a simple pattern     | Same performance      |
- | Matching a complex pattern    | 8x speedup            |
- | Matching against 1k patterns  | 20x to 350x speedup   |
- | Matching against 10k patterns | 200x to 3500x speedup |
+<table>
+  <thead>
+    <tr>
+      <th colspan="2">Scenario</th>
+      <th>Mustermann 3.1</th>
+      <th>Mustermann 4.0</th>
+      <th>Improvement</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td rowspan="5">Simple patterns</td>
+      <td>Compilation</td>
+      <td>12.1 K/s</td>
+      <td>70.8 K/s</td>
+      <td>6x</td>
+    </tr>
+    <tr>
+      <td>Matching non-repeating strings</td>
+      <td>4.5 M/s</td>
+      <td>4.5 M/s</td>
+      <td>none</td>
+    </tr>
+    <tr>
+      <td>Matching repeating strings</td>
+      <td>5.9 M/s</td>
+      <td>17.1 M/s</td>
+      <td>3x</td>
+    </tr>
+    <tr>
+      <td>Extracting params</td>
+      <td>0.7 M/s</td>
+      <td>2.2 M/s</td>
+      <td>3x</td>
+    </tr>
+    <tr>
+      <td>Matching against 1k different patterns</td>
+      <td>3 M/s</td>
+      <td>7.1 K/s</td>
+      <td>425x</td>
+    </tr>
+    <tr>
+      <td rowspan="2">Complex patterns</td>
+      <td>Extracting params</td>
+      <td>486 K/s</td>
+      <td>955 K/s</td>
+      <td>2x</td>
+    </tr>
+    <tr>
+      <td>Matching against malicious input</td>
+      <td>3.6 K/s</td>
+      <td>582 K/s</td>
+      <td>162x</td>
+    </tr>
+  </tbody>
+</table>
 
- Numbers are based on simple and realistic patterns run on MRI Ruby 4.0 on a MacBook Pro. The improvements you will see may vary based on your Ruby implementation, platform and patterns used.
+Higher numbers are better.
 
- Simple and complex in the above table refer to patterns with only static segments or captures matching exactly one segment each (like `/resource/:id` or `/:controller/:action`) versus patterns with more complex captures (like `/resource/*path/:id` or `/resource/:id(.:format)?`). The matching improvements against 1k and 10k patterns assume the new `Mustermann::Set` is used. Otherwise the difference should be in line with the single pattern matching improvements.
+Performance measured on local development machine (MacBook Pro 2024, Ruby 4.0.2) with the `bench/versions.rb` script, which measures single-threaded performance.
 
 #### Housekeeping
 

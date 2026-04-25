@@ -20,6 +20,14 @@ module Mustermann
       @peek_regexp     = /\A#{regexp}/
       @regexp          = /\A#{regexp}\Z/
       @simple_captures = @regexp.named_captures.none? { |name, positions| positions.size > 1 || always_array?(name) }
+
+      if defined?(ObjectSpace::WeakKeyMap)
+        @match_cache = ObjectSpace::WeakKeyMap.new
+        @peek_cache  = ObjectSpace::WeakKeyMap.new
+      else
+        @match_cache = false
+        @peek_cache  = false
+      end
     end
 
     # @param (see Mustermann::Pattern#peek_size)
@@ -33,20 +41,38 @@ module Mustermann
     # @param (see Mustermann::Pattern#peek_match)
     # @return (see Mustermann::Pattern#peek_match)
     # @see (see Mustermann::Pattern#peek_match)
-    def peek_match(string) = build_match(@peek_regexp.match(string))
+    def peek_match(string) = cache_match(@peek_cache, @peek_regexp, string)
 
     # @param (see Mustermann::Pattern#match)
     # @return (see Mustermann::Pattern#match)
     # @see (see Mustermann::Pattern#match)
-    def match(string) = build_match(@regexp.match(string))
+    def match(string) = cache_match(@match_cache, @regexp, string)
+
+    # Extracts params directly from the regexp without allocating a Match object or
+    # populating the match cache — significant GC savings when called in hot loops.
+    # @param (see Mustermann::Pattern#params)
+    # @return (see Mustermann::Pattern#params)
+    def params(string = nil)
+      return unless md = @regexp.match(string)
+      build_params(md)
+    end
 
     extend Forwardable
     def_delegators :regexp, :===, :=~, :names
 
     private
 
-    def build_match(match)
-      return unless match
+    def cache_match(cache, regexp, string)
+      if cache
+        return cache[string] if cache.key?(string)
+        cache[string] = build_match(regexp, string)
+      else
+        build_match(regexp, string)
+      end
+    end
+
+    def build_match(regexp, string)
+      return unless match = regexp.match(string)
       Match.new(self, match, params: build_params(match))
     end
 

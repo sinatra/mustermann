@@ -29,8 +29,10 @@ end
 scenarios = {
   compile: "Compilation of #{format[counts[:compile]]} patterns",
   single_match: "Matching #{format[counts[:single_match]]} times against a single pattern",
+  single_string: "Matching #{format[counts[:single_match]]} times against the same string",
   simple_params: "Extracting params #{format[counts[:params]]} times for a simple pattern",
   complex_params: "Extracting params #{format[counts[:params]]} times for a complex pattern",
+  expand: "Expanding #{format[counts[:params]]} times for a simple pattern",
   set_match: "Matching #{format[counts[:set_match]]} times against a set of #{format[counts[:set_size]]} patterns",
   look_ahead_fail: "Matching #{format[counts[:look_ahead_fail]]} times with look-ahead pattern on a long failing input (atomic group speedup)",
 }
@@ -86,13 +88,25 @@ Benchmark.benchmark do |x|
     strings = counts[:single_match].times.map { "/foo/#{element.succ!}" }
     x.report(version) { strings.each { |string| pattern === string } }
   
+  when "single_string"
+    pattern = Mustermann.new("/foo/:bar")
+    string  = "/foo/bar"
+    x.report(version) { counts[:single_match].times { pattern.match(string) } }
+
   when "simple_params"
     pattern = Mustermann.new("/:controller/:action")
     element = String.new("a")
     100.times { pattern.params("/#{element.succ!}/show.html") }
     strings = counts[:params].times.map { "/#{element.succ!}/show.html" }
     x.report(version) { strings.each { |string| pattern.params(string) } }
-  
+
+  when "expand"
+    pattern = Mustermann.new("/foo/:bar")
+    element = String.new("a")
+    100.times { pattern.expand(bar: element.succ!) }
+    params = counts[:params].times.map { { bar: element.succ!.dup } }
+    x.report(version) { params.each { |param| pattern.expand(param) } }
+
   when "complex_params"
     pattern = Mustermann.new("/:controller/:action(.:format)")
     element = String.new("a")

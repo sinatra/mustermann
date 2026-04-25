@@ -26,17 +26,6 @@ module Mustermann
 
       private_constant :SIMPLE, :ENCODED, :SEGMENT_SCAN
 
-      # Bypasses the generic build_match overhead for simple patterns: uses
-      # MatchData#named_captures directly and avoids match.to_s / post_match /
-      # pre_match calls (all no-ops for \A…\Z anchored regexps).
-      def match(string)
-        return super unless @fast_match
-        return unless match = @regexp.match(string)
-        params = match.named_captures
-        params.transform_values! { |v| unescape(v) } if string.include?('%')
-        Match.new(self, match, params:)
-      end
-
       # Public override: fast path for simple patterns, falls through to super otherwise.
       # Must remain public to match AST::Pattern#to_ast visibility.
       def to_ast
@@ -46,7 +35,23 @@ module Mustermann
         ast
       end
 
+      def params(string = nil)
+        return super unless @fast_match
+        return unless md = @regexp.match(string)
+        result = md.named_captures
+        result.transform_values! { |v| v.include?('%') ? unescape(v) : v } if string.include?('%')
+        result
+      end
+
       private
+
+      def build_match(regexp, string)
+        return super unless @fast_match
+        return unless match = regexp.match(string)
+        params = match.named_captures
+        params.transform_values! { |v| v.include?('%') ? unescape(v) : v } if string.include?('%')
+        Match.new(self, match, params: params)
+      end
 
       def simple_pattern?
         options[:capture].nil?  &&
