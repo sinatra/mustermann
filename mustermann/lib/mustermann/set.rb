@@ -185,6 +185,11 @@ module Mustermann
     # @return [self]
     # @raise [ArgumentError] if the pattern is not AST-based, or if a reserved symbol is used as a value
     def add(pattern, *values)
+      if pattern.is_a? Composite and pattern.operator == :|
+        pattern.patterns.each { |p| add(p, *values) }
+        return self
+      end
+
       pattern = Mustermann.new(pattern, **options)
       raise ArgumentError, "Non-AST patterns are not supported" unless pattern.respond_to? :to_ast
 

@@ -420,6 +420,48 @@ describe Mustermann::Set do
       end
     end
 
+    # ── composite patterns ───────────────────────────────────────────────────
+
+    context 'composite patterns' do
+      let(:users) { Mustermann.new('/users/:id') }
+      let(:posts) { Mustermann.new('/posts/:slug') }
+
+      it 'unpacks a | composite and adds each component pattern' do
+        set.add(users | posts, :handler)
+        expect(set.patterns.map(&:to_s)).to contain_exactly('/users/:id', '/posts/:slug')
+      end
+
+      it 'matches each component pattern independently' do
+        set.add(users | posts, :handler)
+        expect(set.match('/users/42')).not_to be_nil
+        expect(set.match('/posts/hello')).not_to be_nil
+        expect(set.match('/other')).to be_nil
+      end
+
+      it 'associates the value with each component pattern' do
+        set.add(users | posts, :handler)
+        expect(set.match('/users/42').value).to eq :handler
+        expect(set.match('/posts/hello').value).to eq :handler
+      end
+
+      it 'exposes params from each component pattern' do
+        set.add(users | posts, :handler)
+        expect(set.match('/users/42').params).to eq('id' => '42')
+        expect(set.match('/posts/hello').params).to eq('slug' => 'hello')
+      end
+
+      it 'flattens nested | composites' do
+        pages = Mustermann.new('/pages/:title')
+        set.add((users | posts) | pages, :handler)
+        expect(set.patterns.map(&:to_s)).to contain_exactly('/users/:id', '/posts/:slug', '/pages/:title')
+      end
+
+      it 'rejects a & composite' do
+        expect { set.add(users & posts, :handler) }
+          .to raise_error(ArgumentError, /Non-AST/)
+      end
+    end
+
     # ── initialization shortcuts ─────────────────────────────────────────────
 
     context 'initialization' do
