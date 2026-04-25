@@ -9,7 +9,7 @@ Mustermann follows [Semantic Versioning 2.0](http://semver.org/). Anything docum
 #### Breaking changes
 
 * `Mustermann::Pattern#match` will now return `Mustermann::Match` instead of either `MatchData` or `Mustermann::SimpleMatch`.
-  This object behaves similar to the previous return values, but also implements `#params` and `#pattern`. Positional access to captures is no longer supported.
+  This object behaves similar to the previous return values, but also implements `#params` and `#pattern`.
 * Moved `Mustermann::Mapper` and `Mustermann::PatternCache` from `mustermann` to `mustermann-contrib`.
 * Removed special code for Sinatra 1.x. If you want to use Mustermann with Sinatra, please upgrade to any of the Sinatra versions released since 2017.
 
