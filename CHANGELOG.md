@@ -12,7 +12,7 @@ Mustermann follows [Semantic Versioning 2.0](http://semver.org/). Anything docum
   This object behaves similar to the previous return values, but also implements `#params` and `#pattern`. Positional access to captures is no longer supported.
 * Moved `Mustermann::Mapper` and `Mustermann::PatternCache` from `mustermann` to `mustermann-contrib`.
 * Removed special code for Sinatra 1.x. If you want to use Mustermann with Sinatra, please upgrade to any of the Sinatra versions released since 2017.
-  
+
 #### New features
 
 * `Mustermann::Rails` now supports Rails up to version 8.2 (previously 5.0).
@@ -20,6 +20,8 @@ Mustermann follows [Semantic Versioning 2.0](http://semver.org/). Anything docum
 * Added `Mustermann::Set` to `mustermann`, which is a collection of patterns with associated values, designed for building routing tables that dispatch efficiently as the number of routes grows.
 * Reintroduce `Mustermann::Router`, now based on `Mustermann::Set`, for demonstration purposes and use in small applications or middleware. Simple and fast.
 * The `capture` option now supports special class and symbol values, that both set an expected capture pattern and define a params converter.
+* `Mustermann::Pattern#+` and `Mustermann::Pattern#|` now return single patterns instead of composite patterns in significantly more cases, like having non-overlapping captures.
+* Nicer `inspect` and `pretty_print` for patterns and other objects.
 
 Here's an example using `Mustermann::Hybrid`, `Mustermann::Set`, and the new `capture` options:
 
