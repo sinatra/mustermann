@@ -1021,9 +1021,25 @@ describe Mustermann::Sinatra do
   end
 
   describe "match caching" do
-    subject(:pattern) { Mustermann.new("/foo/:bar") }
-
     if defined?(ObjectSpace::WeakKeyMap)
+      describe "default caching behavior" do
+        subject(:pattern) { Mustermann.new("/foo/:bar") }
+
+        it "returns the same Match object for the same string object" do
+          string = "/foo/bar"
+          expect(pattern.match(string)).to be_equal(pattern.match(string))
+        end
+
+        it "returns nil for a non-matching string without caching errors" do
+          expect(pattern.match("/nope")).to be_nil
+          expect(pattern.match("/nope")).to be_nil
+        end
+      end
+    end
+
+    describe "with cache enabled" do
+      subject(:pattern) { Mustermann.new("/foo/:bar", cache: Hash) }
+
       it "returns the same Match object for the same string object" do
         string = "/foo/bar"
         expect(pattern.match(string)).to be_equal(pattern.match(string))
@@ -1031,40 +1047,37 @@ describe Mustermann::Sinatra do
 
       it "returns nil for a non-matching string without caching errors" do
         expect(pattern.match("/nope")).to be_nil
+        pattern.match("/foo/bar")
         expect(pattern.match("/nope")).to be_nil
+        expect(pattern.params("/nope")).to be_nil
+      end
+
+      it "extracts params correctly" do
+        expect(pattern.params("/foo/baz")).to eq("bar" => "baz")
+      end
+
+      it "decodes percent-encoded params" do
+        expect(pattern.params("/foo/f%20o")).to eq("bar" => "f o")
+      end
+
+      it "does not populate the match cache when calling params" do
+        cache = {}
+        pattern = Mustermann.new("/foo/:bar", cache: { match: cache })
+        string = "/foo/baz"
+        pattern.params(string)
+        expect(cache.key?(string)).to be false
       end
     end
 
-    it "returns a match without a cache" do
-      pattern.instance_variable_set(:@match_cache, false)
-      expect(pattern.match("/foo/bar")).not_to be_nil
-      expect(pattern.match("/nope")).to be_nil
-    end
-  end
+    describe "with cache disabled" do
+      subject(:pattern) { Mustermann.new("/foo/:bar", cache: false) }
 
-  describe "params without match caching" do
-    subject(:pattern) { Mustermann.new("/params_cache_test/:bar") }
+      it "returns a match for a matching string" do
+        expect(pattern.match("/foo/bar")).not_to be_nil
+      end
 
-    it "extracts params correctly" do
-      expect(pattern.params("/params_cache_test/baz")).to eq("bar" => "baz")
-    end
-
-    it "decodes percent-encoded params" do
-      expect(pattern.params("/params_cache_test/f%20o")).to eq("bar" => "f o")
-    end
-
-    it "returns nil for non-matching string" do
-      expect(pattern.params("/nope")).to be_nil
-    end
-
-    if defined?(ObjectSpace::WeakKeyMap)
-      it "does not populate the match cache when calling params" do
-        string = "/params_cache_test/baz"
-        cache  = pattern.instance_variable_get(:@match_cache)
-
-        pattern.params(string)
-
-        expect(cache.key?(string)).to be false
+      it "returns nil for a non-matching string" do
+        expect(pattern.match("/nope")).to be_nil
       end
     end
   end

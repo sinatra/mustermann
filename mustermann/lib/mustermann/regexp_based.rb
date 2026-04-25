@@ -11,22 +11,36 @@ module Mustermann
     attr_reader :regexp
     alias_method :to_regexp, :regexp
 
+    # @api private
+    supported_options :cache
+
     # @param (see Mustermann::Pattern#initialize)
     # @return (see Mustermann::Pattern#initialize)
     # @see (see Mustermann::Pattern#initialize)
     def initialize(string, **options)
+      cache = options.delete(:cache) { true }
+
       super
       regexp           = compile(**options)
       @peek_regexp     = /\A#{regexp}/
       @regexp          = /\A#{regexp}\Z/
       @simple_captures = @regexp.named_captures.none? { |name, positions| positions.size > 1 || always_array?(name) }
 
-      if defined?(ObjectSpace::WeakKeyMap)
-        @match_cache = ObjectSpace::WeakKeyMap.new
-        @peek_cache  = ObjectSpace::WeakKeyMap.new
-      else
+      cache_class = ObjectSpace::WeakKeyMap if defined?(ObjectSpace::WeakKeyMap)
+
+      case cache
+      when true
+        @match_cache = cache_class&.new || false
+        @peek_cache  = cache_class&.new || false
+      when false
         @match_cache = false
         @peek_cache  = false
+      when Hash
+        @match_cache = cache[:match] || cache_class&.new || false
+        @peek_cache  = cache[:peek]  || cache_class&.new || false
+      else
+        @match_cache = cache.new
+        @peek_cache  = cache.new
       end
     end
 
