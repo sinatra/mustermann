@@ -955,9 +955,16 @@ describe Mustermann::Sinatra do
       its(:to_s)   { should be == "a|{b}"             }
     end
 
-    context "both have captures" do
+    context "both have captures, non-overlapping names" do
       let(:first)  { Mustermann.new(":a") }
       let(:second) { Mustermann.new(":b") }
+      its(:class)  { should be == Mustermann::Sinatra }
+      its(:to_s)   { should be == "{a}|{b}"           }
+    end
+
+    context "both have captures, overlapping names" do
+      let(:first)  { Mustermann.new(":a") }
+      let(:second) { Mustermann.new(":a") }
       its(:class)  { should be == Mustermann::Composite }
     end
 
@@ -981,6 +988,28 @@ describe Mustermann::Sinatra do
     context "argument is an identity pattern, but options mismatch" do
       let(:second) { Mustermann::Identity.new(":b", uri_decode: false) }
       its(:class)  { should be == Mustermann::Composite                }
+    end
+
+    context "rails pattern with Integer capture | sinatra pattern with Symbol capture" do
+      subject { Mustermann.new("/:a", type: :rails, capture: Integer) | Mustermann.new("/:b", capture: Symbol) }
+      its(:class) { should be == Mustermann::Hybrid }
+      its(:to_s)  { should be == "/{a}|/{b}"        }
+      example { subject.params("/42") .should be == { "a" => 42,  "b" => nil  } }
+      example { subject.params("/foo").should be == { "a" => nil, "b" => :foo } }
+    end
+
+    context "with Hash capture on second pattern" do
+      let(:first)  { Mustermann.new(":a", capture: Integer) }
+      let(:second) { Mustermann.new(":b", capture: {b: Float}) }
+      its(:class) { should be == Mustermann::Sinatra }
+      its(:to_s)  { should be == "{a}|{b}"           }
+    end
+
+    context "with Array-in-Hash capture on second pattern" do
+      let(:first)  { Mustermann.new(":a", capture: Integer) }
+      let(:second) { Mustermann.new(":b", capture: {b: [Integer, Float]}) }
+      its(:class) { should be == Mustermann::Sinatra }
+      its(:to_s)  { should be == "{a}|{b}"           }
     end
   end
 

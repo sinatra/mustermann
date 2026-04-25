@@ -138,7 +138,8 @@ module Mustermann
       # @see Mustermann::Pattern#map_param
       def map_param(key, value)
         return super unless param_converters.include? key
-        param_converters[key][super]
+        converted = super
+        converted.nil? ? converted : param_converters[key][converted]
       end
 
       # @!visibility private

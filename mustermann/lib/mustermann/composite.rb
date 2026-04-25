@@ -29,6 +29,11 @@ module Mustermann
       @patterns = patterns.flat_map { |p| patterns_from(p, **options) }
     end
 
+    # @see Mustermann::Pattern#names
+    def names
+      @names ||= patterns.flat_map { |p| p.respond_to?(:names) ? p.names : [] }.uniq
+    end
+
     # @see Mustermann::Pattern#==
     def ==(pattern)
       patterns == patterns_from(pattern)

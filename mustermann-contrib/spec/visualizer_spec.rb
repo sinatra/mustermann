@@ -158,10 +158,19 @@ describe Mustermann::Visualizer do
     context :composite do
       let(:pattern) { Mustermann.new(":a", ":b") ^ Mustermann.new(":c") }
       its(:to_sexp) do
-        should be == '(composite (quote "(") (composite (type sinatra:) (quote "\\"") '         \
-          '(root (capture : (name a))) (quote "\\"") (quote " | ") (type sinatra:) (quote '     \
-          '"\\"") (root (capture : (name b))) (quote "\\"")) (quote ")") (quote " ^ ") (type '  \
-          'sinatra:) (quote "\\"") (root (capture : (name c))) (quote "\\""))'
+        should be == '(composite (type sinatra:) (quote "\\"") (root (union (capture { (name a) }) | '  \
+          '(capture { (name b) }))) (quote "\\"") (quote " ^ ") (type sinatra:) (quote "\\"") '        \
+          '(root (capture : (name c))) (quote "\\""))'
+      end
+    end
+
+    context "nested composite (different operators)" do
+      let(:inner)   { Mustermann::Composite.new(Mustermann.new(":a"), Mustermann.new(":b"), operator: :^) }
+      let(:pattern) { Mustermann::Composite.new(inner, Mustermann.new(":c"), operator: :|) }
+      its(:to_sexp) do
+        should be == '(composite (quote "(") (composite (type sinatra:) (quote "\\"") (root (capture : (name a))) ' \
+          '(quote "\\"") (quote " ^ ") (type sinatra:) (quote "\\"") (root (capture : (name b))) (quote "\\"")) '  \
+          '(quote ")") (quote " | ") (type sinatra:) (quote "\\"") (root (capture : (name c))) (quote "\\""))'
       end
     end
   end

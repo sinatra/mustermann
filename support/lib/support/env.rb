@@ -9,6 +9,7 @@ ENV['RACK_ENV'] = 'test'
 require 'tool/warning_filter'
 $-w = true
 
+require 'pp'
 require 'rspec'
 require 'rspec/its'
 

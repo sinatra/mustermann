@@ -14,8 +14,8 @@ module Mustermann
           concat = (self + patterns.inject(:+))
           concat + other.patterns.slice(patterns.length..-1).inject(:+)
         else
-          return super unless native = native_concat(other)
-          self.class.new(native, **options)
+          native, opts = native_concat(other)
+          native ? self.class.new(native, **options, **opts) : super
         end
       end
 

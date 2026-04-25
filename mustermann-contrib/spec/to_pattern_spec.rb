@@ -20,8 +20,8 @@ describe Mustermann::ToPattern do
   end
 
   context Array do
-    example { [:foo, :bar].to_pattern               .should be_a(Mustermann::Composite) }
-    example { [:foo, :bar].to_pattern(type: :rails) .should be_a(Mustermann::Composite) }
+    example { [:foo, :bar].to_pattern               .should be_a(Mustermann::Sinatra) }
+    example { [:foo, :bar].to_pattern(type: :rails) .should be_a(Mustermann::Sinatra) }
   end
 
   context Mustermann::Pattern do
@@ -53,8 +53,8 @@ describe Mustermann::ToPattern do
       end
     end
 
-    example { example_class.new([:foo, :bar]).to_pattern               .should be_a(Mustermann::Composite) }
-    example { example_class.new([:foo, :bar]).to_pattern(type: :rails) .should be_a(Mustermann::Composite) }
+    example { example_class.new([:foo, :bar]).to_pattern               .should be_a(Mustermann::Sinatra) }
+    example { example_class.new([:foo, :bar]).to_pattern(type: :rails) .should be_a(Mustermann::Sinatra) }
   end
 
   context 'primitive subclass' do
@@ -64,7 +64,7 @@ describe Mustermann::ToPattern do
       end
     end
 
-    example { example_class.new([:foo, :bar]).to_pattern               .should be_a(Mustermann::Composite) }
-    example { example_class.new([:foo, :bar]).to_pattern(type: :rails) .should be_a(Mustermann::Composite) }
+    example { example_class.new([:foo, :bar]).to_pattern               .should be_a(Mustermann::Sinatra) }
+    example { example_class.new([:foo, :bar]).to_pattern(type: :rails) .should be_a(Mustermann::Sinatra) }
   end
 end

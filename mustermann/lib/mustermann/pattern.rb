@@ -90,6 +90,9 @@ module Mustermann
       Match.new(self, string) if self === string
     end
 
+    # @return [Array<String>] list of named captures in the pattern
+    def names = []
+
     # @param [String] string The string to match against
     # @return [Integer, nil] nil if pattern does not match the string, zero if it does.
     # @see http://ruby-doc.org/core-2.0/Regexp.html#method-i-3D-7E Regexp#=~

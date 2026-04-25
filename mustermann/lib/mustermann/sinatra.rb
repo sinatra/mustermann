@@ -37,13 +37,13 @@ module Mustermann
     # @return [Mustermann::Sinatra, nil] the converted pattern, if possible
     # @!visibility private
     def self.try_convert(input, **options)
-      TryConvert.convert(input, **options)
+      TryConvert.convert(self, input, **options)
     end
 
     # Creates a pattern that matches any string matching either one of the patterns.
     # If a string is supplied, it is treated as a fully escaped Sinatra pattern.
     #
-    # If the other pattern is also a Sintara pattern, it might join the two to a third
+    # If the other pattern is also a Sinatra pattern, it might join the two to a third
     # sinatra pattern instead of generating a composite for efficiency reasons.
     #
     # This only happens if the sinatra pattern behaves exactly the same as a composite
@@ -59,9 +59,9 @@ module Mustermann
     # @return [Mustermann::Pattern] a composite pattern
     # @see Mustermann::Pattern#|
     def |(other)
-      return super unless converted = self.class.try_convert(other, **options)
-      return super unless converted.names.empty? or names.empty?
-      self.class.new(safe_string + "|" + converted.safe_string, **options)
+      return super unless converted = try_convert(other)
+      return super if converted.names.any? { |name| names.include?(name) }
+      self.class.new(safe_string + "|" + converted.safe_string, **converted.options)
     end
 
     # Generates a string representation of the pattern that can safely be used for def interpolation
@@ -81,10 +81,32 @@ module Mustermann
 
     # @!visibility private
     def native_concat(other)
-      return unless converted = self.class.try_convert(other, **options)
-      safe_string + converted.safe_string
+      return unless converted = try_convert(other)
+      [safe_string + converted.safe_string, converted.options]
     end
 
-    private :native_concat
+    # @!visibility private
+    def normalize_capture(pattern)
+      case capture = pattern.options[:capture]
+      when Hash then capture.slice(*pattern.names.map(&:to_sym))
+      when nil  then {}
+      else pattern.names.to_h { |name| [name.to_sym, capture] }
+      end
+    end
+
+    # @!visibility private
+    def try_convert(other)
+      options = self.options
+
+      if other.is_a? Pattern and other.names.any?
+        capture = normalize_capture(other).merge(normalize_capture(self))
+        capture = nil if capture.empty?
+        options = options.merge(capture:)
+      end
+
+      self.class.try_convert(other, names:, **options)
+    end
+
+    private :native_concat, :normalize_capture, :try_convert
   end
 end

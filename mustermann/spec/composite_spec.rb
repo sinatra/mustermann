@@ -24,13 +24,13 @@ describe Mustermann::Composite do
   end
 
   context :| do
-    subject(:pattern) { Mustermann.new('/foo/:name', '/:first/:second') }
+    subject(:pattern) { Mustermann::Composite.new(Mustermann.new('/foo/:name'), Mustermann.new('/:first/:second')) }
 
     describe :== do
-      example { subject.should     be == subject                                                       }
-      example { subject.should     be == Mustermann.new('/foo/:name', '/:first/:second')               }
-      example { subject.should_not be == Mustermann.new('/foo/:name')                                  }
-      example { subject.should_not be == Mustermann.new('/foo/:name', '/:first/:second', operator: :&) }
+      example { subject.should     be == subject                                                                                          }
+      example { subject.should     be == Mustermann::Composite.new(Mustermann.new('/foo/:name'), Mustermann.new('/:first/:second'))       }
+      example { subject.should_not be == Mustermann.new('/foo/:name')                                                                    }
+      example { subject.should_not be == Mustermann.new('/foo/:name', '/:first/:second', operator: :&)                                   }
     end
 
     describe :=== do
@@ -76,7 +76,7 @@ describe Mustermann::Composite do
 
     describe :eql? do
       example { should     be_eql(pattern)                                                       }
-      example { should     be_eql(Mustermann.new('/foo/:name', '/:first/:second', operator: :|)) }
+      example { should     be_eql(Mustermann::Composite.new(Mustermann.new('/foo/:name'), Mustermann.new('/:first/:second'))) }
       example { should_not be_eql(Mustermann.new('/bar/:name', '/:first/:second', operator: :|)) }
       example { should_not be_eql(Mustermann.new('/foo/:name', '/:first/:second', operator: :&)) }
     end

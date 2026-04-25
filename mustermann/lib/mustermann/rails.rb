@@ -45,5 +45,19 @@ module Mustermann
 
     # Rails 5.0 fixes |
     version('5', '6', '7', '8') { on(?|) { |c| node(:or) }}
+
+    # (see Mustermann::Pattern#|)
+    def |(other) = combine(other, :|) { super }
+
+    # (see Mustermann::Pattern#+)
+    def +(other) = combine(other, :+) { super }
+
+    private
+
+    def combine(other, operator)
+      return yield unless hybrid = Mustermann[:hybrid].try_convert(self, **options)
+      native = hybrid.public_send(operator, other)
+      native.is_a?(Composite) ? yield : native
+    end
   end
 end

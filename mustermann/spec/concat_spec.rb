@@ -67,7 +67,15 @@ describe Mustermann::Concat do
     context "sinatra + (sinatra + rails (different options) + sinatra)" do
       subject(:pattern) { Mustermann.new("/foo") + (Mustermann.new("/bar") + Mustermann.new("/baz", type: :rails, uri_decode: false) + Mustermann.new("/boo")) }
       its(:class) { should be == Mustermann::Concat }
-      its(:to_s)  { should be == '(sinatra:"/foo/bar" + rails:"/baz" + sinatra:"/boo")' }
+      its(:to_s)  { should be == '(sinatra:"/foo/bar" + hybrid:"/baz/boo")' }
+    end
+
+    context "rails with Integer capture + sinatra with Symbol capture" do
+      subject(:pattern) { Mustermann.new("/:a", type: :rails, capture: Integer) + Mustermann.new("/:b", capture: Symbol) }
+      its(:class) { should be == Mustermann::Hybrid }
+      its(:to_s)  { should be == '/{a}/{b}'         }
+      example { subject.params("/42/foo").should be == { "a" => 42, "b" => :foo } }
+      example { subject.params("/foo/bar").should be_nil }
     end
   end
 
