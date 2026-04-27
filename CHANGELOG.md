@@ -95,8 +95,8 @@ set.expand("posts.index", user_id: 42) # => "/users/42/posts"
     </tr>
     <tr>
       <td>Matching against 1k different patterns</td>
-      <td>3 M/s</td>
       <td>7.1 K/s</td>
+      <td>3 M/s</td>
       <td>425x</td>
     </tr>
     <tr>
