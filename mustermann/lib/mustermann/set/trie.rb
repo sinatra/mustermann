@@ -12,8 +12,12 @@ module Mustermann
         translate(:root) do |trie, **options|
           leaves = t(payload, trie, **options)
           if leaves.is_a? Array
-            leaves.each { |leaf| leaf.patterns << t.pattern }
+            leaves.each do |leaf|
+              leaf.patterns ||= []
+              leaf.patterns << t.pattern
+            end
           else
+            leaves.patterns ||= []
             leaves.patterns << t.pattern
           end
           leaves
@@ -64,13 +68,13 @@ module Mustermann
         def compile(node, **options) = /\G#{@compiler.translate(node, **@options, **options)}/
       end
 
-      attr_reader :patterns, :set, :static, :dynamic
+      attr_accessor :patterns, :set, :static, :dynamic
 
       def initialize(set, patterns = [])
         @set             = set
-        @patterns        = []
-        @dynamic         = {}
-        @static          = {}
+        @patterns        = nil
+        @dynamic         = nil
+        @static          = nil
         @stride          = nil
         @fast_static     = nil
         @byte_lookup     = nil
@@ -80,8 +84,12 @@ module Mustermann
 
       def [](key)
         case key
-        when String then @static[key] ||= Trie.new(@set)
-        when Regexp then @dynamic[key] ||= Trie.new(@set)
+        when String
+          @static      ||= {}
+          @static[key] ||= Trie.new(@set)
+        when Regexp
+          @dynamic      ||= {}
+          @dynamic[key] ||= Trie.new(@set)
         end
       end
 
@@ -107,7 +115,7 @@ module Mustermann
           end
         end
 
-        unless @dynamic_entries.empty?
+        if @dynamic_entries&.any?
           anchored    = nil
           base_params = all ? params : nil
           @dynamic_entries.each do |matcher, node, capture_names, fast_name|
@@ -162,7 +170,7 @@ module Mustermann
         result = [] if all
         matched = string[0, matched_length]
 
-        @patterns.each do |pattern|
+        @patterns&.each do |pattern|
           next if pattern.except_regexp&.match?(matched)
 
           pattern_params = build_pattern_params(pattern, params)
@@ -213,7 +221,7 @@ module Mustermann
           @byte_lookup = nil
           @stride      = depth
           @fast_static.each_value(&:optimize!)
-        elsif @static.empty?
+        elsif !@static&.any?
           @fast_static = nil
           @byte_lookup = nil
           @stride      = 1
@@ -221,12 +229,12 @@ module Mustermann
         else
           @fast_static = nil
           @byte_lookup = Array.new(256)
-          @static.each { |k, v| @byte_lookup[k.getbyte(0)] = v }
           @stride      = 1
-          @static.each_value(&:optimize!)
+          @static&.each { |k, v| @byte_lookup[k.getbyte(0)] = v }
+          @static&.each_value(&:optimize!)
         end
-        @dynamic.each_value(&:optimize!)
-        @dynamic_entries = @dynamic.map do |matcher, node|
+        @dynamic&.each_value(&:optimize!)
+        @dynamic_entries = @dynamic&.map do |matcher, node|
           names = matcher.names.each(&:freeze)
           # Detect unconstrained single-segment captures: can use fast string.index instead of regex.
           # Two conditions: (1) the edge is a bare capture (source starts with \G(?<name>), no leading
@@ -245,9 +253,9 @@ module Mustermann
       # all possible paths, before encountering a dynamic edge, a terminal pattern,
       # or an empty node. Branching is allowed; only the minimum depth matters.
       def min_static_depth
-        return 0 if @dynamic.any?
-        return 0 if @patterns.any?
-        return 0 if @static.empty?
+        return 0 if @dynamic&.any?
+        return 0 if @patterns&.any?
+        return 0 if @static&.empty?
         1 + @static.values.map { |node| node.min_static_depth }.min
       end
 
