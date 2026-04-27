@@ -2,7 +2,7 @@
 
 Mustermann follows [Semantic Versioning 2.0](http://semver.org/). Anything documented in the README or via YARD and not declared private is part of the public API.
 
-## Upcoming Releases
+## Stable Releases
 
 ### Mustermann 4.0.0
 
@@ -126,7 +126,7 @@ Performance measured on local development machine (MacBook Pro 2024, Ruby 4.0.2)
 * Document how to implement custom pattern types.
 * Add code of conduct and contributing guidelines. Add AI policy.
 
-## Stable Releases
+### Prior to 4.0
 
 * **Mustermann 3.1.1** (2026-04-16)
     * Improve `Mustermann::Pattern#hash` to reduce the chance of collisions on JRuby and TruffleRuby. Fixes [#152](https://github.com/sinatra/mustermann/issues/152)
