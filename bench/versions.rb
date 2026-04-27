@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 known_versions = %w[
+  4.0.0
   3.1.1 3.1.0
   3.0.4 3.0.3 3.0.2 3.0.1 3.0.0
   2.0.2 2.0.1 2.0.0
@@ -35,6 +36,7 @@ scenarios = {
   expand: "Expanding #{format[counts[:params]]} times for a simple pattern",
   set_match: "Matching #{format[counts[:set_match]]} times against a set of #{format[counts[:set_size]]} patterns",
   look_ahead_fail: "Matching #{format[counts[:look_ahead_fail]]} times with look-ahead pattern on a long failing input (atomic group speedup)",
+  allocations: "Measuring allocations for a set of #{format[counts[:set_size]]} patterns",
 }
 
 case version = ENV['MUSTERMANN_VERSION']
@@ -52,7 +54,8 @@ when String
 else
   scenarios.each do |step, title|
     next unless ARGV.empty? or ARGV.include?(step.to_s)
-    puts "", title, "", "       user       system     total    real"
+    puts "", title, ""
+    puts "       user       system     total    real" unless step == :allocations
     ["bundler", *known_versions].each do |version|
       env = { "MUSTERMANN_VERSION" => version }
       if version != "bundler"
@@ -155,6 +158,22 @@ Benchmark.benchmark do |x|
     failing  = "/" + "x" * 5_000 + "/trailing"
     10.times { pattern.match(failing) }
     x.report(version) { counts[:look_ahead_fail].times { pattern.match(failing) } }
+
+  when "allocations"
+      next unless version >= "4"
+      require "mustermann/set"
+
+      first_count = ObjectSpace.count_objects
+      element     = String.new("aa")
+      set         = Mustermann::Set.new
+
+      counts[:set_size].times { set.add("/#{element.succ!}/:bar") }
+      GC.start
+      second_count = ObjectSpace.count_objects
+
+      first_count  = first_count[:TOTAL] - first_count[:FREE]
+      second_count = second_count[:TOTAL] - second_count[:FREE]
+      puts "#{version}  #{second_count - first_count}"
 
   else
     warn "Unknown step: #{ARGV.first}"
