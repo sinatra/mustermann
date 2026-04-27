@@ -52,11 +52,13 @@ when "bundler"
 when String
   $LOAD_PATH.unshift File.expand_path(version)
 else
+  versions = ENV['MUSTERMANN_VERSIONS']&.split(",") || known_versions
+  versions.unshift("bundler") unless versions.include?("bundler")
   scenarios.each do |step, title|
     next unless ARGV.empty? or ARGV.include?(step.to_s)
     puts "", title, ""
     puts "       user       system     total    real" unless step == :allocations
-    ["bundler", *known_versions].each do |version|
+    versions.each do |version|
       env = { "MUSTERMANN_VERSION" => version }
       if version != "bundler"
         ENV.each_key do |key|
