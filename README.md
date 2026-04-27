@@ -189,6 +189,12 @@ The `identity`, `regexp`, `rails`, and `sinatra` types are included in the `must
 
 Any software using Mustermann is obviously compatible with at least one of the above.
 
+## About the name
+
+* *Erika Mustermann* and *Max Mustermann* are official German placeholder names, like *Jane Doe* and *John Doe* in English. They are used on official documents, like identity cards, when the real name of a person is not known or must be withheld for privacy reasons. This seems very fitting for a library offering placeholders in strings.
+* *Muster* is German for "pattern", so *Mustermann* can be read as "pattern man" or "pattern person".
+* Referring to it as *The Amazing Mustermann* is a Spider-Man reference.
+
 ## Requirements
 
 Ruby 3.3+ compatible Ruby implementation (MRI, JRuby, and TruffleRuby are tested).
