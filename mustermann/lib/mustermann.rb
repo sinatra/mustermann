@@ -119,11 +119,11 @@ module Mustermann
   # @!visibility private
   def self.dedup(object)
     return object unless @dedup
+    # need to check this first because JRuby raises on @dedup.key?(nil)
+    return object if object.nil? || object.is_a?(Integer) || object.is_a?(Symbol) || object == true || object == false
     return @dedup[object] if @dedup.key?(object)
 
     case object
-    when Symbol, Integer, true, false, nil
-      object
     when Array
       object.map! { |o| dedup(o) }
       @dedup[object] = object.freeze
