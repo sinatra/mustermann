@@ -22,8 +22,8 @@ module Mustermann
 
       super
       regexp           = compile(**options)
-      @peek_regexp     = /\A#{regexp}/
-      @regexp          = /\A#{regexp}\Z/
+      @peek_regexp     = Mustermann.dedup(/\A#{regexp}/)
+      @regexp          = Mustermann.dedup(/\A#{regexp}\Z/)
       @simple_captures = @regexp.named_captures.none? { |name, positions| positions.size > 1 || always_array?(name) }
 
       cache_class = ObjectSpace::WeakKeyMap if defined?(ObjectSpace::WeakKeyMap)

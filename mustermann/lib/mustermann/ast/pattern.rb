@@ -95,7 +95,10 @@ module Mustermann
       # @!visibility private
       def except_regexp
         return unless except_str = options[:except]
-        @except_regexp ||= Regexp.new("\\A#{compiler.new.translate(parse(except_str), no_captures: true, **options.except(:except))}\\z")
+        @except_regexp ||= begin
+          source = compiler.new.translate(parse(except_str), no_captures: true, **options.except(:except))
+          Mustermann.dedup(Regexp.new("\\A#{source}\\z"))
+        end
       end
 
       # Internal AST representation of pattern.
@@ -107,7 +110,7 @@ module Mustermann
           ast &&= set_boundaries(ast, string: @string)
           validate(ast)
         end
-        @param_converters ||= scan_params(ast, options) if ast
+        @param_converters ||= Mustermann.dedup(scan_params(ast, options)) if ast
         ast
       end
 
@@ -131,7 +134,7 @@ module Mustermann
       # @return (see Mustermann::Pattern#to_templates)
       # @see Mustermann::Pattern#to_templates
       def to_templates
-        @to_templates ||= generate_templates(to_ast)
+        @to_templates ||= Mustermann.dedup(generate_templates(to_ast))
       end
 
       # @!visibility private
@@ -144,7 +147,7 @@ module Mustermann
 
       # @!visibility private
       def param_converters
-        @param_converters ||= scan_params(to_ast, options)
+        @param_converters ||= Mustermann.dedup(scan_params(to_ast, options))
       end
 
       # @api private

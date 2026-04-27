@@ -31,7 +31,7 @@ module Mustermann
 
     # @see Mustermann::Pattern#names
     def names
-      @names ||= patterns.flat_map { |p| p.respond_to?(:names) ? p.names : [] }.uniq
+      @names ||= Mustermann.dedup(patterns.flat_map { |p| p.respond_to?(:names) ? p.names : [] }.uniq)
     end
 
     # @see Mustermann::Pattern#==

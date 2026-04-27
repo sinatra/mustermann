@@ -43,7 +43,7 @@ module Mustermann
     #     require 'mustermann/mapper'
     #     Mustermann::Mapper.new({"/:foo" => "/:foo.html"}, type: :rails)
     def initialize(map = {}, additional_values: :ignore, **options, &block)
-      @options           = options
+      @options           = Mustermann.dedup(options)
       @additional_values = additional_values
       @set               = Set.new(use_trie: false, use_cache: false, **options)
       block.arity == 0 ? update(yield) : yield(self) if block

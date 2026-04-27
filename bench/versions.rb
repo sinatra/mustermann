@@ -165,6 +165,7 @@ Benchmark.benchmark do |x|
       next unless version >= "4"
       require "mustermann/set"
 
+      GC.start
       first_count = ObjectSpace.count_objects
       element     = String.new("aa")
       set         = Mustermann::Set.new

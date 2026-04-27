@@ -115,4 +115,28 @@ module Mustermann
   def self.normalized_type(type)
     type.to_s.gsub('-', '_').downcase
   end
+
+  # @!visibility private
+  def self.dedup(object)
+    return object unless @dedup
+    return @dedup[object] if @dedup.key?(object)
+
+    case object
+    when Symbol, Integer, true, false, nil
+      object
+    when Array
+      object.map! { |o| dedup(o) }
+      @dedup[object] = object.freeze
+    when Hash
+      object.transform_values! { |v| dedup(v) }
+      object.transform_keys! { |k| dedup(k) }
+      @dedup[object] = object.freeze
+    when String
+      @dedup[object] = object.freeze
+    else
+      @dedup[object] = object
+    end
+  end
+
+  @dedup = defined?(ObjectSpace::WeakKeyMap) ? ObjectSpace::WeakKeyMap.new : false
 end

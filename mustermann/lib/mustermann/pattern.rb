@@ -74,8 +74,8 @@ module Mustermann
     # @see Mustermann.new
     def initialize(string, uri_decode: true, **options)
       @uri_decode = uri_decode
-      @string     = string.to_s.dup
-      @options    = yield.freeze if block_given?
+      @string     = Mustermann.dedup(string)
+      @options    = Mustermann.dedup(yield) if block_given?
     end
 
     # @return [String] the string representation of the pattern

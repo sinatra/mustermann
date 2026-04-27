@@ -27,7 +27,7 @@ module Mustermann
       @patterns          = []
       @api_expander      = AST::Expander.new
       @additional_values = additional_values
-      @options           = options
+      @options           = Mustermann.dedup(options)
       @caster            = Caster.new
       add(*patterns, &block)
     end

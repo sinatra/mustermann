@@ -104,6 +104,8 @@ module Mustermann
         end
       end
 
+      @options = Mustermann.dedup(@options)
+
       update(mapping)
 
       block.arity == 0 ? update(yield) : yield(self) if block

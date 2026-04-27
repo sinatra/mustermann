@@ -70,7 +70,7 @@ module Mustermann
 
       attr_accessor :patterns, :set, :static, :dynamic
 
-      def initialize(set, patterns = [])
+      def initialize(set, patterns = nil)
         @set             = set
         @patterns        = nil
         @dynamic         = nil
@@ -79,11 +79,11 @@ module Mustermann
         @fast_static     = nil
         @byte_lookup     = nil
         @dynamic_entries = nil
-        patterns.each { |pattern| add(pattern) }
+        patterns&.each { |pattern| add(pattern) }
       end
 
       def [](key)
-        case key
+        case key = Mustermann.dedup(key)
         when String
           @static      ||= {}
           @static[key] ||= Trie.new(@set)
@@ -116,7 +116,6 @@ module Mustermann
         end
 
         if @dynamic_entries&.any?
-          anchored    = nil
           base_params = all ? params : nil
           @dynamic_entries.each do |matcher, node, capture_names, fast_name|
             if fast_name
@@ -135,8 +134,8 @@ module Mustermann
             # Non-greedy patterns (e.g. splat .*?) can match 0 chars on non-empty input, making
             # no progress. Retry with an end-of-string anchor so they consume the full remainder.
             if regexp_match && regexp_match.end(0) == position
-              anchored ||= {}
-              anchored_matcher = anchored[matcher] ||= Regexp.new(matcher.source + '\z')
+              @@anchored ||= {}
+              anchored_matcher = @@anchored[matcher] ||= Mustermann.dedup(Regexp.new(matcher.source + '\z'))
               regexp_match = anchored_matcher.match(string, position)
             end
             next unless regexp_match
@@ -233,6 +232,7 @@ module Mustermann
           @static&.each { |k, v| @byte_lookup[k.getbyte(0)] = v }
           @static&.each_value(&:optimize!)
         end
+
         @dynamic&.each_value(&:optimize!)
         @dynamic_entries = @dynamic&.map do |matcher, node|
           names = matcher.names.each(&:freeze)
@@ -245,6 +245,10 @@ module Mustermann
           end
           [matcher, node, names, fast]
         end
+
+        @fast_static     = Mustermann.dedup(@fast_static)
+        @dynamic_entries = Mustermann.dedup(@dynamic_entries)
+        @byte_lookup     = Mustermann.dedup(@byte_lookup)
       end
 
       protected
