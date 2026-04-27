@@ -4,7 +4,7 @@ Mustermann follows [Semantic Versioning 2.0](http://semver.org/). Anything docum
 
 ## Stable Releases
 
-### Mustermann 4.0.0
+### Mustermann 4.0.0 (2026-04-27)
 
 #### Breaking changes
 
