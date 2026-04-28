@@ -14,13 +14,13 @@ module Mustermann
 
       # Regexp fragment for each printable ASCII char, matching the same output
       # as Compiler#encoded with uri_decode: true.
-      ENCODED = (0..127).each_with_object({}) do |byte, h|
+      ENCODED = Mustermann.dedup((0..127).each_with_object({}) do |byte, h|
         c   = byte.chr
         pct = '%%%02X' % byte
         reps = [c, pct, pct.downcase].uniq
         h[c] = reps.size == 1 ? Regexp.escape(reps.first) :
           '(?:%s)' % reps.map { |r| Regexp.escape(r) }.join('|')
-      end.freeze
+      end)
 
       SEGMENT_SCAN = %r{(/)|(:[a-zA-Z_]\w*)|([^/:]+)}
 
@@ -31,7 +31,7 @@ module Mustermann
       def to_ast
         return super unless simple_pattern?
         ast = self.class.ast_cache.fetch(@string) { build_fast_ast }
-        @param_converters ||= {}
+        @param_converters ||= EMPTY_HASH
         ast
       end
 

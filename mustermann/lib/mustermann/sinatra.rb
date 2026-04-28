@@ -89,7 +89,7 @@ module Mustermann
     def normalize_capture(pattern)
       case capture = pattern.options[:capture]
       when Hash then capture.slice(*pattern.names.map(&:to_sym))
-      when nil  then {}
+      when nil  then EMPTY_HASH
       else pattern.names.to_h { |name| [name.to_sym, capture] }
       end
     end

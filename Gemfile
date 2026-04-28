@@ -10,3 +10,7 @@ group :benchmark do
   gem 'addressable'
   gem 'benchmark'
 end
+
+platforms :ruby do
+  gem 'memory_profiler'
+end

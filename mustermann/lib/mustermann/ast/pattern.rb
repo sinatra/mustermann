@@ -122,7 +122,7 @@ module Mustermann
       # @raise (see Mustermann::Pattern#expand)
       # @see Mustermann::Pattern#expand
       # @see Mustermann::Expander
-      def expand(behavior = nil, values = {})
+      def expand(behavior = nil, values = EMPTY_HASH)
         @expander ||= Mustermann::Expander.new(self)
         @expander.expand(behavior, values)
       end

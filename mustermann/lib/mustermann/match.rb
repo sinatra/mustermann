@@ -60,10 +60,10 @@ module Mustermann
       end
 
       @pattern        = pattern        || match&.pattern
-      @string         = string         || match&.string         || ''
-      @params         = params         || match&.params         || {}
-      @post_match     = post_match     || match&.post_match     || ''
-      @pre_match      = pre_match      || match&.pre_match      || ''
+      @string         = string         || match&.string         || EMPTY_STRING
+      @params         = params         || match&.params         || EMPTY_HASH
+      @post_match     = post_match     || match&.post_match     || EMPTY_STRING
+      @pre_match      = pre_match      || match&.pre_match      || EMPTY_STRING
       @captures       = captures       || match&.captures       || @params.values
       @named_captures = named_captures || match&.named_captures || @params
       @matched        = matched        || match&.to_s           || @string

@@ -330,7 +330,7 @@ module Mustermann
     # @return [Mustermann::Expander]
     def expander(value = self)
       @expanders[value] ||= begin
-        patterns = value == self ? @mapping.keys : @reverse_mapping[value] || []
+        patterns = value == self ? @mapping.keys : @reverse_mapping[value] || EMPTY_ARRAY
         Mustermann::Expander.new(patterns, additional_values: @additional_values, **options)
       end
     end
@@ -375,7 +375,7 @@ module Mustermann
         values = value
         value  = self unless @reverse_mapping.key? values
       end
-      expander(value).expand(behavior || @additional_values, values || {})
+      expander(value).expand(behavior || @additional_values, values || EMPTY_HASH)
     end
 
     # @return [Boolean] whether the set contains any pattern associated with the given value

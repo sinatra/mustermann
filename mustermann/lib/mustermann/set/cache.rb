@@ -5,7 +5,6 @@ module Mustermann
   class Set
     class Cache
       PLACEHOLDER = Object.new.freeze
-      EMPTY_ARRAY = [].freeze
 
       def self.new(matcher) = defined?(ObjectSpace::WeakKeyMap) ? super : matcher
 

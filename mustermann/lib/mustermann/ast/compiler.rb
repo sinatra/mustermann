@@ -56,7 +56,7 @@ module Mustermann
 
       translate :with_look_ahead do |atomic: false, **options|
         greedy = options.fetch(:greedy, true)
-        lookahead = each_leaf.inject('') do |ahead, element|
+        lookahead = each_leaf.inject(EMPTY_STRING) do |ahead, element|
           ahead + t(element, skip_optional: true, lookahead: ahead, greedy: false, no_captures: true, **options).to_s
         end
         lookahead << (at_end ? '$' : '/')

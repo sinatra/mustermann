@@ -113,12 +113,13 @@ module Mustermann
 
   # @!visibility private
   def self.normalized_type(type)
-    type.to_s.gsub('-', '_').downcase
+    @normalized_types       ||= {}
+    @normalized_types[type] ||= type.to_s.gsub('-', '_').downcase
   end
 
   # @!visibility private
   def self.dedup(object)
-    return object unless @dedup
+    return object.freeze unless @dedup
     # need to check this first because JRuby raises on @dedup.key?(nil)
     case object
     when nil, true, false, Integer, Symbol, Module
@@ -145,4 +146,13 @@ module Mustermann
   end
 
   @dedup = defined?(ObjectSpace::WeakKeyMap) ? ObjectSpace::WeakKeyMap.new : false
+
+  # @!visibility private
+  EMPTY_STRING = dedup(-'')
+
+  # @!visibility private
+  EMPTY_ARRAY = dedup([])
+
+  # @!visibility private
+  EMPTY_HASH = dedup({})
 end

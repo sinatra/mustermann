@@ -27,7 +27,7 @@ module Mustermann
 
       # @raise [Mustermann::CompileError] if name is not acceptable
       # @!visibility private
-      def check_name(name, forbidden: [])
+      def check_name(name, forbidden: EMPTY_ARRAY)
         raise CompileError, "capture name can't be empty" if name.nil? or name.empty?
         raise CompileError, "capture name must start with underscore or lower case letter" unless name =~ /^[a-z_]/
         raise CompileError, "capture name can't be #{name}" if Array(forbidden).include? name

@@ -23,7 +23,7 @@ module Mustermann
       attr_reader :type
 
       # @!visibility private
-      def initialize(type, names: [], **options)
+      def initialize(type, names: EMPTY_ARRAY, **options)
         @names   = names
         @options = options
         @type    = type

@@ -107,7 +107,7 @@ module Mustermann
     # (see Mustermann::Pattern#to_templates)
     def to_templates
       raise NotImplementedError, 'template generation not supported' unless respond_to? :to_templates
-      @to_templates ||= patterns.inject(['']) { |list, pattern| list.product(pattern.to_templates).map(&:join) }.uniq
+      @to_templates ||= patterns.inject([EMPTY_STRING]) { |list, pattern| list.product(pattern.to_templates).map(&:join) }.uniq
     end
 
     # @!visibility private

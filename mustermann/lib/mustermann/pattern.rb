@@ -91,7 +91,7 @@ module Mustermann
     end
 
     # @return [Array<String>] list of named captures in the pattern
-    def names = []
+    def names = EMPTY_ARRAY
 
     # @param [String] string The string to match against
     # @return [Integer, nil] nil if pattern does not match the string, zero if it does.
@@ -168,7 +168,7 @@ module Mustermann
     # @see #peek_params
     def peek_match(string)
       matched = peek(string)
-      Match.new(self, string, matched:, params: {}, post_match: string[matched.size..-1]) if matched
+      Match.new(self, string, matched:, params: EMPTY_HASH, post_match: string[matched.size..-1]) if matched
     end
 
     # Tries to match the pattern against the beginning of the string (as opposed to the full string).
@@ -217,7 +217,7 @@ module Mustermann
     # @raise [NotImplementedError] raised if expand is not supported.
     # @raise [Mustermann::ExpandError] raised if a value is missing or unknown
     # @see Mustermann::Expander
-    def expand(behavior = nil, values = {})
+    def expand(behavior = nil, values = EMPTY_HASH)
       raise NotImplementedError, "expanding not supported by #{self.class}"
     end
 

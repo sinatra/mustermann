@@ -31,7 +31,7 @@ module Mustermann
 
     # @see Mustermann::Pattern#names
     def names
-      @names ||= Mustermann.dedup(patterns.flat_map { |p| p.respond_to?(:names) ? p.names : [] }.uniq)
+      @names ||= Mustermann.dedup(patterns.flat_map { |p| p.respond_to?(:names) ? p.names : EMPTY_ARRAY }.uniq)
     end
 
     # @see Mustermann::Pattern#==
@@ -71,7 +71,7 @@ module Mustermann
     end
 
     # (see Mustermann::Pattern#expand)
-    def expand(behavior = nil, values = {})
+    def expand(behavior = nil, values = EMPTY_HASH)
       raise NotImplementedError, 'expanding not supported' unless respond_to? :expand
       @expander ||= Mustermann::Expander.new(*patterns)
       @expander.expand(behavior, values)

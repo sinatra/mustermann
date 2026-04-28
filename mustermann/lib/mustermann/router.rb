@@ -92,7 +92,7 @@ module Mustermann
     # @param app [#call] The Rack application or middleware for which to generate the path.
     # @param (see Mustermann::Expander#expand)
     # @return [String] The generated path.
-    def path_for(app, behavior = nil, params = {})
+    def path_for(app, behavior = nil, params = EMPTY_HASH)
       set = @sets.values.find { |s| s.has_value?(app) } || @sets[VERBS.first]
       set.expand(app, behavior, params)
     end

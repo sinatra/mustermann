@@ -13,10 +13,10 @@ module Mustermann
       end
 
       # translate(:expression) is not needed, since template patterns simply call to_s
-      translate(:root, :group)        { t(payload) || [""]            }
+      translate(:root, :group)        { t(payload) || [EMPTY_STRING]  }
       translate(:separator, :char)    { t.escape(payload)             }
       translate(:capture)             { "{#{name}}"                   }
-      translate(:optional)            { [t(payload), ""]              }
+      translate(:optional)            { [t(payload), EMPTY_STRING]    }
       translate(:named_splat, :splat) { "{+#{name}}"                  }
       translate(:with_look_ahead)     { t([head, payload])            }
       translate(:union)               { payload.flat_map { |e| t(e) } }

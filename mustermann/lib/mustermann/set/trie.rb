@@ -155,7 +155,7 @@ module Mustermann
         end
 
         if peek
-          matches = build_matches(string, params, all:, matched_length: position, post_match: string[position..], pre_match: '')
+          matches = build_matches(string, params, all:, matched_length: position, post_match: string[position..], pre_match: EMPTY_STRING)
           return matches unless all
           result.concat(matches)
         end
@@ -165,7 +165,7 @@ module Mustermann
 
       NIL_VALUES = [nil].freeze
 
-      def build_matches(string, params, all: false, matched_length: string.size, post_match: '', pre_match: '')
+      def build_matches(string, params, all: false, matched_length: string.size, post_match: EMPTY_STRING, pre_match: EMPTY_STRING)
         result = [] if all
         matched = string[0, matched_length]
 
@@ -268,7 +268,7 @@ module Mustermann
       # Builds a hash whose keys are +stride+-character strings and whose values are
       # the trie nodes reached after consuming exactly those characters.
       def build_stride_hash(stride)
-        stride.times.reduce({ "" => self }) do |frontier, _|
+        stride.times.reduce({ EMPTY_STRING => self }) do |frontier, _|
           frontier.each_with_object({}) do |(prefix, node), nxt|
             node.static.each { |char, child| nxt[prefix + char] = child }
           end

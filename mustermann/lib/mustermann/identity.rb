@@ -65,7 +65,7 @@ module Mustermann
     # @raise (see Mustermann::Pattern#expand)
     # @see Mustermann::Pattern#expand
     # @see Mustermann::Expander
-    def expand(behavior = nil, values = {})
+    def expand(behavior = nil, values = EMPTY_HASH)
       return to_s if values.empty? or behavior == :ignore
       raise ExpandError,    "cannot expand with keys %p" % values.keys.sort if behavior == :raise
       raise ArgumentError,  "unknown behavior %p"        % behavior         if behavior != :append

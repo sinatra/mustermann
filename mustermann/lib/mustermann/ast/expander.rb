@@ -131,14 +131,14 @@ module Mustermann
 
       # Turns a sprintf pattern into our secret internal data structure.
       # @!visibility private
-      def pattern(string = "", *keys, **filters)
+      def pattern(string = EMPTY_STRING, *keys, **filters)
         [[keys, string, filters]]
       end
 
       # Creates the product of two of our secret internal data structures.
       # @!visibility private
       def add_to(list, result)
-        list << [[], ""] if list.empty?
+        list << [[], EMPTY_STRING] if list.empty?
         list.inject([]) { |l, (k1, p1, f1)| l + result.map { |k2, p2, f2| [k1+k2, p1+p2, f1.merge(f2)] } }
       end
     end

@@ -147,7 +147,7 @@ module Mustermann
     # @return [String] expanded string
     # @raise [NotImplementedError] raised if expand is not supported.
     # @raise [Mustermann::ExpandError] raised if a value is missing or unknown
-    def expand(behavior = nil, values = {})
+    def expand(behavior = nil, values = EMPTY_HASH)
       behavior, values = nil, behavior if behavior.is_a? Hash
       values = map_values(values)
 

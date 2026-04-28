@@ -16,7 +16,7 @@ module Mustermann
       translate(:node)             { |o| t(payload, o) }
       translate(:with_look_ahead)  { |o| t(head, o).merge(t(payload, o)) }
       translate(Array)             { |o| map { |e| t(e, o) }.inject(:merge) }
-      translate(Object)            { |o| {} }
+      translate(Object)            { |o| EMPTY_HASH }
 
       class Capture < NodeTranslator
         register :capture
@@ -24,7 +24,7 @@ module Mustermann
         def translate(options)
           return { name => convert } if convert
           _, converter = converter(options[:capture])
-          converter ? { name => converter } : {}
+          converter ? { name => converter } : EMPTY_HASH
         end
 
         def converter(capture)
