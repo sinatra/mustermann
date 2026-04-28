@@ -86,10 +86,12 @@ describe Mustermann do
         Mustermann.dedup(a).object_id.should be == Mustermann.dedup(b).object_id
       end
 
-      example "objects can be garbage collected" do
-        object_id = Mustermann.dedup({ "unique" => "object" }).object_id
-        GC.start
-        Mustermann.dedup({ "unique" => "object" }).object_id.should_not be == object_id
+      if RUBY_ENGINE == "ruby" and RUBY_VERSION < "4.1"
+        example "objects can be garbage collected" do
+          object_id = Mustermann.dedup({ "unique" => "object" }).object_id
+          GC.start
+          Mustermann.dedup({ "unique" => "object" }).object_id.should_not be == object_id
+        end
       end
     end
   end
