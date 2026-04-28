@@ -2,6 +2,14 @@
 
 Mustermann follows [Semantic Versioning 2.0](http://semver.org/). Anything documented in the README or via YARD and not declared private is part of the public API.
 
+## Unreleased changes
+
+### Mustermann 4.0.1
+
+#### Performance improvements
+
+* Reduce memory usage by deduplicating internal data structures. This is especially effective when using large `Mustermann::Set` objects. [#159](https://github.com/sinatra/mustermann/issues/159) [#160](https://github.com/sinatra/mustermann/pull/160) [@byroot](https://github.com/byroot)
+
 ## Stable Releases
 
 ### Mustermann 4.0.0 (2026-04-27)
