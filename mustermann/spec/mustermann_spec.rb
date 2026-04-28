@@ -68,4 +68,29 @@ describe Mustermann do
   describe :=== do
     example { Mustermann.should be === Mustermann.new("") }
   end
+
+  if defined? ObjectSpace::WeakMap
+    describe :dedup do
+      example "deduplicates hashes" do
+        a = { foo: +"bar" }
+        b = { foo: +"bar" }
+
+        Mustermann.dedup(a).object_id.should be == Mustermann.dedup(b).object_id
+        Mustermann.dedup(a)[:foo].object_id.should be == Mustermann.dedup(+"bar").object_id
+      end
+
+      example "deduplicates strings" do
+        a = +"foo bar"
+        b = +"foo bar"
+
+        Mustermann.dedup(a).object_id.should be == Mustermann.dedup(b).object_id
+      end
+
+      example "objects can be garbage collected" do
+        object_id = Mustermann.dedup({ "unique" => "object" }).object_id
+        GC.start
+        Mustermann.dedup({ "unique" => "object" }).object_id.should_not be == object_id
+      end
+    end
+  end
 end

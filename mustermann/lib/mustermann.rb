@@ -137,7 +137,7 @@ module Mustermann
       object.transform_keys! { |k| dedup(k) }
       @dedup[object.freeze] = true
     when String
-      -object
+      @dedup[-object] = true
     else
       @dedup[object.freeze] = true
     end
