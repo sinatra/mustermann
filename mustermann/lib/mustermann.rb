@@ -120,22 +120,28 @@ module Mustermann
   def self.dedup(object)
     return object unless @dedup
     # need to check this first because JRuby raises on @dedup.key?(nil)
-    return object if object.nil? || object.is_a?(Integer) || object.is_a?(Symbol) || object == true || object == false
-    return @dedup[object] if @dedup.key?(object)
+    case object
+    when nil, true, false, Integer, Symbol, Module
+      return object
+    end
+
+    canonical = @dedup.getkey(object)
+    return canonical if canonical
 
     case object
     when Array
       object.map! { |o| dedup(o) }
-      @dedup[object] = object.freeze
+      @dedup[object.freeze] = true
     when Hash
       object.transform_values! { |v| dedup(v) }
       object.transform_keys! { |k| dedup(k) }
-      @dedup[object] = object.freeze
+      @dedup[object.freeze] = true
     when String
-      @dedup[object] = object.freeze
+      @dedup[object.freeze] = true
     else
-      @dedup[object] = object
+      @dedup[object.freeze] = true
     end
+    object
   end
 
   @dedup = defined?(ObjectSpace::WeakKeyMap) ? ObjectSpace::WeakKeyMap.new : false
