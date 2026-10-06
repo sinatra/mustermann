@@ -6,6 +6,10 @@ Mustermann follows [Semantic Versioning 2.0](http://semver.org/). Anything docum
 
 ### Mustermann 4.0.1
 
+#### Bug fixes
+
+* Fix `Mustermann.dedup` raising for options that contain floats or frozen arrays and hashes, such as the route params Grape passes, and stop it from modifying the caller's arrays and hashes.
+
 #### Performance improvements
 
 * Reduce memory usage by deduplicating internal data structures. This is especially effective when using large `Mustermann::Set` objects. [#159](https://github.com/sinatra/mustermann/issues/159) [#160](https://github.com/sinatra/mustermann/pull/160) [@byroot](https://github.com/byroot)
