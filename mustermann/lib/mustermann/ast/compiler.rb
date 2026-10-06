@@ -230,9 +230,16 @@ module Mustermann
       def encoded(char, uri_decode: true, space_matches_plus: true, **options)
         return Regexp.escape(char) unless uri_decode
 
-        '(?:%s)' % self.class.char_representations(char, uri_decode:, space_matches_plus:).map { |c|
-          Regexp.escape(c)
-        }.join('|')
+        self.class.encoded_chars[[char, space_matches_plus]] ||= begin
+          representations = self.class.char_representations(char, uri_decode:, space_matches_plus:)
+          ('(?:%s)' % representations.map { |c| Regexp.escape(c) }.join('|')).freeze
+        end
+      end
+
+      # @return [Hash] regular expression source for each URI-encodable character
+      # @!visibility private
+      def self.encoded_chars
+        @encoded_chars ||= {}
       end
 
       # Compiles an AST to a regular expression.

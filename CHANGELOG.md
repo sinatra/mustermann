@@ -8,6 +8,7 @@ Mustermann follows [Semantic Versioning 2.0](http://semver.org/). Anything docum
 
 #### Performance improvements
 
+* Compile AST-based patterns faster. Translators pass keywords through without allocating a hash per node, param converters are scanned on first use instead of for every pattern, sequences are compiled without an intermediate enumerator, and the URI-encoded form of each character is cached.
 * Reduce memory usage by deduplicating internal data structures. This is especially effective when using large `Mustermann::Set` objects. [#159](https://github.com/sinatra/mustermann/issues/159) [#160](https://github.com/sinatra/mustermann/pull/160) [@byroot](https://github.com/byroot)
 
 ## Stable Releases
