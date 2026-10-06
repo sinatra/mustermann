@@ -28,16 +28,19 @@ module Mustermann
       # Strip `atomic:` from incoming options so a parent's value cannot bleed
       # into siblings; each element's atomicity comes solely from its own context.
       translate(Array) do |atomic: false, **options|
-        greedy = options.fetch(:greedy, true)
-        each_with_index.map do |element, index|
-          next_sibling = self[index + 1]
+        greedy   = options.fetch(:greedy, true)
+        elements = node
+        result   = +''
+        elements.each_with_index do |element, index|
+          next_sibling = elements[index + 1]
           atomic = greedy &&
             element.is_a?(:capture) &&
             !element.is_a?(:splat) &&
             next_sibling&.is_a?(:separator) &&
             next_sibling.payload == '/'
-          t(element, **options, atomic: atomic)
-        end.join
+          result << t(element, **options, atomic: atomic)
+        end
+        result
       end
 
       translate(:node)      { |**o| t(payload, **o)             }
