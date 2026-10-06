@@ -38,11 +38,15 @@ module Mustermann
         attr_reader :translator
 
         # shorthand for translating a nested object
+        #
+        # Keywords pass through without being collected into a new hash, as
+        # this runs for every node of every pattern.
         # @!visibility private
-        def t(*args, **options, &block)
+        def t(*args, &block)
           return translator unless args.any?
-          translator.translate(*args, **options, &block)
+          translator.translate(*args, &block)
         end
+        ruby2_keywords :t
 
         # @!visibility private
         alias_method :node, :__getobj__
@@ -117,11 +121,12 @@ module Mustermann
 
       # Start the translation dance for a (sub)tree.
       # @!visibility private
-      def translate(node, *args, **options, &block)
-        result = decorator_for(node).translate(*args, **options, &block)
+      def translate(node, *args, &block)
+        result = decorator_for(node).translate(*args, &block)
         result = result.node while result.is_a? NodeTranslator
         result
       end
+      ruby2_keywords :translate
 
       # @return [String] escaped character
       # @!visibility private
