@@ -2,6 +2,7 @@
 require 'mustermann'
 require 'mustermann/pattern_cache'
 require 'delegate'
+require 'strscan'
 
 module Mustermann
   # Class inspired by Ruby's StringScanner to scan an input string using multiple patterns.
@@ -26,7 +27,7 @@ module Mustermann
   #   Even if it was thread-safe, scanning concurrently would probably lead to unwanted behaviour.
   class StringScanner
     # Exception raised if scan/unscan operation cannot be performed.
-    ScanError     = Class.new(::ScanError)
+    ScanError     = Class.new(::StringScanner::Error)
     PATTERN_CACHE = PatternCache.new
     private_constant :PATTERN_CACHE
 
