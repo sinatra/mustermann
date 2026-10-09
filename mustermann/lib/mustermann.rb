@@ -122,20 +122,21 @@ module Mustermann
     return object.freeze unless @dedup
     # need to check this first because JRuby raises on @dedup.key?(nil)
     case object
-    when nil, true, false, Integer, Symbol, Module
+    when nil, true, false, Integer, Float, Symbol, Module
       return object
     end
 
     canonical = @dedup.getkey(object)
     return canonical if canonical
 
+    # Build deduplicated copies so callers' arrays and hashes, which may be
+    # frozen or still in use, are never modified.
     case object
     when Array
-      object.map! { |o| dedup(o) }
+      object = object.map { |o| dedup(o) }
       @dedup[object.freeze] = true
     when Hash
-      object.transform_values! { |v| dedup(v) }
-      object.transform_keys! { |k| dedup(k) }
+      object = object.to_h { |k, v| [dedup(k), dedup(v)] }
       @dedup[object.freeze] = true
     when String
       @dedup[-object] = true

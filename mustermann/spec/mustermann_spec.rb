@@ -86,6 +86,24 @@ describe Mustermann do
         Mustermann.dedup(a).object_id.should be == Mustermann.dedup(b).object_id
       end
 
+      example "accepts floats" do
+        Mustermann.dedup({ default: 1.5 }).should be == { default: 1.5 }
+      end
+
+      example "accepts frozen arrays and hashes" do
+        Mustermann.dedup({ values: ["a", "b"].freeze }.freeze).should be == { values: ["a", "b"] }
+      end
+
+      example "does not modify the given objects" do
+        values = [+"a"]
+        options = { values: values }
+        Mustermann.dedup(options)
+
+        options.should_not be_frozen
+        values.should_not be_frozen
+        options[:values].should be_equal(values)
+      end
+
       if RUBY_ENGINE == "ruby" and RUBY_VERSION < "4.1"
         example "objects can be garbage collected" do
           object_id = Mustermann.dedup({ "unique" => "object" }).object_id
