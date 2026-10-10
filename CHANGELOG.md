@@ -2,20 +2,19 @@
 
 Mustermann follows [Semantic Versioning 2.0](http://semver.org/). Anything documented in the README or via YARD and not declared private is part of the public API.
 
-## Unreleased changes
+## Stable Releases
 
-### Mustermann 4.0.1
+### Mustermann 4.0.1 (2026-10-10)
 
 #### Bug fixes
 
-* Fix `Mustermann.dedup` raising for options that contain floats or frozen arrays and hashes, such as the route params Grape passes, and stop it from modifying the caller's arrays and hashes.
+* Fix `Mustermann.dedup` raising for options that contain floats or frozen arrays and hashes, such as the route params Grape passes, and stop it from modifying the caller's arrays and hashes. [#164](https://github.com/sinatra/mustermann/pull/164) [@jetersen](https://github.com/jetersen)
+* Switch from `ScanError` to `StringScanner::Error` internally for Ruby 4.1 compatibility. [#166](https://github.com/sinatra/mustermann/pull/166) [@jetersen](https://github.com/jetersen)
 
 #### Performance improvements
 
-* Compile AST-based patterns faster. Translators pass keywords through without allocating a hash per node, param converters are scanned on first use instead of for every pattern, sequences are compiled without an intermediate enumerator, and the URI-encoded form of each character is cached.
+* Compile AST-based patterns faster. Translators pass keywords through without allocating a hash per node, param converters are scanned on first use instead of for every pattern, sequences are compiled without an intermediate enumerator, and the URI-encoded form of each character is cached. [#165](https://github.com/sinatra/mustermann/pull/165) [@jetersen](https://github.com/jetersen)
 * Reduce memory usage by deduplicating internal data structures. This is especially effective when using large `Mustermann::Set` objects. [#159](https://github.com/sinatra/mustermann/issues/159) [#160](https://github.com/sinatra/mustermann/pull/160) [@byroot](https://github.com/byroot)
-
-## Stable Releases
 
 ### Mustermann 4.0.0 (2026-04-27)
 
