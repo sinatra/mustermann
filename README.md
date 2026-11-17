@@ -17,7 +17,7 @@ Mustermann is typically used by other frameworks and libraries, primarily but no
 
 These include, amongst others:
 
-* [Sinatra](https://sinatrarb.com/):
+* [Sinatra](https://sinatra.run/):
   A DSL for quickly creating web applications with minimal effort
 * [Hanami](https://hanamirb.org/):
   A flexible framework for maintainable Ruby apps
@@ -144,7 +144,7 @@ The `identity`, `regexp`, `rails`, and `sinatra` types are included in the `must
       <th><a href="mustermann-contrib/README.md#-mustermann-simple"><tt>simple</tt></a></th>
       <td><tt>/:slug.:ext</tt></td>
       <td>
-        <a href="http://www.sinatrarb.com/">Sinatra</a> (1.x),
+        <a href="https://sinatra.run/">Sinatra</a> (1.x),
         <a href="http://scalatra.org/">Scalatra</a>,
         <a href="http://perldancer.org/">Dancer</a>,
         <a href="http://twitter.github.io/finatra/">Finatra</a>,
@@ -162,7 +162,7 @@ The `identity`, `regexp`, `rails`, and `sinatra` types are included in the `must
       <th><a href="mustermann/README.md#-sinatra-pattern"><tt>sinatra</tt></a></th>
       <td><tt>/:slug(.:ext)?</tt></td>
       <td>
-        <a href="http://www.sinatrarb.com/">Sinatra</a> (2.x),
+        <a href="https://sinatra.run/">Sinatra</a> (2.x),
         <a href="http://padrinorb.com/">Padrino</a> (>= 0.13.0),
         <a href="https://github.com/namusyaka/pendragon">Pendragon</a>,
         <a href="https://github.com/kenichi/angelo">Angelo</a>

@@ -1,6 +1,6 @@
 # Simple Syntax for Mustermann
 
-The `simple` pattern type is implemented by the `mustermann-contrib` gem. It is compatible with [Sinatra](http://www.sinatrarb.com/) (1.x), [Scalatra](http://scalatra.org/) and [Dancer](http://perldancer.org/).
+The `simple` pattern type is implemented by the `mustermann-contrib` gem. It is compatible with [Sinatra](https://sinatra.run/) (1.x), [Scalatra](http://scalatra.org/) and [Dancer](http://perldancer.org/).
 
 It is based on the original Sinatra (1.x) pattern implementation. It isn't AST based and thus does not work for all features provided by Mustermann, like Trie-based pattern matching or pattern expansion.
 
