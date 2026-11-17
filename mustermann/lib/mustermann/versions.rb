@@ -4,7 +4,7 @@ module Mustermann
   # @see Mustermann::Rails
   # @!visibility private
   module Versions
-    # Checks if class has mulitple versions available and picks one that matches the version option.
+    # Checks if class has multiple versions available and picks one that matches the version option.
     # @!visibility private
     def new(*args, version: nil, **options)
       return super(*args, **options) unless versions.any?
